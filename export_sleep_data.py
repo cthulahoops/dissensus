@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 import sys
 import os
+import argparse
 
 
 def fetch_sleep_data():
@@ -36,13 +37,9 @@ def fetch_sleep_data():
         "Sec-Fetch-Site": "same-origin",
     }
 
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching data: {e}", file=sys.stderr)
-        return None
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json()
 
 
 def flatten_dict(d, parent_key="", sep="_"):
@@ -106,48 +103,43 @@ def map_answers_to_questions(answers):
     return mapped_answers
 
 
-def export_to_csv(data, filename="sleep_data.csv"):
-    """Export the sleep data to CSV format."""
+def process_data(data):
+    """Process raw API data into structured records."""
     if not data:
-        print("No data to export", file=sys.stderr)
-        return False
+        return None
 
     # Handle the specific API response structure
     if isinstance(data, dict) and "data" in data:
         api_data = data["data"]
         if "jsonData" in api_data:
             # Parse the JSON string
-            try:
-                json_data = json.loads(api_data["jsonData"])
-                if "days" in json_data:
-                    records = json_data["days"]
-                    # Process each record
-                    for record in records:
-                        # Add metadata
-                        record["uid"] = api_data.get("uid")
-                        record["userId"] = api_data.get("userId")
-                        record["startedAt"] = api_data.get("startedAt")
-                        record["createdAt"] = api_data.get("createdAt")
-                        record["updatedAt"] = api_data.get("updatedAt")
+            json_data = json.loads(api_data["jsonData"])
+            if "days" in json_data:
+                records = json_data["days"]
+                # Process each record
+                for record in records:
+                    # Add metadata
+                    record["uid"] = api_data.get("uid")
+                    record["userId"] = api_data.get("userId")
+                    record["startedAt"] = api_data.get("startedAt")
+                    record["createdAt"] = api_data.get("createdAt")
+                    record["updatedAt"] = api_data.get("updatedAt")
 
-                        # Map answers to questions
-                        if "answers" in record:
-                            mapped_answers = map_answers_to_questions(record["answers"])
-                            record.update(mapped_answers)
-                            # Remove the raw answers array since we've mapped it
-                            del record["answers"]
+                    # Map answers to questions
+                    if "answers" in record:
+                        mapped_answers = map_answers_to_questions(record["answers"])
+                        record.update(mapped_answers)
+                        # Remove the raw answers array since we've mapped it
+                        del record["answers"]
 
-                        # Handle comments structure
-                        if "comments" in record and isinstance(
-                            record["comments"], dict
-                        ):
-                            if "v" in record["comments"]:
-                                record["comments"] = record["comments"]["v"]
-                else:
-                    records = [json_data]
-            except json.JSONDecodeError as e:
-                print(f"Error parsing JSON data: {e}", file=sys.stderr)
-                return False
+                    # Handle comments structure
+                    if "comments" in record and isinstance(
+                        record["comments"], dict
+                    ):
+                        if "v" in record["comments"]:
+                            record["comments"] = record["comments"]["v"]
+            else:
+                records = [json_data]
         else:
             records = [api_data]
     elif isinstance(data, list):
@@ -157,6 +149,15 @@ def export_to_csv(data, filename="sleep_data.csv"):
 
     if not records:
         print("No records found in the response", file=sys.stderr)
+        return None
+
+    return records
+
+
+def export_to_csv(records, filename):
+    """Export the processed records to CSV format."""
+    if not records:
+        print("No data to export", file=sys.stderr)
         return False
 
     # Flatten all records
@@ -171,35 +172,99 @@ def export_to_csv(data, filename="sleep_data.csv"):
     fieldnames = sorted(list(fieldnames))
 
     # Write to CSV
-    try:
-        with open(filename, "w", newline="", encoding="utf-8") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(flattened_records)
+    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(flattened_records)
 
-        print(f"Successfully exported {len(flattened_records)} records to {filename}")
-        return True
-    except Exception as e:
-        print(f"Error writing CSV file: {e}", file=sys.stderr)
+    print(f"Successfully exported {len(flattened_records)} records to {filename}")
+    return True
+
+
+def export_to_json(records, filename):
+    """Export the processed records to JSON format."""
+    if not records:
+        print("No data to export", file=sys.stderr)
         return False
+
+    with open(filename, "w", encoding="utf-8") as jsonfile:
+        json.dump(records, jsonfile, indent=2, ensure_ascii=False)
+
+    print(f"Successfully exported {len(records)} records to {filename}")
+    return True
+
+
+def detect_format_from_filename(filename):
+    """Detect output format based on file extension."""
+    if filename.lower().endswith('.json'):
+        return 'json'
+    elif filename.lower().endswith('.csv'):
+        return 'csv'
+    else:
+        return None
 
 
 def main():
-    """Main function to fetch data and export to CSV."""
+    """Main function to fetch data and export to specified format."""
+    parser = argparse.ArgumentParser(
+        description="Export sleep session data from Consensus Sleep Diary API"
+    )
+    parser.add_argument(
+        "-f", "--format",
+        choices=["csv", "json"],
+        help="Output format (csv or json). If not specified, will be detected from output filename."
+    )
+    parser.add_argument(
+        "-o", "--output",
+        help="Output filename. If not specified, will generate timestamped filename."
+    )
+    
+    args = parser.parse_args()
+    
     print("Fetching sleep session data...")
     data = fetch_sleep_data()
 
     if data is None:
         sys.exit(1)
+    
+    # Process the raw API data
+    records = process_data(data)
+    if not records:
+        sys.exit(1)
 
-    print("Data fetched successfully. Exporting to CSV...")
-
-    # Generate filename with timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"sleep_data_{timestamp}.csv"
-
-    if export_to_csv(data, filename):
-        print(f"Export completed: {filename}")
+    print("Data fetched successfully. Processing export...")
+    
+    # Determine output format and filename
+    output_format = args.format
+    output_file = args.output
+    
+    # If no output file specified, generate timestamped filename
+    if not output_file:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if output_format == "json":
+            output_file = f"sleep_data_{timestamp}.json"
+        else:
+            output_file = f"sleep_data_{timestamp}.csv"
+            output_format = "csv"  # default to CSV if no format specified
+    
+    # If no format specified, try to detect from filename
+    if not output_format:
+        detected_format = detect_format_from_filename(output_file)
+        if detected_format:
+            output_format = detected_format
+        else:
+            print("Warning: Could not detect format from filename. Defaulting to CSV.")
+            output_format = "csv"
+    
+    # Export data in the specified format
+    success = False
+    if output_format == "json":
+        success = export_to_json(records, output_file)
+    else:
+        success = export_to_csv(records, output_file)
+    
+    if success:
+        print(f"Export completed: {output_file}")
     else:
         sys.exit(1)
 

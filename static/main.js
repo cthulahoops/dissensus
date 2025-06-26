@@ -40,7 +40,9 @@ function processData(sleepData) {
             const totalAwakeMinutes = record.total_awake_time_mins ? 
                 parseInt(record.total_awake_time_mins) : 0;
             const timeToFallAsleepMinutes = record.time_to_fall_asleep_mins ? 
-                parseInt(record.time_to_fall_asleep_mins) : 0;
+                parseInt(record.time_to_fall_asleep_mins) : null;
+            const timeAwakeInBedMinutes = record.time_in_bed_after_final_awakening_mins ?
+                parseInt(record.time_in_bed_after_final_awakening_mins) : null;
             
             let totalTimeInBed = null;
             let totalTimeAsleep = null;
@@ -55,7 +57,7 @@ function processData(sleepData) {
             if (timeTriedToSleep !== null && finalAwakeningTime !== null) {
                 const sleepPeriod = calculateTimeDifference(timeTriedToSleep, finalAwakeningTime);
                 if (sleepPeriod !== null) {
-                    const timeToFallAsleepHours = timeToFallAsleepMinutes / 60;
+                    const timeToFallAsleepHours = (timeToFallAsleepMinutes || 0) / 60;
                     const totalAwakeHours = totalAwakeMinutes / 60;
                     totalTimeAsleep = sleepPeriod - timeToFallAsleepHours - totalAwakeHours;
                     
@@ -75,7 +77,9 @@ function processData(sleepData) {
                 date: record.date,
                 totalTimeInBed,
                 totalTimeAsleep,
-                sleepEfficiency
+                sleepEfficiency,
+                timeToFallAsleepMinutes,
+                timeAwakeInBedMinutes
             };
         });
     
@@ -169,62 +173,146 @@ function createChart(ctx, label, data, rollingAverage, color, isPercentage = fal
     });
 }
 
+function createMinuteChart(ctx, label, data, rollingAverage, color) {
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(d => d.date),
+            datasets: [
+                {
+                    label: label,
+                    data: data.map(d => d.value),
+                    backgroundColor: color + '80',
+                    borderColor: color,
+                    borderWidth: 1
+                },
+                {
+                    label: `${ROLLING_AVERAGE_DAYS}-Day Rolling Average`,
+                    data: rollingAverage,
+                    type: 'line',
+                    borderColor: '#ff6b6b',
+                    backgroundColor: 'transparent',
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#ff6b6b',
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `${context.dataset.label}: ${value} minutes`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#e0e0e0'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' min';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: '#e0e0e0'
+                    }
+                }
+            },
+            elements: {
+                bar: {
+                    borderRadius: 4
+                }
+            }
+        }
+    });
+}
+
 // Load and process data
 async function loadData() {
-    try {
-        const response = await fetch('sleep_data.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const sleepData = await response.json();
-        
-        const processedData = processData(sleepData);
-        
-        // Prepare data for charts
-        const timeInBedData = processedData.map(d => ({
-            date: d.date,
-            value: d.totalTimeInBed
-        })).filter(d => d.value !== null);
-        
-        const timeAsleepData = processedData.map(d => ({
-            date: d.date,
-            value: d.totalTimeAsleep
-        })).filter(d => d.value !== null);
-        
-        const efficiencyData = processedData.map(d => ({
-            date: d.date,
-            value: d.sleepEfficiency
-        })).filter(d => d.value !== null);
-        
-        // Calculate rolling averages
-        const timeInBedAvg = calculateRollingAverage(
-            timeInBedData.map(d => d.value), 
-            ROLLING_AVERAGE_DAYS
-        );
-        const timeAsleepAvg = calculateRollingAverage(
-            timeAsleepData.map(d => d.value), 
-            ROLLING_AVERAGE_DAYS
-        );
-        const efficiencyAvg = calculateRollingAverage(
-            efficiencyData.map(d => d.value), 
-            ROLLING_AVERAGE_DAYS
-        );
-        
-        // Create charts
-        const timeInBedCtx = document.getElementById('timeInBedChart').getContext('2d');
-        createChart(timeInBedCtx, 'Time in Bed', timeInBedData, timeInBedAvg, '#4fc3f7', false);
-        
-        const timeAsleepCtx = document.getElementById('timeAsleepChart').getContext('2d');
-        createChart(timeAsleepCtx, 'Time Asleep', timeAsleepData, timeAsleepAvg, '#81c784', false);
-        
-        const efficiencyCtx = document.getElementById('sleepEfficiencyChart').getContext('2d');
-        createChart(efficiencyCtx, 'Sleep Efficiency', efficiencyData, efficiencyAvg, '#ffb74d', true);
-        
-    } catch (error) {
-        console.error('Error loading data:', error);
-        document.querySelector('.container').innerHTML += 
-            `<div class="error">Error loading sleep data: ${error.message}</div>`;
-    }
+    const response = await fetch('sleep_data.json');
+    const sleepData = await response.json();
+    
+    const processedData = processData(sleepData);
+    
+    // Prepare data for charts
+    const timeInBedData = processedData.map(d => ({
+        date: d.date,
+        value: d.totalTimeInBed
+    })).filter(d => d.value !== null);
+    
+    const timeAsleepData = processedData.map(d => ({
+        date: d.date,
+        value: d.totalTimeAsleep
+    })).filter(d => d.value !== null);
+    
+    const efficiencyData = processedData.map(d => ({
+        date: d.date,
+        value: d.sleepEfficiency
+    })).filter(d => d.value !== null);
+    
+    const fallAsleepData = processedData.map(d => ({
+        date: d.date,
+        value: d.timeToFallAsleepMinutes
+    })).filter(d => d.value !== null);
+    
+    const awakeInBedData = processedData.map(d => ({
+        date: d.date,
+        value: d.timeAwakeInBedMinutes
+    })).filter(d => d.value !== null);
+    
+    // Calculate rolling averages
+    const timeInBedAvg = calculateRollingAverage(
+        timeInBedData.map(d => d.value), 
+        ROLLING_AVERAGE_DAYS
+    );
+    const timeAsleepAvg = calculateRollingAverage(
+        timeAsleepData.map(d => d.value), 
+        ROLLING_AVERAGE_DAYS
+    );
+    const efficiencyAvg = calculateRollingAverage(
+        efficiencyData.map(d => d.value), 
+        ROLLING_AVERAGE_DAYS
+    );
+    const fallAsleepAvg = calculateRollingAverage(
+        fallAsleepData.map(d => d.value), 
+        ROLLING_AVERAGE_DAYS
+    );
+    const awakeInBedAvg = calculateRollingAverage(
+        awakeInBedData.map(d => d.value), 
+        ROLLING_AVERAGE_DAYS
+    );
+    
+    // Create charts
+    const timeInBedCtx = document.getElementById('timeInBedChart').getContext('2d');
+    createChart(timeInBedCtx, 'Time in Bed', timeInBedData, timeInBedAvg, '#4fc3f7', false);
+    
+    const timeAsleepCtx = document.getElementById('timeAsleepChart').getContext('2d');
+    createChart(timeAsleepCtx, 'Time Asleep', timeAsleepData, timeAsleepAvg, '#81c784', false);
+    
+    const efficiencyCtx = document.getElementById('sleepEfficiencyChart').getContext('2d');
+    createChart(efficiencyCtx, 'Sleep Efficiency', efficiencyData, efficiencyAvg, '#ffb74d', true);
+    
+    const fallAsleepCtx = document.getElementById('timeToFallAsleepChart').getContext('2d');
+    createMinuteChart(fallAsleepCtx, 'Time to Fall Asleep', fallAsleepData, fallAsleepAvg, '#ba68c8');
+    
+    const awakeInBedCtx = document.getElementById('timeAwakeInBedChart').getContext('2d');
+    createMinuteChart(awakeInBedCtx, 'Time Awake in Bed', awakeInBedData, awakeInBedAvg, '#f06292');
 }
 
 // Initialize dashboard

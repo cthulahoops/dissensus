@@ -62,4 +62,15 @@ logs/
 # Temporary files
 *.tmp
 *.temp
-node_modules
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Build outputs
+dist/
+build/

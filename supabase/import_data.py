@@ -76,9 +76,9 @@ def transform_record(record, user_id):
             else None
         ),
         "final_awakening_time": parse_time_string(record.get("final_awakening_time")),
-        "time_in_bed_after_final_awakening_mins": (
-            int(record["time_in_bed_after_final_awakening_mins"])
-            if record.get("time_in_bed_after_final_awakening_mins")
+        "time_trying_to_sleep_after_final_awakening_mins": (
+            int(record["time_trying_to_sleep_after_final_awakening_mins"])
+            if record.get("time_trying_to_sleep_after_final_awakening_mins")
             else None
         ),
         "time_got_out_of_bed": parse_time_string(record.get("time_got_out_of_bed")),

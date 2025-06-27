@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { sleepRecordsAPI } from "../lib/supabase";
+import { sleepRecordsAPI, supabase } from "../lib/supabase";
 import type { SleepRecord } from "../lib/supabase";
 import { processData, prepareChartData } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 import { SleepForm } from "./SleepForm";
 import "./SleepForm.css";
 
-// Test user ID from the import (you can replace this with actual auth later)
-const TEST_USER_ID = import.meta.env.VITE_TEST_USER_ID;
-
 export const SleepDashboard: React.FC = () => {
   const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
   const [loading, setLoading] = useState(true);
-const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const handleFormSubmit = (newRecord: SleepRecord) => {
     setSleepRecords(prevRecords => [...prevRecords, newRecord]);
@@ -29,14 +27,16 @@ const [error, setError] = useState<string | null>(null);
       try {
         setLoading(true);
 
-        // First, try to sign in as the test user
-        // (In production, you'd use real authentication)
-        const { error: signInError } = await sleepRecordsAPI.signInTestUser();
-        if (signInError) {
-          console.warn("Sign in failed, trying without auth:", signInError);
+        // Get the current authenticated user
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          setError("No authenticated user found");
+          setLoading(false);
+          return;
         }
 
-        const records = await sleepRecordsAPI.getAll(TEST_USER_ID);
+        setCurrentUser(session.user);
+        const records = await sleepRecordsAPI.getAll(session.user.id);
         setSleepRecords(records);
         setError(null);
       } catch (err) {
@@ -81,9 +81,9 @@ const [error, setError] = useState<string | null>(null);
         <button onClick={() => setIsFormOpen(true)} className="button-primary">Add New Record</button>
       </header>
 
-      {isFormOpen && (
+      {isFormOpen && currentUser && (
         <SleepForm 
-          userId={TEST_USER_ID} 
+          userId={currentUser.id} 
           onSubmit={handleFormSubmit} 
           onCancel={handleFormCancel} 
         />

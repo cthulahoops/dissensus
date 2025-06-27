@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS sleep_records (
   times_woke_up_count INTEGER,
   total_awake_time_mins INTEGER,
   final_awakening_time TIME,
-  time_in_bed_after_final_awakening_mins INTEGER,
+  time_trying_to_sleep_after_final_awakening_mins INTEGER,
   time_got_out_of_bed TIME,
   
   -- Sleep quality

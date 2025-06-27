@@ -18,7 +18,7 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
     times_woke_up_count: "",
     total_awake_time_mins: "",
     final_awakening_time: "",
-    time_in_bed_after_final_awakening_mins: "",
+    time_trying_to_sleep_after_final_awakening_mins: "",
     time_got_out_of_bed: "",
     sleep_quality_rating: ""
   });
@@ -65,8 +65,8 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
       if (formData.total_awake_time_mins) {
         record.total_awake_time_mins = parseInt(formData.total_awake_time_mins);
       }
-      if (formData.time_in_bed_after_final_awakening_mins) {
-        record.time_in_bed_after_final_awakening_mins = parseInt(formData.time_in_bed_after_final_awakening_mins);
+      if (formData.time_trying_to_sleep_after_final_awakening_mins) {
+        record.time_trying_to_sleep_after_final_awakening_mins = parseInt(formData.time_trying_to_sleep_after_final_awakening_mins);
       }
 
       const newRecord = await sleepRecordsAPI.create(record);
@@ -191,14 +191,14 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="time_in_bed_after_final_awakening_mins">
+              <label htmlFor="time_trying_to_sleep_after_final_awakening_mins">
                 After your final awakening, how long did you spend trying to sleep? (minutes)
               </label>
               <input
                 type="number"
-                id="time_in_bed_after_final_awakening_mins"
-                name="time_in_bed_after_final_awakening_mins"
-                value={formData.time_in_bed_after_final_awakening_mins}
+                id="time_trying_to_sleep_after_final_awakening_mins"
+                name="time_trying_to_sleep_after_final_awakening_mins"
+                value={formData.time_trying_to_sleep_after_final_awakening_mins}
                 onChange={handleInputChange}
                 min="0"
                 max="300"

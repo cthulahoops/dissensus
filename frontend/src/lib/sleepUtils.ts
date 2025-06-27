@@ -63,8 +63,6 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
     let totalTimeAsleep: number | null = null;
     let sleepEfficiency: number | null = null;
 
-    console.log("SLEEP DATA: ", sleepData);
-
     // Calculate total time in bed
     if (timeInBed !== null && timeOutOfBed !== null) {
       totalTimeInBed = calculateTimeDifference(timeInBed, timeOutOfBed);

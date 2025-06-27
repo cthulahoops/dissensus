@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { SleepDashboard } from "./components/SleepDashboard";
 import { LoginForm } from "./components/LoginForm";
 import { AuthCallback } from "./components/AuthCallback";
 import "./components/SleepDashboard.css";
 import "./App.css";
+import type { User } from '@supabase/supabase-js';
 
 type AppState = 'loading' | 'login' | 'auth-callback' | 'dashboard';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     // Check if we're on the auth callback route
@@ -33,7 +34,7 @@ function App() {
     checkAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         setUser(session.user);
         setAppState('dashboard');

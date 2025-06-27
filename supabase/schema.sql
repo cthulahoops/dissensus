@@ -4,10 +4,10 @@
 -- Create sleep_records table
 CREATE TABLE IF NOT EXISTS sleep_records (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- Supabase Auth user ID
   date DATE NOT NULL,
   date_unix BIGINT,
-  uid TEXT,
+  uid TEXT, -- Optional external/legacy identifier (e.g., study participant ID)
   comments TEXT,
   
   -- Sleep timing fields

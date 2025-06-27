@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Bed frame -->
+  <rect x="10" y="50" width="80" height="30" fill="#8B4513" rx="2"/>
+  
+  <!-- Mattress -->
+  <rect x="15" y="45" width="70" height="20" fill="#E6E6FA" rx="8"/>
+  
+  <!-- Pillow -->
+  <ellipse cx="25" cy="40" rx="12" ry="8" fill="#F0F8FF"/>
+  
+  <!-- Blanket -->
+  <path d="M 35 45 Q 50 35 65 45 Q 75 50 85 45 L 85 60 Q 75 55 65 60 Q 50 65 35 60 Z" fill="#4169E1" opacity="0.8"/>
+  
+  <!-- Bed legs -->
+  <rect x="15" y="75" width="4" height="15" fill="#654321"/>
+  <rect x="81" y="75" width="4" height="15" fill="#654321"/>
+  
+  <!-- Sleep symbols (Zzz) -->
+  <text x="75" y="35" font-family="Arial, sans-serif" font-size="8" fill="#696969" opacity="0.7">Z</text>
+  <text x="80" y="28" font-family="Arial, sans-serif" font-size="6" fill="#696969" opacity="0.5">z</text>
+  <text x="83" y="23" font-family="Arial, sans-serif" font-size="4" fill="#696969" opacity="0.3">z</text>
+</svg>

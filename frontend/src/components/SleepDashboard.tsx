@@ -64,7 +64,7 @@ export const SleepDashboard: React.FC = () => {
         <h1>Sleep Tracker Dashboard</h1>
         <p>
           Tracking {sleepRecords.length} total records, {processedData.length}{" "}
-          complete entries
+          processed entries
         </p>
       </header>
 

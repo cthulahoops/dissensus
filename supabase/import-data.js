@@ -60,8 +60,6 @@ function transformRecord(record, userId) {
     date: parseDateString(record.date),
     date_unix: record.date_unix,
     uid: record.uid,
-    complete: record.complete === true || record.complete === 'True',
-    started: record.started === true || record.started === 'True',
     comments: record.comments || null,
     
     // Sleep timing fields
@@ -73,17 +71,10 @@ function transformRecord(record, userId) {
     final_awakening_time: parseTimeString(record.final_awakening_time),
     time_in_bed_after_final_awakening_mins: record.time_in_bed_after_final_awakening_mins ? 
       parseInt(record.time_in_bed_after_final_awakening_mins) : null,
-    final_awakening_details: record.final_awakening_details ? 
-      JSON.parse(record.final_awakening_details) : null,
     time_got_out_of_bed: parseTimeString(record.time_got_out_of_bed),
     
-    // Sleep quality and additional data
-    sleep_quality_rating: record.sleep_quality_rating || null,
-    medication_sleep_aids: record.medication_sleep_aids || null,
-    caffeine_alcohol_1: record.caffeine_alcohol_1 ? JSON.parse(record.caffeine_alcohol_1) : null,
-    caffeine_alcohol_2: record.caffeine_alcohol_2 ? JSON.parse(record.caffeine_alcohol_2) : null,
-    caffeine_alcohol_3: record.caffeine_alcohol_3 ? JSON.parse(record.caffeine_alcohol_3) : null,
-    additional_notes: record.additional_notes || null
+    // Sleep quality
+    sleep_quality_rating: record.sleep_quality_rating || null
   };
 }
 

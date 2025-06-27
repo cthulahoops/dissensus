@@ -8,8 +8,6 @@ CREATE TABLE IF NOT EXISTS sleep_records (
   date DATE NOT NULL,
   date_unix BIGINT,
   uid TEXT,
-  complete BOOLEAN DEFAULT false,
-  started BOOLEAN DEFAULT false,
   comments TEXT,
   
   -- Sleep timing fields
@@ -20,16 +18,10 @@ CREATE TABLE IF NOT EXISTS sleep_records (
   total_awake_time_mins INTEGER,
   final_awakening_time TIME,
   time_in_bed_after_final_awakening_mins INTEGER,
-  final_awakening_details JSONB,
   time_got_out_of_bed TIME,
   
-  -- Sleep quality and additional data
+  -- Sleep quality
   sleep_quality_rating TEXT,
-  medication_sleep_aids TEXT,
-  caffeine_alcohol_1 JSONB,
-  caffeine_alcohol_2 JSONB,
-  caffeine_alcohol_3 JSONB,
-  additional_notes TEXT,
   
   -- Metadata
   created_at TIMESTAMPTZ DEFAULT NOW(),

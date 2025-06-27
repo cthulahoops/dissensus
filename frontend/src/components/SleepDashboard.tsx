@@ -16,14 +16,14 @@ export const SleepDashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // First, try to sign in as the test user
         // (In production, you'd use real authentication)
         const { error: signInError } = await sleepRecordsAPI.signInTestUser();
         if (signInError) {
-          console.warn('Sign in failed, trying without auth:', signInError);
+          console.warn("Sign in failed, trying without auth:", signInError);
         }
-        
+
         const records = await sleepRecordsAPI.getAll(TEST_USER_ID);
         setSleepRecords(records);
         setError(null);

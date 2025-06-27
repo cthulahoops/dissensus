@@ -2,7 +2,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    sans-serif;
 }
 
 .dashboard-header {
@@ -84,20 +85,20 @@
   .sleep-dashboard {
     padding: 10px;
   }
-  
+
   .dashboard-header {
     padding: 15px;
     margin-bottom: 20px;
   }
-  
+
   .dashboard-header h1 {
     font-size: 2rem;
   }
-  
+
   .chart-section {
     padding: 20px;
   }
-  
+
   .charts-container {
     gap: 20px;
   }

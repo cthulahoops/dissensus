@@ -3,6 +3,8 @@ import { sleepRecordsAPI } from "../lib/supabase";
 import type { SleepRecord } from "../lib/supabase";
 import { processData, prepareChartData } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
+import { SleepForm } from "./SleepForm";
+import "./SleepForm.css";
 
 // Test user ID from the import (you can replace this with actual auth later)
 const TEST_USER_ID = import.meta.env.VITE_TEST_USER_ID;
@@ -10,7 +12,17 @@ const TEST_USER_ID = import.meta.env.VITE_TEST_USER_ID;
 export const SleepDashboard: React.FC = () => {
   const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const [error, setError] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const handleFormSubmit = (newRecord: SleepRecord) => {
+    setSleepRecords(prevRecords => [...prevRecords, newRecord]);
+    setIsFormOpen(false);
+  };
+
+  const handleFormCancel = () => {
+    setIsFormOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +78,16 @@ export const SleepDashboard: React.FC = () => {
           Tracking {sleepRecords.length} total records, {processedData.length}{" "}
           processed entries
         </p>
+        <button onClick={() => setIsFormOpen(true)} className="button-primary">Add New Record</button>
       </header>
+
+      {isFormOpen && (
+        <SleepForm 
+          userId={TEST_USER_ID} 
+          onSubmit={handleFormSubmit} 
+          onCancel={handleFormCancel} 
+        />
+      )}
 
       <div className="charts-container">
         <section className="chart-section">

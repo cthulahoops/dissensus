@@ -178,12 +178,6 @@ def import_data(json_file_path, user_email, batch_size=50):
 
     print(f"🎉 Import completed successfully!")
     print(f"📊 Total records in database: {len(response.data)}")
-    print(f"👤 User ID: {user_id}")
-    print("")
-    print("Next steps:")
-    print("1. Note down the User ID above")
-    print("2. You can use this User ID for testing your frontend")
-    print("3. Later, replace with real user authentication")
 
 
 def main():
@@ -193,8 +187,7 @@ def main():
     parser.add_argument("json_file", help="Path to the JSON file containing sleep data")
     parser.add_argument(
         "--email",
-        default="test@sleeptracker.local",
-        help="Email address for the user to import data as (default: test@sleeptracker.local)",
+        help="Email address for the user to import data as.",
     )
     parser.add_argument(
         "--batch-size",

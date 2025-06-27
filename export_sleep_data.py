@@ -15,26 +15,23 @@ import argparse
 def fetch_sleep_data():
     """Fetch sleep session data from the API."""
     # Get the API token from environment variable
-    api_token = os.getenv('CONSENSUS_API_TOKEN')
+    api_token = os.getenv("CONSENSUS_API_TOKEN")
     if not api_token:
-        print("Error: CONSENSUS_API_TOKEN environment variable not set", file=sys.stderr)
-        print("Please set the environment variable or source a .env file with your API token", file=sys.stderr)
+        print(
+            "Error: CONSENSUS_API_TOKEN environment variable not set", file=sys.stderr
+        )
+        print(
+            "Please set the environment variable or source a .env file with your API token",
+            file=sys.stderr,
+        )
         return None
-    
+
     url = "https://app.consensussleepdiary.com/api/v1/sleepsession/"
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0",
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "en-GB,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
         "Authorization": f"Bearer {api_token}",
-        "DNT": "1",
-        "Connection": "keep-alive",
-        "Referer": "https://app.consensussleepdiary.com/",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
+        "Accept": "application/json",
+        "User-Agent": "sleep-data-exporter/1.0",
     }
 
     response = requests.get(url, headers=headers)
@@ -133,9 +130,7 @@ def process_data(data):
                         del record["answers"]
 
                     # Handle comments structure
-                    if "comments" in record and isinstance(
-                        record["comments"], dict
-                    ):
+                    if "comments" in record and isinstance(record["comments"], dict):
                         if "v" in record["comments"]:
                             record["comments"] = record["comments"]["v"]
             else:
@@ -196,10 +191,10 @@ def export_to_json(records, filename):
 
 def detect_format_from_filename(filename):
     """Detect output format based on file extension."""
-    if filename.lower().endswith('.json'):
-        return 'json'
-    elif filename.lower().endswith('.csv'):
-        return 'csv'
+    if filename.lower().endswith(".json"):
+        return "json"
+    elif filename.lower().endswith(".csv"):
+        return "csv"
     else:
         return None
 
@@ -210,34 +205,36 @@ def main():
         description="Export sleep session data from Consensus Sleep Diary API"
     )
     parser.add_argument(
-        "-f", "--format",
+        "-f",
+        "--format",
         choices=["csv", "json"],
-        help="Output format (csv or json). If not specified, will be detected from output filename."
+        help="Output format (csv or json). If not specified, will be detected from output filename.",
     )
     parser.add_argument(
-        "-o", "--output",
-        help="Output filename. If not specified, will generate timestamped filename."
+        "-o",
+        "--output",
+        help="Output filename. If not specified, will generate timestamped filename.",
     )
-    
+
     args = parser.parse_args()
-    
+
     print("Fetching sleep session data...")
     data = fetch_sleep_data()
 
     if data is None:
         sys.exit(1)
-    
+
     # Process the raw API data
     records = process_data(data)
     if not records:
         sys.exit(1)
 
     print("Data fetched successfully. Processing export...")
-    
+
     # Determine output format and filename
     output_format = args.format
     output_file = args.output
-    
+
     # If no output file specified, generate timestamped filename
     if not output_file:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -246,7 +243,7 @@ def main():
         else:
             output_file = f"sleep_data_{timestamp}.csv"
             output_format = "csv"  # default to CSV if no format specified
-    
+
     # If no format specified, try to detect from filename
     if not output_format:
         detected_format = detect_format_from_filename(output_file)
@@ -255,14 +252,14 @@ def main():
         else:
             print("Warning: Could not detect format from filename. Defaulting to CSV.")
             output_format = "csv"
-    
+
     # Export data in the specified format
     success = False
     if output_format == "json":
         success = export_to_json(records, output_file)
     else:
         success = export_to_csv(records, output_file)
-    
+
     if success:
         print(f"Export completed: {output_file}")
     else:

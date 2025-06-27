@@ -133,11 +133,11 @@ const [error, setError] = useState<string | null>(null);
         </section>
 
         <section className="chart-section">
-          <h2>Time Awake in Bed</h2>
+          <h2>Time Trying to Sleep After Final Awakening</h2>
           <SleepChart
-            data={chartData.awakeInBed.data}
-            rollingAverage={chartData.awakeInBed.average}
-            label="Time Awake in Bed"
+            data={chartData.tryingToSleep.data}
+            rollingAverage={chartData.tryingToSleep.average}
+            label="Time Trying to Sleep"
             color="#f06292"
             isMinutes={true}
           />

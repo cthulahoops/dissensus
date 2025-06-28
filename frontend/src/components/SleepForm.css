@@ -139,43 +139,6 @@ fieldset legend {
   margin-top: var(--spacing-lg);
 }
 
-.button-primary,
-.button-secondary {
-  padding: 12px var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-}
-
-.button-primary {
-  background: var(--color-primary);
-  color: white;
-}
-
-.button-primary:hover:not(:disabled) {
-  background: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(79, 195, 247, 0.3);
-}
-
-.button-primary:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.button-secondary {
-  background: #f5f5f5;
-  color: var(--color-text-light);
-  border: 1px solid var(--color-border);
-}
-
-.button-secondary:hover {
-  background: #e8e8e8;
-  border-color: #bbb;
-}
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
@@ -204,8 +167,7 @@ fieldset legend {
     flex-direction: column-reverse;
   }
   
-  .button-primary,
-  .button-secondary {
+  .form-actions button {
     width: 100%;
     justify-content: center;
   }

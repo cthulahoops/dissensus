@@ -259,10 +259,10 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
 
         {/* Form Actions */}
         <div className="form-actions">
-          <button type="button" onClick={onCancel} className="button-secondary">
+          <button type="button" onClick={onCancel} className="btn-cancel">
             Cancel
           </button>
-          <button type="submit" disabled={isSubmitting} className="button-primary">
+          <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save Sleep Record"}
           </button>
         </div>

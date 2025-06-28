@@ -79,7 +79,7 @@ export const SleepDashboard: React.FC = () => {
           Tracking {sleepRecords.length} total records, {processedData.length}{" "}
           processed entries
         </p>
-        <button onClick={() => setIsFormOpen(true)} className="button-primary">Add New Record</button>
+        <button onClick={() => setIsFormOpen(true)}>Add New Record</button>
       </header>
 
       {isFormOpen && currentUser && (

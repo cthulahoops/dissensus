@@ -89,7 +89,7 @@ function App() {
       <header className="app-header">
         <div className="user-info">
           <span>Signed in as: {user?.email}</span>
-          <button onClick={handleSignOut} className="sign-out-btn">
+          <button onClick={handleSignOut}>
             Sign Out
           </button>
         </div>

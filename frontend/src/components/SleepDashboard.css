@@ -27,7 +27,7 @@
   opacity: 0.9;
 }
 
-.dashboard-header .button-primary {
+.dashboard-header button {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -40,7 +40,7 @@
   backdrop-filter: blur(10px);
 }
 
-.dashboard-header .button-primary:hover {
+.dashboard-header button:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);

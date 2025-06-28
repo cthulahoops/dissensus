@@ -1,27 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { sleepRecordsAPI, supabase } from "../lib/supabase";
 import type { SleepRecord } from "../lib/supabase";
-import type { User } from "@supabase/supabase-js";
 import { processData, prepareChartData } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
-import { SleepForm } from "./SleepForm";
-import "./SleepForm.css";
 
-export const SleepDashboard: React.FC = () => {
+interface SleepDashboardProps {
+  onAddRecord: () => void;
+}
+
+export const SleepDashboard: React.FC<SleepDashboardProps> = ({ onAddRecord }) => {
   const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  const handleFormSubmit = (newRecord: SleepRecord) => {
-    setSleepRecords(prevRecords => [...prevRecords, newRecord]);
-    setIsFormOpen(false);
-  };
-
-  const handleFormCancel = () => {
-    setIsFormOpen(false);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +26,6 @@ export const SleepDashboard: React.FC = () => {
           return;
         }
 
-        setCurrentUser(session.user);
         const records = await sleepRecordsAPI.getAll(session.user.id);
         setSleepRecords(records);
         setError(null);
@@ -79,16 +68,8 @@ export const SleepDashboard: React.FC = () => {
           Tracking {sleepRecords.length} total records, {processedData.length}{" "}
           processed entries
         </p>
-        <button onClick={() => setIsFormOpen(true)}>Add New Record</button>
+        <button onClick={onAddRecord}>Add New Record</button>
       </header>
-
-      {isFormOpen && currentUser && (
-        <SleepForm 
-          userId={currentUser.id} 
-          onSubmit={handleFormSubmit} 
-          onCancel={handleFormCancel} 
-        />
-      )}
 
       <div className="charts-container">
         <section className="chart-section">

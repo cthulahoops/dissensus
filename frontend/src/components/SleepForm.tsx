@@ -79,21 +79,23 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
   };
 
   return (
-    <div className="sleep-form-container">
-      <div className="sleep-form-header">
-        <h2>Add New Sleep Record</h2>
-        <button type="button" onClick={onCancel} className="close-button">
-          ×
+    <div className="sleep-dashboard">
+      <header className="dashboard-header">
+        <h1>Add New Sleep Record</h1>
+        <p>Enter your sleep data for tracking and analysis</p>
+        <button type="button" onClick={onCancel} className="btn-cancel">
+          Back to Dashboard
         </button>
-      </div>
+      </header>
 
-      {error && (
-        <div className="form-error">
-          {error}
-        </div>
-      )}
+      <div className="chart-section">
+        {error && (
+          <div className="form-error">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="sleep-form">
+        <form onSubmit={handleSubmit} className="sleep-form">
         {/* Date - Required */}
         <div className="form-group">
           <label htmlFor="date">Date *</label>
@@ -266,7 +268,8 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
             {isSubmitting ? "Saving..." : "Save Sleep Record"}
           </button>
         </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

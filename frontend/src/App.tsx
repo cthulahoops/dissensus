@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { SleepDashboard } from "./components/SleepDashboard";
+import { SleepForm } from "./components/SleepForm";
 import { LoginForm } from "./components/LoginForm";
 import { AuthCallback } from "./components/AuthCallback";
 import "./components/SleepDashboard.css";
 import "./App.css";
 import type { User } from '@supabase/supabase-js';
 
-type AppState = 'loading' | 'login' | 'auth-callback' | 'dashboard';
+type AppState = 'loading' | 'login' | 'auth-callback' | 'dashboard' | 'add-record';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
@@ -58,6 +59,18 @@ function App() {
     setAppState('login');
   };
 
+  const handleAddRecord = () => {
+    setAppState('add-record');
+  };
+
+  const handleRecordSubmitted = () => {
+    setAppState('dashboard');
+  };
+
+  const handleCancelAddRecord = () => {
+    setAppState('dashboard');
+  };
+
   if (appState === 'loading') {
     return (
       <div className="App">
@@ -94,7 +107,16 @@ function App() {
           </button>
         </div>
       </header>
-      <SleepDashboard />
+      {appState === 'dashboard' && (
+        <SleepDashboard onAddRecord={handleAddRecord} />
+      )}
+      {appState === 'add-record' && user && (
+        <SleepForm 
+          userId={user.id}
+          onSubmit={handleRecordSubmitted}
+          onCancel={handleCancelAddRecord}
+        />
+      )}
     </div>
   );
 }

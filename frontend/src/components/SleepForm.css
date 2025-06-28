@@ -1,75 +1,18 @@
 /* Sleep Form Styles */
-.sleep-form-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--color-background);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: var(--spacing-md);
-  overflow-y: auto;
-}
-
-.sleep-form-container > div {
-  background: var(--color-background);
-  border-radius: var(--radius-md);
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.sleep-form-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border);
-  background: #f8f9fa;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.sleep-form-header h2 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 1.5rem;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: var(--color-text-light);
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  transition: background-color 0.2s;
-}
-
-.close-button:hover {
-  background-color: var(--color-border);
-}
 
 .form-error {
   background: #fee;
   border: 1px solid #fcc;
   color: #c33;
   padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
-  margin: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
   border-radius: var(--radius-md);
   font-size: 14px;
 }
 
 .sleep-form {
-  padding: var(--spacing-lg);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .form-group {
@@ -142,22 +85,6 @@ fieldset legend {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .sleep-form-container {
-    padding: calc(var(--spacing-md) * 0.75);
-  }
-  
-  .sleep-form-header {
-    padding: var(--spacing-md) var(--spacing-md);
-  }
-  
-  .sleep-form-header h2 {
-    font-size: 1.25rem;
-  }
-  
-  .sleep-form {
-    padding: var(--spacing-md);
-  }
-  
   .form-row {
     grid-template-columns: 1fr;
     gap: 0;
@@ -170,23 +97,5 @@ fieldset legend {
   .form-actions button {
     width: 100%;
     justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .sleep-form-container {
-    padding: calc(var(--spacing-md) * 0.5);
-  }
-  
-  .sleep-form-header {
-    padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
-  }
-  
-  .sleep-form {
-    padding: var(--spacing-md);
-  }
-  
-  fieldset {
-    padding: calc(var(--spacing-md) * 0.75);
   }
 }

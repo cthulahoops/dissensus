@@ -1,44 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { sleepRecordsAPI, supabase } from "../lib/supabase";
+import React from "react";
 import type { SleepRecord } from "../lib/supabase";
 import { processData, prepareChartData } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 
 interface SleepDashboardProps {
   onAddRecord: () => void;
+  sleepRecords: SleepRecord[];
+  loading: boolean;
+  error: string | null;
 }
 
-export const SleepDashboard: React.FC<SleepDashboardProps> = ({ onAddRecord }) => {
-  const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const SleepDashboard: React.FC<SleepDashboardProps> = ({ 
+  onAddRecord, 
+  sleepRecords, 
+  loading, 
+  error 
+}) => {
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        // Get the current authenticated user
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user) {
-          setError("No authenticated user found");
-          setLoading(false);
-          return;
-        }
-
-        const records = await sleepRecordsAPI.getAll(session.user.id);
-        setSleepRecords(records);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching sleep records:", err);
-        setError("Failed to load sleep data: " + (err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   if (loading) {
     return (

@@ -1,5 +1,23 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Colors */
+  --color-primary: #4fc3f7;
+  --color-primary-hover: #29b6f6;
+  --color-text: #2c3e50;
+  --color-text-light: #666;
+  --color-background: #ffffff;
+  --color-border: #e0e0e0;
+  
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  
+  /* Spacing */
+  --spacing-md: 1rem;    /* 16px */
+  --spacing-lg: 1.5rem;  /* 24px */
+  
+  /* Border Radius */
+  --radius-md: 0.5rem;   /* 8px */
+  
+  font-family: var(--font-family);
   line-height: 1.5;
   font-weight: 400;
 

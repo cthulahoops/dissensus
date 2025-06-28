@@ -1,18 +1,17 @@
 .sleep-dashboard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  padding: var(--spacing-md);
+  font-family: var(--font-family);
 }
 
 .dashboard-header {
   text-align: center;
   margin-bottom: 40px;
-  padding: 20px;
+  padding: var(--spacing-md);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -23,7 +22,7 @@
 }
 
 .dashboard-header p {
-  margin: 0 0 20px 0;
+  margin: 0 0 var(--spacing-md) 0;
   font-size: 1.1rem;
   opacity: 0.9;
 }
@@ -32,8 +31,8 @@
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 12px 24px;
-  border-radius: 6px;
+  padding: 12px var(--spacing-lg);
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -54,34 +53,34 @@
 }
 
 .chart-section {
-  background: white;
+  background: var(--color-background);
   padding: 30px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
 }
 
 .chart-section h2 {
-  margin: 0 0 20px 0;
+  margin: 0 0 var(--spacing-md) 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
   text-align: center;
 }
 
 .chart-container {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
 }
 
 .dashboard-loading,
 .dashboard-error {
   text-align: center;
-  padding: 60px 20px;
+  padding: 60px var(--spacing-md);
   margin: 40px auto;
   max-width: 600px;
-  background: white;
-  border-radius: 12px;
+  background: var(--color-background);
+  border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -96,7 +95,7 @@
 }
 
 .dashboard-error p {
-  color: #666;
+  color: var(--color-text-light);
   margin: 0;
 }
 
@@ -108,7 +107,7 @@
 
   .dashboard-header {
     padding: 15px;
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-md);
   }
 
   .dashboard-header h1 {
@@ -116,10 +115,10 @@
   }
 
   .chart-section {
-    padding: 20px;
+    padding: var(--spacing-md);
   }
 
   .charts-container {
-    gap: 20px;
+    gap: var(--spacing-md);
   }
 }

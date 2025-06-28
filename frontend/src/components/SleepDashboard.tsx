@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { sleepRecordsAPI, supabase } from "../lib/supabase";
 import type { SleepRecord } from "../lib/supabase";
+import type { User } from "@supabase/supabase-js";
 import { processData, prepareChartData } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 import { SleepForm } from "./SleepForm";
@@ -11,7 +12,7 @@ export const SleepDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const handleFormSubmit = (newRecord: SleepRecord) => {
     setSleepRecords(prevRecords => [...prevRecords, newRecord]);

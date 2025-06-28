@@ -31,7 +31,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         setMessage('Check your email for the magic link!');
         if (onSuccess) onSuccess();
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);

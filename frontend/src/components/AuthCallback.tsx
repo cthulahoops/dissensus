@@ -28,7 +28,7 @@ export const AuthCallback: React.FC<AuthCallbackProps> = ({ onSuccess }) => {
           setError('No session found. Please try signing in again.');
           setLoading(false);
         }
-      } catch (err) {
+      } catch {
         setError('An unexpected error occurred during authentication.');
         setLoading(false);
       }

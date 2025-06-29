@@ -8,9 +8,13 @@ interface SleepFormProps {
   userId: string;
 }
 
-export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId }) => {
+export const SleepForm: React.FC<SleepFormProps> = ({
+  onSubmit,
+  onCancel,
+  userId,
+}) => {
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0], // Today's date as default
+    date: new Date().toISOString().split("T")[0], // Today's date as default
     comments: "",
     time_got_into_bed: "",
     time_tried_to_sleep: "",
@@ -20,15 +24,19 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
     final_awakening_time: "",
     time_trying_to_sleep_after_final_awakening_mins: "",
     time_got_out_of_bed: "",
-    sleep_quality_rating: ""
+    sleep_quality_rating: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,15 +57,22 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
 
       // Add optional string fields if they have values
       if (formData.comments.trim()) record.comments = formData.comments.trim();
-      if (formData.time_got_into_bed) record.time_got_into_bed = formData.time_got_into_bed;
-      if (formData.time_tried_to_sleep) record.time_tried_to_sleep = formData.time_tried_to_sleep;
-      if (formData.final_awakening_time) record.final_awakening_time = formData.final_awakening_time;
-      if (formData.time_got_out_of_bed) record.time_got_out_of_bed = formData.time_got_out_of_bed;
-      if (formData.sleep_quality_rating) record.sleep_quality_rating = formData.sleep_quality_rating;
+      if (formData.time_got_into_bed)
+        record.time_got_into_bed = formData.time_got_into_bed;
+      if (formData.time_tried_to_sleep)
+        record.time_tried_to_sleep = formData.time_tried_to_sleep;
+      if (formData.final_awakening_time)
+        record.final_awakening_time = formData.final_awakening_time;
+      if (formData.time_got_out_of_bed)
+        record.time_got_out_of_bed = formData.time_got_out_of_bed;
+      if (formData.sleep_quality_rating)
+        record.sleep_quality_rating = formData.sleep_quality_rating;
 
       // Add optional numeric fields if they have values
       if (formData.time_to_fall_asleep_mins) {
-        record.time_to_fall_asleep_mins = parseInt(formData.time_to_fall_asleep_mins);
+        record.time_to_fall_asleep_mins = parseInt(
+          formData.time_to_fall_asleep_mins,
+        );
       }
       if (formData.times_woke_up_count) {
         record.times_woke_up_count = parseInt(formData.times_woke_up_count);
@@ -66,7 +81,9 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
         record.total_awake_time_mins = parseInt(formData.total_awake_time_mins);
       }
       if (formData.time_trying_to_sleep_after_final_awakening_mins) {
-        record.time_trying_to_sleep_after_final_awakening_mins = parseInt(formData.time_trying_to_sleep_after_final_awakening_mins);
+        record.time_trying_to_sleep_after_final_awakening_mins = parseInt(
+          formData.time_trying_to_sleep_after_final_awakening_mins,
+        );
       }
 
       const newRecord = await sleepRecordsAPI.create(record);
@@ -89,31 +106,26 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
       </header>
 
       <section>
-        {error && (
-          <div className="form-error">
-            {error}
-          </div>
-        )}
+        {error && <div className="form-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="sleep-form">
-        {/* Date - Required */}
-        <div className="form-group">
-          <label htmlFor="date">Date *</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
+          {/* Date - Required */}
+          <div className="form-group">
+            <label htmlFor="date">Date *</label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
 
-        {/* Sleep Timing Fields */}
-        <fieldset>
-          <legend>Sleep Timing</legend>
-          
-          <div className="form-row">
+          {/* Sleep Timing Fields */}
+          <fieldset>
+            <legend>Sleep Timing</legend>
+
             <div className="form-group">
               <label htmlFor="time_got_into_bed">Time Got Into Bed</label>
               <input
@@ -135,39 +147,41 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
                 onChange={handleInputChange}
               />
             </div>
-          </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="time_to_fall_asleep_mins">Time to Fall Asleep (minutes)</label>
-              <input
-                type="number"
-                id="time_to_fall_asleep_mins"
-                name="time_to_fall_asleep_mins"
-                value={formData.time_to_fall_asleep_mins}
-                onChange={handleInputChange}
-                min="0"
-                max="999"
-              />
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="time_to_fall_asleep_mins">
+                  Time to Fall Asleep (minutes)
+                </label>
+                <input
+                  type="number"
+                  id="time_to_fall_asleep_mins"
+                  name="time_to_fall_asleep_mins"
+                  value={formData.time_to_fall_asleep_mins}
+                  onChange={handleInputChange}
+                  min="0"
+                  max="999"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="times_woke_up_count">Times Woke Up</label>
+                <input
+                  type="number"
+                  id="times_woke_up_count"
+                  name="times_woke_up_count"
+                  value={formData.times_woke_up_count}
+                  onChange={handleInputChange}
+                  min="0"
+                  max="50"
+                />
+              </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="times_woke_up_count">Times Woke Up</label>
-              <input
-                type="number"
-                id="times_woke_up_count"
-                name="times_woke_up_count"
-                value={formData.times_woke_up_count}
-                onChange={handleInputChange}
-                min="0"
-                max="50"
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="total_awake_time_mins">Total Awake Time (minutes)</label>
+              <label htmlFor="total_awake_time_mins">
+                Total Awake Time (minutes)
+              </label>
               <input
                 type="number"
                 id="total_awake_time_mins"
@@ -189,12 +203,11 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
                 onChange={handleInputChange}
               />
             </div>
-          </div>
 
-          <div className="form-row">
             <div className="form-group">
               <label htmlFor="time_trying_to_sleep_after_final_awakening_mins">
-                After your final awakening, how long did you spend trying to sleep? (minutes)
+                After your final awakening, how long did you spend trying to
+                sleep? (minutes)
               </label>
               <input
                 type="number"
@@ -217,57 +230,56 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
                 onChange={handleInputChange}
               />
             </div>
-          </div>
-        </fieldset>
+          </fieldset>
 
-        {/* Sleep Quality */}
-        <fieldset>
-          <legend>Sleep Quality</legend>
-          
-          <div className="form-group">
-            <label htmlFor="sleep_quality_rating">Sleep Quality Rating</label>
-            <select
-              id="sleep_quality_rating"
-              name="sleep_quality_rating"
-              value={formData.sleep_quality_rating}
-              onChange={handleInputChange}
-            >
-              <option value="">Select quality...</option>
-              <option value="Excellent">Excellent</option>
-              <option value="Good">Good</option>
-              <option value="Fair">Fair</option>
-              <option value="Poor">Poor</option>
-              <option value="Very Poor">Very Poor</option>
-            </select>
-          </div>
-        </fieldset>
+          {/* Sleep Quality */}
+          <fieldset>
+            <legend>Sleep Quality</legend>
 
-        {/* Comments */}
-        <fieldset>
-          <legend>Additional Notes</legend>
-          
-          <div className="form-group">
-            <label htmlFor="comments">Comments</label>
-            <textarea
-              id="comments"
-              name="comments"
-              value={formData.comments}
-              onChange={handleInputChange}
-              rows={3}
-              placeholder="Any additional notes about your sleep..."
-            />
-          </div>
-        </fieldset>
+            <div className="form-group">
+              <label htmlFor="sleep_quality_rating">Sleep Quality Rating</label>
+              <select
+                id="sleep_quality_rating"
+                name="sleep_quality_rating"
+                value={formData.sleep_quality_rating}
+                onChange={handleInputChange}
+              >
+                <option value="">Select quality...</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+                <option value="Very Poor">Very Poor</option>
+              </select>
+            </div>
+          </fieldset>
 
-        {/* Form Actions */}
-        <div className="form-actions">
-          <button type="button" onClick={onCancel} className="btn-cancel">
-            Cancel
-          </button>
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save Sleep Record"}
-          </button>
-        </div>
+          {/* Comments */}
+          <fieldset>
+            <legend>Additional Notes</legend>
+
+            <div className="form-group">
+              <label htmlFor="comments">Comments</label>
+              <textarea
+                id="comments"
+                name="comments"
+                value={formData.comments}
+                onChange={handleInputChange}
+                rows={3}
+                placeholder="Any additional notes about your sleep..."
+              />
+            </div>
+          </fieldset>
+
+          {/* Form Actions */}
+          <div className="form-actions">
+            <button type="button" onClick={onCancel} className="btn-cancel">
+              Cancel
+            </button>
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save Sleep Record"}
+            </button>
+          </div>
         </form>
       </section>
     </div>

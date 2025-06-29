@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
-import { processData, prepareChartData, formatHoursMinutes } from "../lib/sleepUtils";
+import { processData, prepareChartData, formatHoursMinutes, filterRecordsByDateRange } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
+import { TimeRangeSelector, type TimeRange } from "./TimeRangeSelector";
 
 interface SleepDashboardProps {
   onAddRecord: () => void;
@@ -28,7 +29,21 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
   loading, 
   error 
 }) => {
+  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("all");
 
+  // Filter records based on selected time range
+  const filteredRecords = useMemo(() => {
+    return filterRecordsByDateRange(sleepRecords, selectedTimeRange);
+  }, [sleepRecords, selectedTimeRange]);
+
+  // Process filtered data
+  const processedData = useMemo(() => {
+    return processData(filteredRecords);
+  }, [filteredRecords]);
+
+  const chartData = useMemo(() => {
+    return prepareChartData(processedData);
+  }, [processedData]);
 
   if (loading) {
     return (
@@ -47,18 +62,21 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
     );
   }
 
-  const processedData = processData(sleepRecords);
-  const chartData = prepareChartData(processedData);
-
   return (
     <div className="sleep-dashboard">
       <header className="dashboard-header">
         <h1>Sleep Tracker Dashboard</h1>
+        <div className="dashboard-controls">
+          <TimeRangeSelector
+            selectedRange={selectedTimeRange}
+            onRangeChange={setSelectedTimeRange}
+          />
+          <button onClick={onAddRecord}>Add New Record</button>
+        </div>
         <p>
-          Tracking {sleepRecords.length} total records, {processedData.length}{" "}
-          processed entries
+          Tracking {sleepRecords.length} total records, showing {processedData.length}{" "}
+          filtered entries
         </p>
-        <button onClick={onAddRecord}>Add New Record</button>
       </header>
 
       {/* 7-Day Averages Summary */}

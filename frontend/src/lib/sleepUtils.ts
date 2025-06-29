@@ -120,6 +120,34 @@ export interface ChartDataPoint {
   value: number | null;
 }
 
+export type TimeRange = "all" | "30d" | "14d" | "7d";
+
+export function filterRecordsByDateRange(
+  records: SleepRecord[],
+  timeRange: TimeRange
+): SleepRecord[] {
+  if (timeRange === "all") {
+    return records;
+  }
+
+  const now = new Date();
+  const daysMap = {
+    "7d": 7,
+    "14d": 14,
+    "30d": 30,
+  };
+
+  const daysToSubtract = daysMap[timeRange];
+  const cutoffDate = new Date(now);
+  cutoffDate.setDate(now.getDate() - daysToSubtract);
+  cutoffDate.setHours(0, 0, 0, 0); // Start of the day
+
+  return records.filter((record) => {
+    const recordDate = new Date(record.date);
+    return recordDate >= cutoffDate;
+  });
+}
+
 export function prepareChartData(processedData: ProcessedSleepData[]) {
   console.log(processedData);
   // Prepare data for charts

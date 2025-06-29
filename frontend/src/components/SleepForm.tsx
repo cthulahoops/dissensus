@@ -88,7 +88,7 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
         </button>
       </header>
 
-      <div className="chart-section">
+      <section>
         {error && (
           <div className="form-error">
             {error}
@@ -269,7 +269,7 @@ export const SleepForm: React.FC<SleepFormProps> = ({ onSubmit, onCancel, userId
           </button>
         </div>
         </form>
-      </div>
+      </section>
     </div>
   );
 };

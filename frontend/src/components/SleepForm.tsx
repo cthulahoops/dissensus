@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { sleepRecordsAPI } from "../lib/supabase";
-import type { SleepRecord } from "../lib/supabase";
+import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
 
 interface SleepFormProps {
   onSubmit: (record: SleepRecord) => void;
@@ -49,7 +49,7 @@ export const SleepForm: React.FC<SleepFormProps> = ({
       const dateUnix = new Date(formData.date).getTime() / 1000;
 
       // Build the record object, only including non-empty values
-      const record: Omit<SleepRecord, "id" | "created_at" | "updated_at"> = {
+      const record: SleepRecordInsert = {
         user_id: userId,
         date: formData.date,
         date_unix: dateUnix,

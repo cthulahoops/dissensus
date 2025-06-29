@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "../database.types";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -9,36 +10,13 @@ if (!supabaseUrl || !supabaseKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Types for our sleep records
-export interface SleepRecord {
-  id: string;
-  user_id: string;
-  date: string;
-  date_unix?: number;
-  uid?: string;
-  comments?: string;
+export type SleepRecord = Database["public"]["Tables"]["sleep_records"]["Row"];
+export type SleepRecordInsert =
+  Database["public"]["Tables"]["sleep_records"]["Insert"];
+export type SleepRecordUpdate =
+  Database["public"]["Tables"]["sleep_records"]["Update"];
 
-  // Sleep timing fields
-  time_got_into_bed?: string;
-  time_tried_to_sleep?: string;
-  time_to_fall_asleep_mins?: number;
-  times_woke_up_count?: number;
-  total_awake_time_mins?: number;
-  final_awakening_time?: string;
-  time_trying_to_sleep_after_final_awakening_mins?: number;
-  time_got_out_of_bed?: string;
-
-  // Sleep quality
-  sleep_quality_rating?: string;
-
-  // Metadata
-  created_at: string;
-  updated_at: string;
-}
-
-// Database functions
 export const sleepRecordsAPI = {
-  // Sign in as test user (for development only)
   async signInTestUser() {
     const email = import.meta.env.VITE_TEST_USER_EMAIL;
     const password = import.meta.env.VITE_TEST_USER_PASSWORD;
@@ -52,7 +30,7 @@ export const sleepRecordsAPI = {
       password,
     });
   },
-  // Get all sleep records for a user
+
   async getAll(userId: string): Promise<SleepRecord[]> {
     const { data, error } = await supabase
       .from("sleep_records")
@@ -64,7 +42,6 @@ export const sleepRecordsAPI = {
     return data || [];
   },
 
-  // Get a single sleep record
   async getByDate(userId: string, date: string): Promise<SleepRecord | null> {
     const { data, error } = await supabase
       .from("sleep_records")
@@ -78,9 +55,7 @@ export const sleepRecordsAPI = {
   },
 
   // Create a new sleep record
-  async create(
-    record: Omit<SleepRecord, "id" | "created_at" | "updated_at">,
-  ): Promise<SleepRecord> {
+  async create(record: SleepRecordInsert): Promise<SleepRecord> {
     const { data, error } = await supabase
       .from("sleep_records")
       .insert(record)
@@ -91,11 +66,7 @@ export const sleepRecordsAPI = {
     return data;
   },
 
-  // Update an existing sleep record
-  async update(
-    id: string,
-    updates: Partial<SleepRecord>,
-  ): Promise<SleepRecord> {
+  async update(id: string, updates: SleepRecordUpdate): Promise<SleepRecord> {
     const { data, error } = await supabase
       .from("sleep_records")
       .update(updates)
@@ -107,7 +78,6 @@ export const sleepRecordsAPI = {
     return data;
   },
 
-  // Delete a sleep record
   async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from("sleep_records")

@@ -134,7 +134,7 @@ export const SleepChart: React.FC<SleepChartProps> = ({
   };
 
   return (
-    <div className="chart-container" style={{ width: "100%", height: "300px" }}>
+    <div className="chart-container">
       <Chart type="bar" data={chartData} options={options} />
     </div>
   );

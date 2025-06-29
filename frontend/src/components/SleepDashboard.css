@@ -42,15 +42,18 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.charts-container {
-  display: grid;
-  gap: calc(var(--spacing-lg) * 2);
-}
-
 
 .chart-container {
   position: relative;
   margin-bottom: var(--spacing-md);
+  height: 400px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+  }
 }
 
 .dashboard-loading,
@@ -129,7 +132,4 @@
     padding: var(--spacing-md);
   }
 
-  .charts-container {
-    gap: var(--spacing-md);
-  }
 }

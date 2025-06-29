@@ -10,11 +10,20 @@ if (!supabaseUrl || !supabaseKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-export type SleepRecord = Database["public"]["Tables"]["sleep_records"]["Row"];
-export type SleepRecordInsert =
-  Database["public"]["Tables"]["sleep_records"]["Insert"];
-export type SleepRecordUpdate =
-  Database["public"]["Tables"]["sleep_records"]["Update"];
+type TableName = keyof Database["public"]["Tables"];
+
+export type Selectable<T extends TableName> =
+  Database["public"]["Tables"][T]["Row"];
+
+export type Insertable<T extends TableName> =
+  Database["public"]["Tables"][T]["Insert"];
+
+export type Updateable<T extends TableName> =
+  Database["public"]["Tables"][T]["Update"];
+
+export type SleepRecord = Selectable<"sleep_records">;
+export type SleepRecordInsert = Insertable<"sleep_records">;
+export type SleepRecordUpdate = Updateable<"sleep_records">;
 
 export const sleepRecordsAPI = {
   async signInTestUser() {

@@ -65,7 +65,7 @@ export const SleepChart: React.FC<SleepChartProps> = ({
         borderColor: "#ff6b6b",
         backgroundColor: "transparent",
         borderWidth: 3,
-        pointRadius: 4,
+        pointRadius: 3,
         pointBackgroundColor: "#ff6b6b",
         tension: 0.4,
         order: 1,

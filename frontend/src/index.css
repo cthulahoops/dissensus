@@ -1,7 +1,8 @@
 :root {
   /* Colors */
-  --color-primary: #4fc3f7;
-  --color-primary-hover: #29b6f6;
+  --color-primary: #667eea;
+  --color-primary-hover: #5a6bd8;
+  --color-secondary: #764ba2;
   --color-text: #2c3e50;
   --color-text-light: #666;
   --color-background: #ffffff;
@@ -53,7 +54,7 @@ h1 {
 
 button {
   border-radius: var(--radius-md);
-  border: none;
+  border: 2px solid transparent;
   padding: 12px var(--spacing-lg);
   font-size: 14px;
   font-weight: 500;

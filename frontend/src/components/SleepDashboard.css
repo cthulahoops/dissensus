@@ -94,6 +94,53 @@
   margin: 0;
 }
 
+.averages-summary {
+  background: var(--color-background);
+  padding: calc(var(--spacing-lg) + var(--spacing-md));
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  margin-bottom: calc(var(--spacing-lg) * 2);
+}
+
+.averages-summary h2 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.averages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.average-card {
+  background: #fff;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.average-card h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.average-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .sleep-dashboard {

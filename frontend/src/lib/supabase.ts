@@ -26,20 +26,6 @@ export type SleepRecordInsert = Insertable<"sleep_records">;
 export type SleepRecordUpdate = Updateable<"sleep_records">;
 
 export const sleepRecordsAPI = {
-  async signInTestUser() {
-    const email = import.meta.env.VITE_TEST_USER_EMAIL;
-    const password = import.meta.env.VITE_TEST_USER_PASSWORD;
-
-    if (!email || !password) {
-      throw new Error("Missing test user credentials in environment variables");
-    }
-
-    return await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-  },
-
   async getAll(userId: string): Promise<SleepRecord[]> {
     const { data, error } = await supabase
       .from("sleep_records")

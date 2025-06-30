@@ -46,6 +46,7 @@ export interface ProcessedSleepData {
   sleepEfficiency: number | null;
   timeToFallAsleepMinutes: number | null;
   timeTryingToSleepMinutes: number | null;
+  timeAwakeInNightMinutes: number | null;
 }
 
 export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
@@ -102,6 +103,7 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       sleepEfficiency,
       timeToFallAsleepMinutes,
       timeTryingToSleepMinutes,
+      timeAwakeInNightMinutes: totalAwakeMinutes,
     };
   });
 }
@@ -186,6 +188,13 @@ export function prepareChartData(processedData: ProcessedSleepData[]) {
     }))
     .filter((d) => d.value !== null);
 
+  const timeAwakeInNightData: ChartDataPoint[] = processedData
+    .map((d) => ({
+      date: d.date,
+      value: d.timeAwakeInNightMinutes,
+    }))
+    .filter((d) => d.value !== null);
+
   // Calculate rolling averages
   const timeInBedAvg = calculateRollingAverage(
     timeInBedData.map((d) => d.value),
@@ -207,6 +216,10 @@ export function prepareChartData(processedData: ProcessedSleepData[]) {
     tryingToSleepData.map((d) => d.value),
     ROLLING_AVERAGE_DAYS,
   );
+  const timeAwakeInNightAvg = calculateRollingAverage(
+    timeAwakeInNightData.map((d) => d.value),
+    ROLLING_AVERAGE_DAYS,
+  );
 
   return {
     timeInBed: { data: timeInBedData, average: timeInBedAvg },
@@ -214,5 +227,6 @@ export function prepareChartData(processedData: ProcessedSleepData[]) {
     efficiency: { data: efficiencyData, average: efficiencyAvg },
     fallAsleep: { data: fallAsleepData, average: fallAsleepAvg },
     tryingToSleep: { data: tryingToSleepData, average: tryingToSleepAvg },
+    timeAwakeInNight: { data: timeAwakeInNightData, average: timeAwakeInNightAvg },
   };
 }

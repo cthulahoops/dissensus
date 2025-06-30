@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { setShareToken } from '../lib/shareUtils';
 import { supabase, type SleepRecord } from '../lib/supabase';
 import { SleepDashboard } from './SleepDashboard';
 import type { User } from '@supabase/supabase-js';

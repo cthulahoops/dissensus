@@ -133,6 +133,15 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
               })()}
             </div>
           </div>
+          <div className="average-card">
+            <h3>Time Awake in Night</h3>
+            <div className="average-value">
+              {(() => {
+                const minutes = getLatestAverage(chartData.timeAwakeInNight.average);
+                return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
+              })()}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -185,6 +194,17 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
           rollingAverage={chartData.tryingToSleep.average}
           label="Time Trying to Sleep"
           color="#f06292"
+          isMinutes={true}
+        />
+      </section>
+
+      <section>
+        <h2>Time Awake in Night</h2>
+        <SleepChart
+          data={chartData.timeAwakeInNight.data}
+          rollingAverage={chartData.timeAwakeInNight.average}
+          label="Time Awake in Night"
+          color="#ff8a65"
           isMinutes={true}
         />
       </section>

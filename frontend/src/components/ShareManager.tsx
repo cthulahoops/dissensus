@@ -91,50 +91,47 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
 
   if (loading) {
     return (
-      <div className="share-manager">
-        <div className="share-manager-header">
+      <div className="sleep-form">
+        <section>
           <h2>Manage Share Links</h2>
-          <button onClick={onClose} className="close-button">×</button>
-        </div>
-        <div className="loading">Loading share links...</div>
+          <div className="loading">Loading share links...</div>
+        </section>
       </div>
     );
   }
 
   return (
-    <div className="share-manager">
-      <div className="share-manager-header">
+    <div className="sleep-form">
+      <section>
         <h2>Manage Share Links</h2>
-        <button onClick={onClose} className="close-button">×</button>
-      </div>
-
-      <div className="share-manager-content">
-        <div className="share-manager-actions">
+        
+        <div className="form-group">
           <button 
             onClick={handleCreateLink} 
             disabled={creating}
-            className="create-link-button"
           >
             {creating ? 'Creating...' : 'Create New Share Link'}
           </button>
-          <p className="share-info">
+          <p style={{ marginTop: 'var(--spacing-sm)', color: 'var(--color-text-light)', fontSize: '0.875rem' }}>
             Share links allow others to view your sleep dashboard without signing in. 
             Links expire after 7 days.
           </p>
         </div>
 
         {error && (
-          <div className="error-message">
+          <div className="form-error">
             <strong>Error:</strong> {error}
           </div>
         )}
 
-        <div className="share-links-list">
-          <h3>Your Share Links</h3>
+        <fieldset>
+          <legend>Your Share Links</legend>
           {shareLinks.length === 0 ? (
-            <p className="no-links">No share links created yet.</p>
+            <p style={{ textAlign: 'center', color: 'var(--color-text-light)', fontStyle: 'italic' }}>
+              No share links created yet.
+            </p>
           ) : (
-            <div className="share-links">
+            <div>
               {shareLinks.map(link => (
                 <div 
                   key={link.id} 
@@ -157,14 +154,13 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
                     {!isExpired(link.expires_at) && (
                       <button 
                         onClick={() => handleCopyLink(link.share_token)}
-                        className="copy-button"
                       >
                         {copiedToken === link.share_token ? 'Copied!' : 'Copy Link'}
                       </button>
                     )}
                     <button 
                       onClick={() => handleDeleteLink(link.id)}
-                      className="delete-button"
+                      className="btn-danger"
                     >
                       Delete
                     </button>
@@ -173,8 +169,14 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
               ))}
             </div>
           )}
+        </fieldset>
+        
+        <div className="form-actions">
+          <button onClick={onClose} className="btn-cancel">
+            Back to Dashboard
+          </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

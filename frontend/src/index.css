@@ -173,6 +173,19 @@ legend {
   margin-bottom: var(--spacing-md);
 }
 
+/* Main content container */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: calc(var(--spacing-md) * 0.75);
+  }
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {

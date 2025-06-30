@@ -4,13 +4,16 @@ import { SleepDashboard } from "./components/SleepDashboard";
 import { SleepForm } from "./components/SleepForm";
 import { LoginForm } from "./components/LoginForm";
 import { AuthCallback } from "./components/AuthCallback";
+import { SharedDashboard } from "./components/SharedDashboard";
+import { ShareManager } from "./components/ShareManager";
 import { sleepRecordsAPI } from "./lib/supabase";
+import { extractTokenFromUrl, isShareUrl } from "./lib/shareUtils";
 import type { SleepRecord } from "./lib/supabase";
 import "./components/SleepDashboard.css";
 import "./App.css";
 import type { User } from '@supabase/supabase-js';
 
-type AppState = 'loading' | 'login' | 'auth-callback' | 'dashboard' | 'add-record';
+type AppState = 'loading' | 'login' | 'auth-callback' | 'dashboard' | 'add-record' | 'shared-dashboard' | 'share-manager';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
@@ -18,6 +21,7 @@ function App() {
   const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shareToken, setShareTokenState] = useState<string | null>(null);
 
   const loadSleepData = async (userId: string) => {
     try {
@@ -34,8 +38,19 @@ function App() {
   };
 
   useEffect(() => {
+    // Check if we're on a shared dashboard route
+    const currentPath = window.location.pathname;
+    if (isShareUrl(currentPath)) {
+      const token = extractTokenFromUrl(currentPath);
+      if (token) {
+        setShareTokenState(token);
+        setAppState('shared-dashboard');
+        return;
+      }
+    }
+
     // Check if we're on the auth callback route
-    if (window.location.pathname === '/auth/callback') {
+    if (currentPath === '/auth/callback') {
       setAppState('auth-callback');
       return;
     }
@@ -57,8 +72,16 @@ function App() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
+        const newUserId = session.user.id;
+        const currentUserId = user?.id;
+        
         setUser(session.user);
-        loadSleepData(session.user.id);
+        
+        // Only reload data if user actually changed or we don't have data yet
+        if (newUserId !== currentUserId || sleepRecords.length === 0) {
+          loadSleepData(newUserId);
+        }
+        
         setAppState('dashboard');
       } else {
         setUser(null);
@@ -68,7 +91,7 @@ function App() {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [user?.id, sleepRecords.length]);
 
 
   const handleAuthSuccess = () => {
@@ -94,6 +117,14 @@ function App() {
   };
 
   const handleCancelAddRecord = () => {
+    setAppState('dashboard');
+  };
+
+  const handleOpenShareManager = () => {
+    setAppState('share-manager');
+  };
+
+  const handleCloseShareManager = () => {
     setAppState('dashboard');
   };
 
@@ -123,14 +154,27 @@ function App() {
     );
   }
 
+  if (appState === 'shared-dashboard' && shareToken) {
+    return (
+      <div className="App">
+        <SharedDashboard token={shareToken} />
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <header className="app-header">
         <div className="user-info">
           <span>Signed in as: {user?.email}</span>
-          <button onClick={handleSignOut}>
-            Sign Out
-          </button>
+          <div>
+            <button onClick={handleOpenShareManager}>
+              📤 Manage Share Links
+            </button>
+            <button onClick={handleSignOut} className="btn-cancel">
+              Sign Out
+            </button>
+          </div>
         </div>
       </header>
       {appState === 'dashboard' && (
@@ -147,6 +191,9 @@ function App() {
           onSubmit={handleRecordSubmitted}
           onCancel={handleCancelAddRecord}
         />
+      )}
+      {appState === 'share-manager' && (
+        <ShareManager onClose={handleCloseShareManager} />
       )}
     </div>
   );

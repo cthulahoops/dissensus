@@ -96,7 +96,7 @@ export const SleepForm: React.FC<SleepFormProps> = ({
   };
 
   return (
-    <div className="sleep-dashboard">
+    <main>
       <header className="dashboard-header">
         <h1>Add New Sleep Record</h1>
         <p>Enter your sleep data for tracking and analysis</p>
@@ -282,6 +282,6 @@ export const SleepForm: React.FC<SleepFormProps> = ({
           </div>
         </form>
       </section>
-    </div>
+    </main>
   );
 };

@@ -23,15 +23,14 @@
   color: var(--color-text);
 }
 
-
-/* Sharing Components Styles */
-.dashboard-actions {
+.user-info > div:last-child {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: var(--spacing-lg);
-  padding: 0 var(--spacing-lg);
+  gap: var(--spacing-sm);
+  align-items: center;
 }
 
+
+/* Sharing Components Styles */
 .share-link-item {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);

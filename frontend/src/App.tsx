@@ -167,25 +167,23 @@ function App() {
       <header className="app-header">
         <div className="user-info">
           <span>Signed in as: {user?.email}</span>
-          <button onClick={handleSignOut}>
-            Sign Out
-          </button>
+          <div>
+            <button onClick={handleOpenShareManager}>
+              📤 Manage Share Links
+            </button>
+            <button onClick={handleSignOut} className="btn-cancel">
+              Sign Out
+            </button>
+          </div>
         </div>
       </header>
       {appState === 'dashboard' && (
-        <div>
-          <div className="dashboard-actions">
-            <button onClick={handleOpenShareManager} className="share-button">
-              📤 Manage Share Links
-            </button>
-          </div>
-          <SleepDashboard 
-            onAddRecord={handleAddRecord}
-            sleepRecords={sleepRecords}
-            loading={loading}
-            error={error}
-          />
-        </div>
+        <SleepDashboard 
+          onAddRecord={handleAddRecord}
+          sleepRecords={sleepRecords}
+          loading={loading}
+          error={error}
+        />
       )}
       {appState === 'add-record' && user && (
         <SleepForm 

@@ -24,6 +24,282 @@
 }
 
 
+/* Sharing Components Styles */
+.dashboard-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.share-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-button:hover {
+  background: #45a049;
+}
+
+.share-manager {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.share-manager > div {
+  background: white;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.share-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.share-manager-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+  color: #666;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.share-manager-content {
+  padding: 20px;
+}
+
+.share-manager-actions {
+  margin-bottom: 30px;
+}
+
+.create-link-button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.create-link-button:hover {
+  background: #1976D2;
+}
+
+.create-link-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.share-info {
+  color: #666;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.share-links-list h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.no-links {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.share-link-item {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.share-link-item.expired {
+  background: #f9f9f9;
+  border-color: #ccc;
+}
+
+.link-info {
+  flex: 1;
+  margin-right: 15px;
+}
+
+.link-dates {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.created {
+  color: #666;
+}
+
+.expires {
+  color: #2196F3;
+}
+
+.expires.expired {
+  color: #f44336;
+  font-weight: bold;
+}
+
+.link-url {
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  word-break: break-all;
+  border: 1px solid #ddd;
+}
+
+.link-actions {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.copy-button, .delete-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.copy-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.copy-button:hover {
+  background: #45a049;
+}
+
+.delete-button {
+  background: #f44336;
+  color: white;
+}
+
+.delete-button:hover {
+  background: #d32f2f;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 4px solid #f44336;
+  margin-bottom: 20px;
+}
+
+/* Shared Dashboard Styles */
+.shared-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.shared-dashboard-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #2196F3;
+}
+
+.shared-dashboard-header h1 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.shared-dashboard-header p {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.shared-dashboard-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.record-count {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.shared-dashboard-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #666;
+}
+
+.shared-dashboard-footer a {
+  color: #2196F3;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.shared-dashboard-footer a:hover {
+  text-decoration: underline;
+}
+
 .loading {
   display: flex;
   justify-content: center;

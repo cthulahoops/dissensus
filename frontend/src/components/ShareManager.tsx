@@ -91,17 +91,17 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
 
   if (loading) {
     return (
-      <div className="sleep-form">
+      <main>
         <section>
           <h2>Manage Share Links</h2>
           <div className="loading">Loading share links...</div>
         </section>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="sleep-form">
+    <main>
       <section>
         <h2>Manage Share Links</h2>
         
@@ -177,6 +177,6 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
           </button>
         </div>
       </section>
-    </div>
+    </main>
   );
 };

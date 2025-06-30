@@ -63,7 +63,7 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
   }
 
   return (
-    <div className="sleep-dashboard">
+    <main>
       <header className="dashboard-header">
         <h1>Sleep Tracker Dashboard</h1>
         <div className="dashboard-controls">
@@ -177,6 +177,6 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
           isMinutes={true}
         />
       </section>
-    </div>
+    </main>
   );
 };

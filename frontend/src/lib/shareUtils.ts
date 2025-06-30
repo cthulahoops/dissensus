@@ -72,16 +72,11 @@ export async function deleteShareLink(shareId: string): Promise<void> {
 
 // Set share token for the current session (for viewing shared dashboards)
 export async function setShareToken(token: string): Promise<void> {
-  console.log('Calling set_share_token RPC with token:', token.substring(0, 8) + '...');
-  const { data, error } = await supabase.rpc('set_share_token', { token });
-  
-  console.log('RPC response:', { data, error });
+  const { error } = await supabase.rpc('set_share_token', { token });
   
   if (error) {
     throw new Error(`Failed to set share token: ${error.message}`);
   }
-  
-  console.log('Share token set successfully');
 }
 
 // Generate the shareable URL

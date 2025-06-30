@@ -22,49 +22,16 @@ export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
       setLoading(true);
       setError(null);
 
-      console.log('Setting share token:', token);
-      // Set the share token for this session
-      await setShareToken(token);
-      console.log('Share token set successfully');
-
-      // Debug: Check if our share token is being found
-      console.log('Checking if share token exists in database...');
-      const { data: shareCheck, error: shareError } = await supabase
-        .from('public_shares')
-        .select('*')
-        .eq('share_token', token);
-      
-      console.log('Share token check result:', shareCheck);
-      if (shareError) {
-        console.error('Share check error:', shareError);
-      }
-
-      // Debug: Check what the current setting returns
-      console.log('Testing current_setting function...');
-      const { data: settingTest, error: settingError } = await supabase
-        .rpc('current_setting', { setting_name: 'app.share_token' });
-      console.log('Current setting result:', settingTest, settingError);
-      
-      // Debug: Check all share links in the database
-      console.log('Checking all share links in database...');
-      const { data: allShares, error: allSharesError } = await supabase
-        .from('public_shares')
-        .select('*');
-      console.log('All share links:', allShares, allSharesError);
-
-      // Try to fetch data directly from supabase with the share token active
-      console.log('Fetching sleep records...');
+      // Use a stored procedure that sets the token and fetches data in one transaction
+      // The RPC function will validate the token internally and throw an error if invalid
       const { data: records, error: fetchError } = await supabase
-        .from('sleep_records')
-        .select('*')
-        .order('date', { ascending: true });
+        .rpc('fetch_shared_sleep_records', { share_token: token });
       
       if (fetchError) {
-        console.error('Fetch error:', fetchError);
         throw fetchError;
       }
       
-      console.log('Records fetched:', records?.length || 0);
+      // If we get here, the token is valid (even if no records exist)
       setSleepRecords(records || []);
     } catch (err) {
       console.error('Error loading shared data:', err);

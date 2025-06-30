@@ -9,6 +9,8 @@ interface SleepDashboardProps {
   sleepRecords: SleepRecord[];
   loading: boolean;
   error: string | null;
+  isSharedView?: boolean;
+  sharedViewInfo?: string;
 }
 
 // Helper function to get the latest rolling average value
@@ -27,7 +29,9 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
   onAddRecord, 
   sleepRecords, 
   loading, 
-  error 
+  error,
+  isSharedView = false,
+  sharedViewInfo
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("all");
 
@@ -65,16 +69,23 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
   return (
     <main>
       <header className="dashboard-header">
-        <h1>Sleep Tracker Dashboard</h1>
+        <h1>{isSharedView ? 'Shared Sleep Dashboard' : 'Sleep Tracker Dashboard'}</h1>
+        {isSharedView && sharedViewInfo && (
+          <p style={{ marginBottom: 'var(--spacing-md)', opacity: 0.9 }}>
+            {sharedViewInfo}
+          </p>
+        )}
         <div className="dashboard-controls">
           <TimeRangeSelector
             selectedRange={selectedTimeRange}
             onRangeChange={setSelectedTimeRange}
           />
-          <button onClick={onAddRecord}>Add New Record</button>
+          {!isSharedView && (
+            <button onClick={onAddRecord}>Add New Record</button>
+          )}
         </div>
         <p>
-          Tracking {sleepRecords.length} total records, showing {processedData.length}{" "}
+          {isSharedView ? 'Viewing' : 'Tracking'} {sleepRecords.length} total records, showing {processedData.length}{" "}
           filtered entries
         </p>
       </header>

@@ -63,7 +63,7 @@ export const Router = () => {
               <span>Signed in as: {user.email}</span>
               <div>
                 <button onClick={() => setAppView({ view: "share-manager" })}>
-                  📤 Manage Share Links
+                  Share
                 </button>
                 <button onClick={signOut} className="btn-cancel">
                   Sign Out

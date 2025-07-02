@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { supabase, type SleepRecord } from "../lib/supabase";
 import { SleepDashboard } from "./SleepDashboard";
 import type { User } from "@supabase/supabase-js";
 
-interface SharedDashboardProps {
+type SharedDashboardProps = {
   token: string;
-}
+};
 
-export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
+export function SharedDashboard({ token }: SharedDashboardProps) {
   const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,4 +133,4 @@ export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
       />
     </div>
   );
-};
+}

@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { sleepRecordsAPI } from "../lib/supabase";
 import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
 
-interface SleepFormProps {
+type SleepFormProps = {
   onSubmit: (record: SleepRecord) => void;
   onCancel: () => void;
   userId: string;
-}
+};
 
-export const SleepForm: React.FC<SleepFormProps> = ({
-  onSubmit,
-  onCancel,
-  userId,
-}) => {
+export function SleepForm({ onSubmit, onCancel, userId }: SleepFormProps) {
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0], // Today's date as default
     comments: "",
@@ -284,4 +280,4 @@ export const SleepForm: React.FC<SleepFormProps> = ({
       </section>
     </main>
   );
-};
+}

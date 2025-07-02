@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
-interface AuthCallbackProps {
+type AuthCallbackProps = {
   onSuccess: () => void;
-}
+};
 
-export const AuthCallback: React.FC<AuthCallbackProps> = ({ onSuccess }) => {
+export function AuthCallback({ onSuccess }: AuthCallbackProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -74,4 +74,4 @@ export const AuthCallback: React.FC<AuthCallbackProps> = ({ onSuccess }) => {
   }
 
   return null;
-};
+}

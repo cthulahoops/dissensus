@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { supabase } from "../lib/supabase";
 
-interface LoginFormProps {
+type LoginFormProps = {
   onSuccess?: () => void;
-}
+};
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
+export function LoginForm({ onSuccess }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -64,4 +64,4 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       </form>
     </div>
   );
-};
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   createShareLink,
   getUserShareLinks,
@@ -7,11 +7,11 @@ import {
   type ShareLink,
 } from "../lib/shareUtils";
 
-interface ShareManagerProps {
+type ShareManagerProps = {
   onClose: () => void;
-}
+};
 
-export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
+export function ShareManager({ onClose }: ShareManagerProps) {
   const [shareLinks, setShareLinks] = useState<ShareLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -191,4 +191,4 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
       </section>
     </main>
   );
-};
+}

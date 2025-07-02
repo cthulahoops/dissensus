@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,23 +28,23 @@ ChartJS.register(
   Legend,
 );
 
-interface SleepChartProps {
+type SleepChartProps = {
   data: ChartDataPoint[];
   rollingAverage: (number | null)[];
   label: string;
   color: string;
   isPercentage?: boolean;
   isMinutes?: boolean;
-}
+};
 
-export const SleepChart: React.FC<SleepChartProps> = ({
+export function SleepChart({
   data,
   rollingAverage,
   label,
   color,
   isPercentage = false,
   isMinutes = false,
-}) => {
+}: SleepChartProps) {
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [
@@ -138,4 +137,4 @@ export const SleepChart: React.FC<SleepChartProps> = ({
       <Chart type="bar" data={chartData} options={options} />
     </div>
   );
-};
+}

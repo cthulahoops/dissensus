@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
 import {
   processData,
@@ -8,15 +8,6 @@ import {
 } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 import { TimeRangeSelector, type TimeRange } from "./TimeRangeSelector";
-
-interface SleepDashboardProps {
-  onAddRecord: () => void;
-  sleepRecords: SleepRecord[];
-  loading: boolean;
-  error: string | null;
-  isSharedView?: boolean;
-  sharedViewInfo?: string;
-}
 
 // Helper function to get the latest rolling average value
 function getLatestAverage(averageArray: (number | null)[]): number | null {
@@ -30,14 +21,23 @@ function getLatestAverage(averageArray: (number | null)[]): number | null {
   return null;
 }
 
-export const SleepDashboard: React.FC<SleepDashboardProps> = ({
+type SleepDashboardProps = {
+  onAddRecord: () => void;
+  sleepRecords: SleepRecord[];
+  loading: boolean;
+  error: string | null;
+  isSharedView?: boolean;
+  sharedViewInfo?: string;
+};
+
+export function SleepDashboard({
   onAddRecord,
   sleepRecords,
   loading,
   error,
   isSharedView = false,
   sharedViewInfo,
-}) => {
+}: SleepDashboardProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("all");
 
   // Filter records based on selected time range
@@ -229,4 +229,4 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
       </section>
     </main>
   );
-};
+}

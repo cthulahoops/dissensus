@@ -1,16 +1,14 @@
-import React from "react";
-
 export type TimeRange = "all" | "30d" | "14d" | "7d";
 
-interface TimeRangeSelectorProps {
+type TimeRangeSelectorProps = {
   selectedRange: TimeRange;
   onRangeChange: (range: TimeRange) => void;
-}
+};
 
-export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
+export function TimeRangeSelector({
   selectedRange,
   onRangeChange,
-}) => {
+}: TimeRangeSelectorProps) {
   const timeRangeOptions = [
     { value: "all" as const, label: "All Time" },
     { value: "30d" as const, label: "Last 30 Days" },
@@ -35,4 +33,4 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
       </select>
     </div>
   );
-};
+}

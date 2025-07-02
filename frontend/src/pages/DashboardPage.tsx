@@ -1,18 +1,10 @@
 
 import { SleepDashboard } from '../components/SleepDashboard';
-import type { SleepRecord } from '../lib/supabase';
+import { useSleepDataContext } from '../contexts/useSleepDataContext';
 
-export const DashboardPage = ({
-  onAddRecord,
-  sleepRecords,
-  loading,
-  error,
-}: {
-  onAddRecord: () => void;
-  sleepRecords: SleepRecord[];
-  loading: boolean;
-  error: string | null;
-}) => {
+export const DashboardPage = ({ onAddRecord }: { onAddRecord: () => void }) => {
+  const { records: sleepRecords, loading, error } = useSleepDataContext();
+
   return (
     <SleepDashboard
       onAddRecord={onAddRecord}

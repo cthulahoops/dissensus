@@ -1,25 +1,18 @@
 import { useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { useAppRouter } from './hooks/useAppRouter';
-import { useSleepData } from './hooks/useSleepData';
 import { LoginPage } from './pages/LoginPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { SharedDashboardPage } from './pages/SharedDashboardPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AddRecordPage } from './pages/AddRecordPage';
 import { ShareManagerPage } from './pages/ShareManagerPage';
-import type { SleepRecordInsert } from './lib/supabase';
+import { SleepDataProvider } from './contexts/SleepDataProvider';
 import './components/SleepDashboard.css';
 
 export const Router = () => {
   const { appView, setAppView } = useAppRouter();
   const { user, loading: authLoading, signOut } = useAuth();
-  const {
-    records: sleepRecords,
-    loading: dataLoading,
-    error,
-    addRecord,
-  } = useSleepData(user?.id);
 
   useEffect(() => {
     if (authLoading) {
@@ -37,13 +30,6 @@ export const Router = () => {
   const handleAuthSuccess = () => {
     window.history.replaceState({}, '', '/');
     setAppView({ view: 'dashboard' });
-  };
-
-  const handleRecordSubmitted = async (newRecord: SleepRecordInsert) => {
-    const result = await addRecord(newRecord);
-    if (result) {
-      setAppView({ view: 'dashboard' });
-    }
   };
 
   if (appView.view === 'loading') {
@@ -78,24 +64,22 @@ export const Router = () => {
             </div>
           </header>
 
-          {appView.view === 'dashboard' && (
-            <DashboardPage
-              onAddRecord={() => setAppView({ view: 'add-record' })}
-              sleepRecords={sleepRecords}
-              loading={dataLoading}
-              error={error}
-            />
-          )}
-          {appView.view === 'add-record' && (
-            <AddRecordPage
-              userId={user.id}
-              onSubmit={handleRecordSubmitted}
-              onCancel={() => setAppView({ view: 'dashboard' })}
-            />
-          )}
-          {appView.view === 'share-manager' && (
-            <ShareManagerPage onClose={() => setAppView({ view: 'dashboard' })} />
-          )}
+          <SleepDataProvider>
+            {appView.view === 'dashboard' && (
+              <DashboardPage
+                onAddRecord={() => setAppView({ view: 'add-record' })}
+              />
+            )}
+            {appView.view === 'add-record' && (
+              <AddRecordPage
+                onSuccess={() => setAppView({ view: 'dashboard' })}
+                onCancel={() => setAppView({ view: 'dashboard' })}
+              />
+            )}
+            {appView.view === 'share-manager' && (
+              <ShareManagerPage onClose={() => setAppView({ view: 'dashboard' })} />
+            )}
+          </SleepDataProvider>
         </div>
       );
   }

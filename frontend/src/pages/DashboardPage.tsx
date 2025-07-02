@@ -1,6 +1,5 @@
-
-import { SleepDashboard } from '../components/SleepDashboard';
-import { useSleepDataContext } from '../contexts/useSleepDataContext';
+import { SleepDashboard } from "../components/SleepDashboard";
+import { useSleepDataContext } from "../contexts/useSleepDataContext";
 
 export const DashboardPage = ({ onAddRecord }: { onAddRecord: () => void }) => {
   const { records: sleepRecords, loading, error } = useSleepDataContext();

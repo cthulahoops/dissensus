@@ -1,6 +1,5 @@
-
-import { createContext } from 'react';
-import type { SleepRecord, SleepRecordInsert } from '../lib/supabase';
+import { createContext } from "react";
+import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
 
 export interface SleepDataContextValue {
   records: SleepRecord[];
@@ -12,4 +11,6 @@ export interface SleepDataContextValue {
   updateRecord: (id: string, updates: Partial<SleepRecord>) => Promise<void>;
 }
 
-export const SleepDataContext = createContext<SleepDataContextValue | undefined>(undefined);
+export const SleepDataContext = createContext<
+  SleepDataContextValue | undefined
+>(undefined);

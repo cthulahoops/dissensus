@@ -1,5 +1,4 @@
-
-import { AuthCallback } from '../components/AuthCallback';
+import { AuthCallback } from "../components/AuthCallback";
 
 export const AuthCallbackPage = ({ onSuccess }: { onSuccess: () => void }) => {
   return (

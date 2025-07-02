@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from "./supabase";
 
 export interface ShareLink {
   id: string;
@@ -12,27 +12,33 @@ export interface ShareLink {
 export function generateShareToken(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 // Create a new share link
-export async function createShareLink(expiryDays: number = 7): Promise<ShareLink> {
+export async function createShareLink(
+  expiryDays: number = 7,
+): Promise<ShareLink> {
   const token = generateShareToken();
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + expiryDays);
 
   // Get the current user
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
-    throw new Error('User must be authenticated to create share links');
+    throw new Error("User must be authenticated to create share links");
   }
 
   const { data, error } = await supabase
-    .from('public_shares')
+    .from("public_shares")
     .insert({
       share_token: token,
       user_id: user.id,
-      expires_at: expiresAt.toISOString()
+      expires_at: expiresAt.toISOString(),
     })
     .select()
     .single();
@@ -47,9 +53,9 @@ export async function createShareLink(expiryDays: number = 7): Promise<ShareLink
 // Get all share links for the current user
 export async function getUserShareLinks(): Promise<ShareLink[]> {
   const { data, error } = await supabase
-    .from('public_shares')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .from("public_shares")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(`Failed to fetch share links: ${error.message}`);
@@ -61,9 +67,9 @@ export async function getUserShareLinks(): Promise<ShareLink[]> {
 // Delete a share link
 export async function deleteShareLink(shareId: string): Promise<void> {
   const { error } = await supabase
-    .from('public_shares')
+    .from("public_shares")
     .delete()
-    .eq('id', shareId);
+    .eq("id", shareId);
 
   if (error) {
     throw new Error(`Failed to delete share link: ${error.message}`);
@@ -72,8 +78,8 @@ export async function deleteShareLink(shareId: string): Promise<void> {
 
 // Set share token for the current session (for viewing shared dashboards)
 export async function setShareToken(token: string): Promise<void> {
-  const { error } = await supabase.rpc('set_share_token', { token });
-  
+  const { error } = await supabase.rpc("set_share_token", { token });
+
   if (error) {
     throw new Error(`Failed to set share token: ${error.message}`);
   }

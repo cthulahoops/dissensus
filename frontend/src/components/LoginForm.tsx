@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import React, { useState } from "react";
+import { supabase } from "../lib/supabase";
 
 interface LoginFormProps {
   onSuccess?: () => void;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
 
       if (error) {
         setError(error.message);
       } else {
-        setMessage('Check your email for the magic link!');
+        setMessage("Check your email for the magic link!");
         if (onSuccess) onSuccess();
       }
     } catch {
-      setError('An unexpected error occurred');
+      setError("An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -54,11 +54,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
             disabled={loading}
           />
         </div>
-        
+
         <button type="submit" disabled={loading || !email}>
-          {loading ? 'Sending...' : 'Send Magic Link'}
+          {loading ? "Sending..." : "Send Magic Link"}
         </button>
-        
+
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
       </form>

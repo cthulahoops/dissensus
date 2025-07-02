@@ -126,7 +126,7 @@ export type TimeRange = "all" | "30d" | "14d" | "7d";
 
 export function filterRecordsByDateRange(
   records: SleepRecord[],
-  timeRange: TimeRange
+  timeRange: TimeRange,
 ): SleepRecord[] {
   if (timeRange === "all") {
     return records;
@@ -227,6 +227,9 @@ export function prepareChartData(processedData: ProcessedSleepData[]) {
     efficiency: { data: efficiencyData, average: efficiencyAvg },
     fallAsleep: { data: fallAsleepData, average: fallAsleepAvg },
     tryingToSleep: { data: tryingToSleepData, average: tryingToSleepAvg },
-    timeAwakeInNight: { data: timeAwakeInNightData, average: timeAwakeInNightAvg },
+    timeAwakeInNight: {
+      data: timeAwakeInNightData,
+      average: timeAwakeInNightAvg,
+    },
   };
 }

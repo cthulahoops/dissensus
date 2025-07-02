@@ -7,19 +7,20 @@
   --color-text-light: #666;
   --color-background: #ffffff;
   --color-border: #e0e0e0;
-  
+
   /* Typography */
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
-  
+  --font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+
   /* Spacing */
-  --spacing-sm: 0.5rem;  /* 8px */
-  --spacing-md: 1rem;    /* 16px */
-  --spacing-lg: 1.5rem;  /* 24px */
-  
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+
   /* Border Radius */
-  --radius-sm: 0.25rem;  /* 4px */
-  --radius-md: 0.5rem;   /* 8px */
-  
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+
   font-family: var(--font-family);
   line-height: 1.5;
   font-weight: 400;
@@ -113,7 +114,9 @@ section h2 {
 }
 
 /* Form Elements */
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
   border: 2px solid var(--color-border);
@@ -122,18 +125,24 @@ input, textarea, select {
   font-family: var(--font-family);
   background: var(--color-background);
   color: var(--color-text);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   box-sizing: border-box;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--color-primary);
-box-shadow: 0 0 0 var(--spacing-sm) rgba(79, 195, 247, 0.1);
+  box-shadow: 0 0 0 var(--spacing-sm) rgba(79, 195, 247, 0.1);
 }
 
-input:hover, textarea:hover, select:hover {
-border-color: var(--color-border);
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--color-border);
 }
 
 input[type="number"] {
@@ -185,7 +194,6 @@ main {
     padding: calc(var(--spacing-md) * 0.75);
   }
 }
-
 
 @media (prefers-color-scheme: light) {
   :root {

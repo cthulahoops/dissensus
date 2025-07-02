@@ -1,8 +1,7 @@
-
-import { SleepForm } from '../components/SleepForm';
-import { useSleepDataContext } from '../contexts/useSleepDataContext';
-import { useAuth } from '../hooks/useAuth';
-import type { SleepRecordInsert } from '../lib/supabase';
+import { SleepForm } from "../components/SleepForm";
+import { useSleepDataContext } from "../contexts/useSleepDataContext";
+import { useAuth } from "../hooks/useAuth";
+import type { SleepRecordInsert } from "../lib/supabase";
 
 export const AddRecordPage = ({
   onSuccess,
@@ -25,5 +24,7 @@ export const AddRecordPage = ({
 
   if (!user) return null; // Or a loading/error state
 
-  return <SleepForm userId={user.id} onSubmit={handleSubmit} onCancel={onCancel} />;
+  return (
+    <SleepForm userId={user.id} onSubmit={handleSubmit} onCancel={onCancel} />
+  );
 };

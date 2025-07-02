@@ -1,8 +1,7 @@
-
-import { type ReactNode } from 'react';
-import { useSleepData } from '../hooks/useSleepData';
-import { useAuth } from '../hooks/useAuth';
-import { SleepDataContext } from './SleepDataContext';
+import { type ReactNode } from "react";
+import { useSleepData } from "../hooks/useSleepData";
+import { useAuth } from "../hooks/useAuth";
+import { SleepDataContext } from "./SleepDataContext";
 
 export const SleepDataProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();

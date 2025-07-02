@@ -1,6 +1,11 @@
 import React, { useState, useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
-import { processData, prepareChartData, formatHoursMinutes, filterRecordsByDateRange } from "../lib/sleepUtils";
+import {
+  processData,
+  prepareChartData,
+  formatHoursMinutes,
+  filterRecordsByDateRange,
+} from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 import { TimeRangeSelector, type TimeRange } from "./TimeRangeSelector";
 
@@ -25,13 +30,13 @@ function getLatestAverage(averageArray: (number | null)[]): number | null {
   return null;
 }
 
-export const SleepDashboard: React.FC<SleepDashboardProps> = ({ 
-  onAddRecord, 
-  sleepRecords, 
-  loading, 
+export const SleepDashboard: React.FC<SleepDashboardProps> = ({
+  onAddRecord,
+  sleepRecords,
+  loading,
   error,
   isSharedView = false,
-  sharedViewInfo
+  sharedViewInfo,
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("all");
 
@@ -69,9 +74,11 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
   return (
     <main>
       <header className="dashboard-header">
-        <h1>{isSharedView ? 'Shared Sleep Dashboard' : 'Sleep Tracker Dashboard'}</h1>
+        <h1>
+          {isSharedView ? "Shared Sleep Dashboard" : "Sleep Tracker Dashboard"}
+        </h1>
         {isSharedView && sharedViewInfo && (
-          <p style={{ marginBottom: 'var(--spacing-md)', opacity: 0.9 }}>
+          <p style={{ marginBottom: "var(--spacing-md)", opacity: 0.9 }}>
             {sharedViewInfo}
           </p>
         )}
@@ -85,8 +92,8 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
           )}
         </div>
         <p>
-          {isSharedView ? 'Viewing' : 'Tracking'} {sleepRecords.length} total records, showing {processedData.length}{" "}
-          filtered entries
+          {isSharedView ? "Viewing" : "Tracking"} {sleepRecords.length} total
+          records, showing {processedData.length} filtered entries
         </p>
       </header>
 
@@ -97,21 +104,29 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
           <div className="average-card">
             <h3>Time in Bed</h3>
             <div className="average-value">
-              {formatHoursMinutes(getLatestAverage(chartData.timeInBed.average))}
+              {formatHoursMinutes(
+                getLatestAverage(chartData.timeInBed.average),
+              )}
             </div>
           </div>
           <div className="average-card">
             <h3>Time Asleep</h3>
             <div className="average-value">
-              {formatHoursMinutes(getLatestAverage(chartData.timeAsleep.average))}
+              {formatHoursMinutes(
+                getLatestAverage(chartData.timeAsleep.average),
+              )}
             </div>
           </div>
           <div className="average-card">
             <h3>Sleep Efficiency</h3>
             <div className="average-value">
               {(() => {
-                const efficiency = getLatestAverage(chartData.efficiency.average);
-                return efficiency !== null ? `${efficiency.toFixed(1)}%` : "N/A";
+                const efficiency = getLatestAverage(
+                  chartData.efficiency.average,
+                );
+                return efficiency !== null
+                  ? `${efficiency.toFixed(1)}%`
+                  : "N/A";
               })()}
             </div>
           </div>
@@ -128,7 +143,9 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
             <h3>Trying to Sleep After Awakening</h3>
             <div className="average-value">
               {(() => {
-                const minutes = getLatestAverage(chartData.tryingToSleep.average);
+                const minutes = getLatestAverage(
+                  chartData.tryingToSleep.average,
+                );
                 return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
               })()}
             </div>
@@ -137,7 +154,9 @@ export const SleepDashboard: React.FC<SleepDashboardProps> = ({
             <h3>Time Awake in Night</h3>
             <div className="average-value">
               {(() => {
-                const minutes = getLatestAverage(chartData.timeAwakeInNight.average);
+                const minutes = getLatestAverage(
+                  chartData.timeAwakeInNight.average,
+                );
                 return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
               })()}
             </div>

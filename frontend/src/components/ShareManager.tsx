@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  createShareLink, 
-  getUserShareLinks, 
-  deleteShareLink, 
+import React, { useState, useEffect } from "react";
+import {
+  createShareLink,
+  getUserShareLinks,
+  deleteShareLink,
   generateShareUrl,
-  type ShareLink 
-} from '../lib/shareUtils';
+  type ShareLink,
+} from "../lib/shareUtils";
 
 interface ShareManagerProps {
   onClose: () => void;
@@ -39,7 +39,7 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
       setCreating(true);
       setError(null);
       const newLink = await createShareLink(7); // 7 day expiry
-      setShareLinks(prev => [newLink, ...prev]);
+      setShareLinks((prev) => [newLink, ...prev]);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -50,7 +50,7 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
   const handleDeleteLink = async (linkId: string) => {
     try {
       await deleteShareLink(linkId);
-      setShareLinks(prev => prev.filter(link => link.id !== linkId));
+      setShareLinks((prev) => prev.filter((link) => link.id !== linkId));
     } catch (err) {
       setError((err as Error).message);
     }
@@ -64,11 +64,11 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
       setTimeout(() => setCopiedToken(null), 2000);
     } catch {
       // Fallback for browsers without clipboard API
-      const textArea = document.createElement('textarea');
+      const textArea = document.createElement("textarea");
       textArea.value = url;
       document.body.appendChild(textArea);
       textArea.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textArea);
       setCopiedToken(token);
       setTimeout(() => setCopiedToken(null), 2000);
@@ -76,12 +76,12 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -104,17 +104,20 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
     <main>
       <section>
         <h2>Manage Share Links</h2>
-        
+
         <div className="form-group">
-          <button 
-            onClick={handleCreateLink} 
-            disabled={creating}
-          >
-            {creating ? 'Creating...' : 'Create New Share Link'}
+          <button onClick={handleCreateLink} disabled={creating}>
+            {creating ? "Creating..." : "Create New Share Link"}
           </button>
-          <p style={{ marginTop: 'var(--spacing-sm)', color: 'var(--color-text-light)', fontSize: '0.875rem' }}>
-            Share links allow others to view your sleep dashboard without signing in. 
-            Links expire after 7 days.
+          <p
+            style={{
+              marginTop: "var(--spacing-sm)",
+              color: "var(--color-text-light)",
+              fontSize: "0.875rem",
+            }}
+          >
+            Share links allow others to view your sleep dashboard without
+            signing in. Links expire after 7 days.
           </p>
         </div>
 
@@ -127,23 +130,32 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
         <fieldset>
           <legend>Your Share Links</legend>
           {shareLinks.length === 0 ? (
-            <p style={{ textAlign: 'center', color: 'var(--color-text-light)', fontStyle: 'italic' }}>
+            <p
+              style={{
+                textAlign: "center",
+                color: "var(--color-text-light)",
+                fontStyle: "italic",
+              }}
+            >
               No share links created yet.
             </p>
           ) : (
             <div>
-              {shareLinks.map(link => (
-                <div 
-                  key={link.id} 
-                  className={`share-link-item ${isExpired(link.expires_at) ? 'expired' : ''}`}
+              {shareLinks.map((link) => (
+                <div
+                  key={link.id}
+                  className={`share-link-item ${isExpired(link.expires_at) ? "expired" : ""}`}
                 >
                   <div className="link-info">
                     <div className="link-dates">
                       <span className="created">
                         Created: {formatDate(link.created_at)}
                       </span>
-                      <span className={`expires ${isExpired(link.expires_at) ? 'expired' : ''}`}>
-                        {isExpired(link.expires_at) ? 'Expired' : 'Expires'}: {formatDate(link.expires_at)}
+                      <span
+                        className={`expires ${isExpired(link.expires_at) ? "expired" : ""}`}
+                      >
+                        {isExpired(link.expires_at) ? "Expired" : "Expires"}:{" "}
+                        {formatDate(link.expires_at)}
                       </span>
                     </div>
                     <div className="link-url">
@@ -152,13 +164,13 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
                   </div>
                   <div className="link-actions">
                     {!isExpired(link.expires_at) && (
-                      <button 
-                        onClick={() => handleCopyLink(link.share_token)}
-                      >
-                        {copiedToken === link.share_token ? 'Copied!' : 'Copy Link'}
+                      <button onClick={() => handleCopyLink(link.share_token)}>
+                        {copiedToken === link.share_token
+                          ? "Copied!"
+                          : "Copy Link"}
                       </button>
                     )}
-                    <button 
+                    <button
                       onClick={() => handleDeleteLink(link.id)}
                       className="btn-danger"
                     >
@@ -170,7 +182,7 @@ export const ShareManager: React.FC<ShareManagerProps> = ({ onClose }) => {
             </div>
           )}
         </fieldset>
-        
+
         <div className="form-actions">
           <button onClick={onClose} className="btn-cancel">
             Back to Dashboard

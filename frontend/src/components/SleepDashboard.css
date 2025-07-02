@@ -2,7 +2,11 @@
   text-align: center;
   margin-bottom: var(--spacing-lg);
   padding: var(--spacing-lg);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
   color: white;
   border-radius: var(--radius-md);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -84,7 +88,6 @@
   padding: 0.5rem;
 }
 
-
 .chart-container {
   position: relative;
   margin-bottom: var(--spacing-md);
@@ -123,7 +126,6 @@
   color: var(--color-text-light);
   margin: 0;
 }
-
 
 .averages-grid {
   display: grid;
@@ -180,5 +182,4 @@
     gap: 0.5rem;
     text-align: center;
   }
-
 }

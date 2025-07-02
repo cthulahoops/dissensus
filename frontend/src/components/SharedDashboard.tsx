@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { supabase, type SleepRecord } from '../lib/supabase';
-import { SleepDashboard } from './SleepDashboard';
-import type { User } from '@supabase/supabase-js';
+import React, { useState, useEffect } from "react";
+import { supabase, type SleepRecord } from "../lib/supabase";
+import { SleepDashboard } from "./SleepDashboard";
+import type { User } from "@supabase/supabase-js";
 
 interface SharedDashboardProps {
   token: string;
@@ -23,18 +23,22 @@ export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
 
       // Use a stored procedure that sets the token and fetches data in one transaction
       // The RPC function will validate the token internally and throw an error if invalid
-      const { data: records, error: fetchError } = await supabase
-        .rpc('fetch_shared_sleep_records', { share_token: token });
-      
+      const { data: records, error: fetchError } = await supabase.rpc(
+        "fetch_shared_sleep_records",
+        { share_token: token },
+      );
+
       if (fetchError) {
         throw fetchError;
       }
-      
+
       // If we get here, the token is valid (even if no records exist)
       setSleepRecords(records || []);
     } catch (err) {
-      console.error('Error loading shared data:', err);
-      setError('Invalid or expired share link. Please check the URL and try again.');
+      console.error("Error loading shared data:", err);
+      setError(
+        "Invalid or expired share link. Please check the URL and try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -47,10 +51,12 @@ export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
 
   // Check if user is authenticated for the "Back to Dashboard" button
   const [user, setUser] = useState<User | null>(null);
-  
+
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setUser(session?.user || null);
     };
     checkAuth();
@@ -82,12 +88,10 @@ export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
         <main>
           <section>
             <h2>Access Error</h2>
-            <div className="form-error">
-              {error}
-            </div>
+            <div className="form-error">{error}</div>
             <p>
-              If you believe this link should work, please contact the person who 
-              shared it with you.
+              If you believe this link should work, please contact the person
+              who shared it with you.
             </p>
           </section>
         </main>
@@ -99,15 +103,19 @@ export const SharedDashboard: React.FC<SharedDashboardProps> = ({ token }) => {
     <div className="App">
       <header className="app-header">
         <div className="user-info">
-          <span>Viewing Shared Dashboard ({sleepRecords.length} sleep records)</span>
+          <span>
+            Viewing Shared Dashboard ({sleepRecords.length} sleep records)
+          </span>
           {user ? (
             <div>
-              <button onClick={() => window.location.href = '/'}>
+              <button onClick={() => (window.location.href = "/")}>
                 Back to My Dashboard
               </button>
             </div>
           ) : (
-            <span style={{ fontSize: '0.875rem', color: 'var(--color-text-light)' }}>
+            <span
+              style={{ fontSize: "0.875rem", color: "var(--color-text-light)" }}
+            >
               Not logged in
             </span>
           )}

@@ -1,5 +1,4 @@
-
-import { SharedDashboard } from '../components/SharedDashboard';
+import { SharedDashboard } from "../components/SharedDashboard";
 
 export const SharedDashboardPage = ({ token }: { token: string }) => {
   return (

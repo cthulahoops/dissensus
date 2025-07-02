@@ -45,6 +45,12 @@ export function SleepDashboard({
     return filterRecordsByDateRange(sleepRecords, selectedTimeRange);
   }, [sleepRecords, selectedTimeRange]);
 
+  // Check if today's record exists
+  const todaysRecord = useMemo(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return sleepRecords.find((record) => record.date === today);
+  }, [sleepRecords]);
+
   // Process filtered data
   const processedData = useMemo(() => {
     return processData(filteredRecords);
@@ -88,7 +94,9 @@ export function SleepDashboard({
             onRangeChange={setSelectedTimeRange}
           />
           {!isSharedView && (
-            <button onClick={onAddRecord}>Add New Record</button>
+            <button onClick={onAddRecord}>
+              {todaysRecord ? "Edit Record" : "Add New Record"}
+            </button>
           )}
         </div>
         <p>

@@ -1,26 +1,35 @@
 import React, { useState } from "react";
-import { sleepRecordsAPI } from "../lib/supabase";
 import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
 
 type SleepFormProps = {
-  onSubmit: (record: SleepRecord) => void;
+  onSubmit: (record: SleepRecordInsert) => void;
   onCancel: () => void;
   userId: string;
+  existingRecord?: SleepRecord;
 };
 
-export function SleepForm({ onSubmit, onCancel, userId }: SleepFormProps) {
+export function SleepForm({
+  onSubmit,
+  onCancel,
+  userId,
+  existingRecord,
+}: SleepFormProps) {
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split("T")[0], // Today's date as default
-    comments: "",
-    time_got_into_bed: "",
-    time_tried_to_sleep: "",
-    time_to_fall_asleep_mins: "",
-    times_woke_up_count: "",
-    total_awake_time_mins: "",
-    final_awakening_time: "",
-    time_trying_to_sleep_after_final_awakening_mins: "",
-    time_got_out_of_bed: "",
-    sleep_quality_rating: "",
+    date: existingRecord?.date || new Date().toISOString().split("T")[0],
+    comments: existingRecord?.comments || "",
+    time_got_into_bed: existingRecord?.time_got_into_bed || "",
+    time_tried_to_sleep: existingRecord?.time_tried_to_sleep || "",
+    time_to_fall_asleep_mins:
+      existingRecord?.time_to_fall_asleep_mins?.toString() || "",
+    times_woke_up_count: existingRecord?.times_woke_up_count?.toString() || "",
+    total_awake_time_mins:
+      existingRecord?.total_awake_time_mins?.toString() || "",
+    final_awakening_time: existingRecord?.final_awakening_time || "",
+    time_trying_to_sleep_after_final_awakening_mins:
+      existingRecord?.time_trying_to_sleep_after_final_awakening_mins?.toString() ||
+      "",
+    time_got_out_of_bed: existingRecord?.time_got_out_of_bed || "",
+    sleep_quality_rating: existingRecord?.sleep_quality_rating || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,8 +91,8 @@ export function SleepForm({ onSubmit, onCancel, userId }: SleepFormProps) {
         );
       }
 
-      const newRecord = await sleepRecordsAPI.create(record);
-      onSubmit(newRecord);
+      // Pass the record to parent component for handling
+      await onSubmit(record);
     } catch (err) {
       setError("Failed to save sleep record: " + (err as Error).message);
     } finally {
@@ -94,8 +103,12 @@ export function SleepForm({ onSubmit, onCancel, userId }: SleepFormProps) {
   return (
     <main>
       <header className="dashboard-header">
-        <h1>Add New Sleep Record</h1>
-        <p>Enter your sleep data for tracking and analysis</p>
+        <h1>{existingRecord ? "Edit Sleep Record" : "Add New Sleep Record"}</h1>
+        <p>
+          {existingRecord
+            ? "Update your sleep data"
+            : "Enter your sleep data for tracking and analysis"}
+        </p>
         <button type="button" onClick={onCancel} className="btn-cancel">
           Back to Dashboard
         </button>
@@ -273,7 +286,11 @@ export function SleepForm({ onSubmit, onCancel, userId }: SleepFormProps) {
               Cancel
             </button>
             <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save Sleep Record"}
+              {isSubmitting
+                ? "Saving..."
+                : existingRecord
+                  ? "Update Sleep Record"
+                  : "Save Sleep Record"}
             </button>
           </div>
         </form>

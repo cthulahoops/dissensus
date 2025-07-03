@@ -151,73 +151,60 @@ export function filterRecordsByDateRange(
 }
 
 export function prepareChartData(processedData: ProcessedSleepData[]) {
-  console.log(processedData);
-  // Prepare data for charts
-  const timeInBedData: ChartDataPoint[] = processedData
-    .map((d) => ({
-      date: d.date,
-      value: d.totalTimeInBed,
-    }))
-    .filter((d) => d.value !== null);
+  // Prepare data for charts - include all dates, but replace null with 0 for display
+  const timeInBedData: ChartDataPoint[] = processedData.map((d) => ({
+    date: d.date,
+    value: d.totalTimeInBed ?? 0,
+  }));
 
-  const timeAsleepData: ChartDataPoint[] = processedData
-    .map((d) => ({
-      date: d.date,
-      value: d.totalTimeAsleep,
-    }))
-    .filter((d) => d.value !== null);
+  const timeAsleepData: ChartDataPoint[] = processedData.map((d) => ({
+    date: d.date,
+    value: d.totalTimeAsleep ?? 0,
+  }));
 
-  const efficiencyData: ChartDataPoint[] = processedData
-    .map((d) => ({
-      date: d.date,
-      value: d.sleepEfficiency,
-    }))
-    .filter((d) => d.value !== null);
+  const efficiencyData: ChartDataPoint[] = processedData.map((d) => ({
+    date: d.date,
+    value: d.sleepEfficiency ?? 0,
+  }));
 
-  const fallAsleepData: ChartDataPoint[] = processedData
-    .map((d) => ({
-      date: d.date,
-      value: d.timeToFallAsleepMinutes,
-    }))
-    .filter((d) => d.value !== null);
+  const fallAsleepData: ChartDataPoint[] = processedData.map((d) => ({
+    date: d.date,
+    value: d.timeToFallAsleepMinutes ?? 0,
+  }));
 
-  const tryingToSleepData: ChartDataPoint[] = processedData
-    .map((d) => ({
-      date: d.date,
-      value: d.timeTryingToSleepMinutes,
-    }))
-    .filter((d) => d.value !== null);
+  const tryingToSleepData: ChartDataPoint[] = processedData.map((d) => ({
+    date: d.date,
+    value: d.timeTryingToSleepMinutes ?? 0,
+  }));
 
-  const timeAwakeInNightData: ChartDataPoint[] = processedData
-    .map((d) => ({
-      date: d.date,
-      value: d.timeAwakeInNightMinutes,
-    }))
-    .filter((d) => d.value !== null);
+  const timeAwakeInNightData: ChartDataPoint[] = processedData.map((d) => ({
+    date: d.date,
+    value: d.timeAwakeInNightMinutes ?? 0,
+  }));
 
-  // Calculate rolling averages
+  // Calculate rolling averages - treat null values as zeros for proper trend calculation
   const timeInBedAvg = calculateRollingAverage(
-    timeInBedData.map((d) => d.value),
+    processedData.map((d) => d.totalTimeInBed ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const timeAsleepAvg = calculateRollingAverage(
-    timeAsleepData.map((d) => d.value),
+    processedData.map((d) => d.totalTimeAsleep ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const efficiencyAvg = calculateRollingAverage(
-    efficiencyData.map((d) => d.value),
+    processedData.map((d) => d.sleepEfficiency ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const fallAsleepAvg = calculateRollingAverage(
-    fallAsleepData.map((d) => d.value),
+    processedData.map((d) => d.timeToFallAsleepMinutes ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const tryingToSleepAvg = calculateRollingAverage(
-    tryingToSleepData.map((d) => d.value),
+    processedData.map((d) => d.timeTryingToSleepMinutes ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const timeAwakeInNightAvg = calculateRollingAverage(
-    timeAwakeInNightData.map((d) => d.value),
+    processedData.map((d) => d.timeAwakeInNightMinutes ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
 

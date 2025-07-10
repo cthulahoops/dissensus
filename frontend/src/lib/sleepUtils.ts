@@ -150,7 +150,10 @@ export function filterRecordsByDateRange(
   });
 }
 
-export function prepareChartData(processedData: ProcessedSleepData[]) {
+export function prepareChartData(
+  processedData: ProcessedSleepData[],
+  allProcessedData?: ProcessedSleepData[],
+) {
   // Prepare data for charts - include all dates, but replace null with 0 for display
   const timeInBedData: ChartDataPoint[] = processedData.map((d) => ({
     date: d.date,
@@ -182,41 +185,67 @@ export function prepareChartData(processedData: ProcessedSleepData[]) {
     value: d.timeAwakeInNightMinutes ?? 0,
   }));
 
-  // Calculate rolling averages - treat null values as zeros for proper trend calculation
+  // Calculate rolling averages - use all data if provided, otherwise use filtered data
+  // This ensures rolling averages include historical context even when viewing filtered date ranges
+  const dataForAverages = allProcessedData || processedData;
+
   const timeInBedAvg = calculateRollingAverage(
-    processedData.map((d) => d.totalTimeInBed ?? 0),
+    dataForAverages.map((d) => d.totalTimeInBed ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const timeAsleepAvg = calculateRollingAverage(
-    processedData.map((d) => d.totalTimeAsleep ?? 0),
+    dataForAverages.map((d) => d.totalTimeAsleep ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const efficiencyAvg = calculateRollingAverage(
-    processedData.map((d) => d.sleepEfficiency ?? 0),
+    dataForAverages.map((d) => d.sleepEfficiency ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const fallAsleepAvg = calculateRollingAverage(
-    processedData.map((d) => d.timeToFallAsleepMinutes ?? 0),
+    dataForAverages.map((d) => d.timeToFallAsleepMinutes ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const tryingToSleepAvg = calculateRollingAverage(
-    processedData.map((d) => d.timeTryingToSleepMinutes ?? 0),
+    dataForAverages.map((d) => d.timeTryingToSleepMinutes ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
   const timeAwakeInNightAvg = calculateRollingAverage(
-    processedData.map((d) => d.timeAwakeInNightMinutes ?? 0),
+    dataForAverages.map((d) => d.timeAwakeInNightMinutes ?? 0),
     ROLLING_AVERAGE_DAYS,
   );
 
+  // Filter rolling averages to match the displayed data range
+  const filteredTimeInBedAvg = allProcessedData
+    ? timeInBedAvg.slice(-processedData.length)
+    : timeInBedAvg;
+  const filteredTimeAsleepAvg = allProcessedData
+    ? timeAsleepAvg.slice(-processedData.length)
+    : timeAsleepAvg;
+  const filteredEfficiencyAvg = allProcessedData
+    ? efficiencyAvg.slice(-processedData.length)
+    : efficiencyAvg;
+  const filteredFallAsleepAvg = allProcessedData
+    ? fallAsleepAvg.slice(-processedData.length)
+    : fallAsleepAvg;
+  const filteredTryingToSleepAvg = allProcessedData
+    ? tryingToSleepAvg.slice(-processedData.length)
+    : tryingToSleepAvg;
+  const filteredTimeAwakeInNightAvg = allProcessedData
+    ? timeAwakeInNightAvg.slice(-processedData.length)
+    : timeAwakeInNightAvg;
+
   return {
-    timeInBed: { data: timeInBedData, average: timeInBedAvg },
-    timeAsleep: { data: timeAsleepData, average: timeAsleepAvg },
-    efficiency: { data: efficiencyData, average: efficiencyAvg },
-    fallAsleep: { data: fallAsleepData, average: fallAsleepAvg },
-    tryingToSleep: { data: tryingToSleepData, average: tryingToSleepAvg },
+    timeInBed: { data: timeInBedData, average: filteredTimeInBedAvg },
+    timeAsleep: { data: timeAsleepData, average: filteredTimeAsleepAvg },
+    efficiency: { data: efficiencyData, average: filteredEfficiencyAvg },
+    fallAsleep: { data: fallAsleepData, average: filteredFallAsleepAvg },
+    tryingToSleep: {
+      data: tryingToSleepData,
+      average: filteredTryingToSleepAvg,
+    },
     timeAwakeInNight: {
       data: timeAwakeInNightData,
-      average: timeAwakeInNightAvg,
+      average: filteredTimeAwakeInNightAvg,
     },
   };
 }

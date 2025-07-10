@@ -51,14 +51,18 @@ export function SleepDashboard({
     return sleepRecords.find((record) => record.date === today);
   }, [sleepRecords]);
 
-  // Process filtered data
+  // Process all data for rolling averages and filtered data for display
+  const allProcessedData = useMemo(() => {
+    return processData(sleepRecords);
+  }, [sleepRecords]);
+
   const processedData = useMemo(() => {
     return processData(filteredRecords);
   }, [filteredRecords]);
 
   const chartData = useMemo(() => {
-    return prepareChartData(processedData);
-  }, [processedData]);
+    return prepareChartData(processedData, allProcessedData);
+  }, [processedData, allProcessedData]);
 
   if (loading) {
     return (

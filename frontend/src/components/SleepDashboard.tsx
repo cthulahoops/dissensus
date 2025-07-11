@@ -38,7 +38,7 @@ export function SleepDashboard({
   isSharedView = false,
   sharedViewInfo,
 }: SleepDashboardProps) {
-  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("all");
+  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("14d");
 
   // Filter records based on selected time range
   const filteredRecords = useMemo(() => {

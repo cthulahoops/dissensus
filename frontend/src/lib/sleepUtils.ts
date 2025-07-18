@@ -109,11 +109,12 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
 }
 
 export function formatHoursMinutes(hours: number | null): string {
-  if (hours === null || hours === undefined || isNaN(hours)) {
+  if (hours === null || isNaN(hours)) {
     return "N/A";
   }
-  const h = Math.floor(hours);
-  const m = Math.round((hours - h) * 60);
+  const totalMinutes = Math.round(hours * 60);
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
   return `${h}:${m.toString().padStart(2, "0")}`;
 }
 

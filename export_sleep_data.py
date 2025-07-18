@@ -87,9 +87,9 @@ def map_answers_to_questions(answers):
                     if isinstance(answer[0], dict) and "v" in answer[0]:
                         mapped_answers["final_awakening_time"] = answer[0]["v"]
                     if isinstance(answer[1], dict) and "v" in answer[1]:
-                        mapped_answers["time_trying_to_sleep_after_final_awakening_mins"] = (
-                            answer[1]["v"]
-                        )
+                        mapped_answers[
+                            "time_trying_to_sleep_after_final_awakening_mins"
+                        ] = answer[1]["v"]
                     # Store the full array as JSON for completeness
                     mapped_answers[label] = json.dumps(answer)
                 else:

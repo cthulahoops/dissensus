@@ -32,7 +32,6 @@ export function SleepDashboard({
   const selectedData = useMemo(() => {
     return filterRecordsByDateRange(allProcessedData, selectedTimeRange);
   }, [allProcessedData, selectedTimeRange]);
-  const processedData = selectedData;
 
   if (loading) {
     return (
@@ -64,13 +63,13 @@ export function SleepDashboard({
       />
 
       <AveragesSummary
-        processedData={processedData}
+        processedData={selectedData}
         allProcessedData={allProcessedData}
       />
 
       <SleepChart
         allData={allProcessedData}
-        selectedData={processedData}
+        selectedData={selectedData}
         dataKey="totalTimeInBed"
         label="Time in Bed"
         color="#4fc3f7"
@@ -78,7 +77,7 @@ export function SleepDashboard({
 
       <SleepChart
         allData={allProcessedData}
-        selectedData={processedData}
+        selectedData={selectedData}
         dataKey="totalTimeAsleep"
         label="Time Asleep"
         color="#81c784"
@@ -86,7 +85,7 @@ export function SleepDashboard({
 
       <SleepChart
         allData={allProcessedData}
-        selectedData={processedData}
+        selectedData={selectedData}
         dataKey="sleepEfficiency"
         label="Sleep Efficiency"
         color="#ffb74d"
@@ -95,7 +94,7 @@ export function SleepDashboard({
 
       <SleepChart
         allData={allProcessedData}
-        selectedData={processedData}
+        selectedData={selectedData}
         dataKey="timeToFallAsleepMinutes"
         label="Time to Fall Asleep"
         color="#ba68c8"
@@ -104,7 +103,7 @@ export function SleepDashboard({
 
       <SleepChart
         allData={allProcessedData}
-        selectedData={processedData}
+        selectedData={selectedData}
         dataKey="timeTryingToSleepMinutes"
         label="Time Trying to Sleep After Final Awakening"
         color="#f06292"
@@ -113,7 +112,7 @@ export function SleepDashboard({
 
       <SleepChart
         allData={allProcessedData}
-        selectedData={processedData}
+        selectedData={selectedData}
         dataKey="timeAwakeInNightMinutes"
         label="Time Awake in Night"
         color="#ff8a65"

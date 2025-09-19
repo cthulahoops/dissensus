@@ -26,19 +26,14 @@ export function SleepDashboard({
 }: SleepDashboardProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("14d");
 
-  // Filter records based on selected time range
-  const filteredRecords = useMemo(() => {
-    return filterRecordsByDateRange(sleepRecords, selectedTimeRange);
-  }, [sleepRecords, selectedTimeRange]);
-
-  // Process all data for rolling averages and filtered data for display
   const allProcessedData = useMemo(() => {
     return processData(sleepRecords);
   }, [sleepRecords]);
 
-  const processedData = useMemo(() => {
-    return processData(filteredRecords);
-  }, [filteredRecords]);
+  const selectedData = useMemo(() => {
+    return filterRecordsByDateRange(allProcessedData, selectedTimeRange);
+  }, [allProcessedData, selectedTimeRange]);
+  const processedData = selectedData;
 
   if (loading) {
     return (
@@ -66,7 +61,7 @@ export function SleepDashboard({
         sleepRecords={sleepRecords}
         isSharedView={isSharedView}
         sharedViewInfo={sharedViewInfo}
-        selectedData={filteredRecords}
+        selectedData={selectedData}
       />
 
       <AveragesSummary

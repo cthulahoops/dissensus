@@ -125,10 +125,10 @@ export interface ChartDataPoint {
 
 export type TimeRange = "all" | "30d" | "14d" | "7d";
 
-export function filterRecordsByDateRange(
-  records: SleepRecord[],
+export function filterRecordsByDateRange<T extends { date: string }>(
+  records: T[],
   timeRange: TimeRange,
-): SleepRecord[] {
+): T[] {
   if (timeRange === "all") {
     return records;
   }

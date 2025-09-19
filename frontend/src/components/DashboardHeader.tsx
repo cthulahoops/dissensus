@@ -9,7 +9,7 @@ type DashboardHeaderProps = {
   sleepRecords: SleepRecord[];
   isSharedView?: boolean;
   sharedViewInfo?: string;
-  selectedData: SleepRecord[];
+  selectedData: unknown[];
 };
 
 export function DashboardHeader({

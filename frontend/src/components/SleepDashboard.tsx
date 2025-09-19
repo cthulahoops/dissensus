@@ -89,7 +89,7 @@ export function SleepDashboard({
         dataKey="sleepEfficiency"
         label="Sleep Efficiency"
         color="#ffb74d"
-        isPercentage={true}
+        dataUnits="percentage"
       />
 
       <SleepChart
@@ -98,7 +98,7 @@ export function SleepDashboard({
         dataKey="timeToFallAsleepMinutes"
         label="Time to Fall Asleep"
         color="#ba68c8"
-        isMinutes={true}
+        dataUnits="minutes"
       />
 
       <SleepChart
@@ -107,7 +107,7 @@ export function SleepDashboard({
         dataKey="timeTryingToSleepMinutes"
         label="Time Trying to Sleep After Final Awakening"
         color="#f06292"
-        isMinutes={true}
+        dataUnits="minutes"
       />
 
       <SleepChart
@@ -116,7 +116,7 @@ export function SleepDashboard({
         dataKey="timeAwakeInNightMinutes"
         label="Time Awake in Night"
         color="#ff8a65"
-        isMinutes={true}
+        dataUnits="minutes"
       />
     </main>
   );

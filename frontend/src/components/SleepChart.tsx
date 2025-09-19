@@ -35,9 +35,10 @@ type SleepChartProps = {
   dataKey: DataKey;
   label: string;
   color: string;
-  isPercentage?: boolean;
-  isMinutes?: boolean;
+  dataUnits?: DataUnits;
 };
+
+type DataUnits = "hours" | "percentage" | "minutes";
 
 export function SleepChart({
   allData,
@@ -45,14 +46,16 @@ export function SleepChart({
   dataKey,
   label,
   color,
-  isPercentage = false,
-  isMinutes = false,
+  dataUnits = "hours",
 }: SleepChartProps) {
   const { data, average: rollingAverage } = getChartData(
     selectedData,
     allData,
     dataKey,
   );
+
+  const isPercentage = dataUnits === "percentage";
+  const isMinutes = dataUnits === "minutes";
 
   const chartData = {
     labels: data.map((d) => d.date),

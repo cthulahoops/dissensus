@@ -39,7 +39,7 @@ export function calculateRollingAverage(
   return result;
 }
 
-export interface ProcessedSleepData {
+export type ProcessedSleepData = {
   date: string;
   totalTimeInBed: number | null;
   totalTimeAsleep: number | null;
@@ -47,7 +47,7 @@ export interface ProcessedSleepData {
   timeToFallAsleepMinutes: number | null;
   timeTryingToSleepMinutes: number | null;
   timeAwakeInNightMinutes: number | null;
-}
+};
 
 export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
   return sleepData.map((record) => {
@@ -151,57 +151,52 @@ export function filterRecordsByDateRange(
   });
 }
 
+type DataKey = keyof Omit<ProcessedSleepData, "date">;
+
+type Series = {
+  data: { date: string; value: number | null }[];
+  average: (number | null)[];
+};
+
+type ChartResult = {
+  timeInBed: Series;
+  timeAsleep: Series;
+  efficiency: Series;
+  fallAsleep: Series;
+  tryingToSleep: Series;
+  timeAwakeInNight: Series;
+};
+
 export function prepareChartData(
-  processedData: ProcessedSleepData[],
-  allProcessedData?: ProcessedSleepData[],
-) {
-  if (!allProcessedData) {
-    allProcessedData = processedData;
-  }
+  selected: ProcessedSleepData[],
+  all: ProcessedSleepData[],
+): ChartResult {
   return {
-    timeInBed: {
-      data: dataWithZeros(processedData, "totalTimeInBed"),
-      average: dataAverages(processedData, allProcessedData, "totalTimeInBed"),
-    },
-    timeAsleep: {
-      data: dataWithZeros(processedData, "totalTimeAsleep"),
-      average: dataAverages(processedData, allProcessedData, "totalTimeAsleep"),
-    },
-    efficiency: {
-      data: dataWithZeros(processedData, "sleepEfficiency"),
-      average: dataAverages(processedData, allProcessedData, "sleepEfficiency"),
-    },
-    fallAsleep: {
-      data: dataWithZeros(processedData, "timeToFallAsleepMinutes"),
-      average: dataAverages(
-        processedData,
-        allProcessedData,
-        "timeToFallAsleepMinutes",
-      ),
-    },
-    tryingToSleep: {
-      data: dataWithZeros(processedData, "timeTryingToSleepMinutes"),
-      average: dataAverages(
-        processedData,
-        allProcessedData,
-        "timeTryingToSleepMinutes",
-      ),
-    },
-    timeAwakeInNight: {
-      data: dataWithZeros(processedData, "timeAwakeInNightMinutes"),
-      average: dataAverages(
-        processedData,
-        allProcessedData,
-        "timeAwakeInNightMinutes",
-      ),
-    },
+    timeInBed: chartDataElement(selected, all, "totalTimeInBed"),
+    timeAsleep: chartDataElement(selected, all, "totalTimeAsleep"),
+    efficiency: chartDataElement(selected, all, "sleepEfficiency"),
+    fallAsleep: chartDataElement(selected, all, "timeToFallAsleepMinutes"),
+    tryingToSleep: chartDataElement(selected, all, "timeTryingToSleepMinutes"),
+    timeAwakeInNight: chartDataElement(
+      selected,
+      all,
+      "timeAwakeInNightMinutes",
+    ),
   };
 }
 
-function dataWithZeros(
+function chartDataElement(
   processedSleepData: ProcessedSleepData[],
-  key: keyof ProcessedSleepData,
+  allProcessedData: ProcessedSleepData[],
+  key: DataKey,
 ) {
+  return {
+    data: dataWithZeros(processedSleepData, key),
+    average: dataAverages(processedSleepData, allProcessedData, key),
+  };
+}
+
+function dataWithZeros(processedSleepData: ProcessedSleepData[], key: DataKey) {
   return processedSleepData.map((d) => ({
     date: d.date,
     value: d[key] ?? 0,
@@ -211,7 +206,7 @@ function dataWithZeros(
 function dataAverages(
   processedData: ProcessedSleepData[],
   allProcessedData: ProcessedSleepData[],
-  key: keyof Omit<ProcessedSleepData, "date">,
+  key: DataKey,
 ) {
   return calculateRollingAverage(
     allProcessedData.map((d) => d[key] ?? 0),

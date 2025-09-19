@@ -151,7 +151,7 @@ export function filterRecordsByDateRange<T extends { date: string }>(
   });
 }
 
-type DataKey = keyof Omit<ProcessedSleepData, "date">;
+export type DataKey = keyof Omit<ProcessedSleepData, "date">;
 
 export function chartData(
   processedSleepData: ProcessedSleepData[],

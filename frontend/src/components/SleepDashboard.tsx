@@ -5,7 +5,6 @@ import { SleepChart } from "./SleepChart";
 import { type TimeRange } from "./TimeRangeSelector";
 import { DashboardHeader } from "./DashboardHeader";
 import { AveragesSummary } from "./AveragesSummary";
-import { chartData } from "../lib/sleepUtils";
 
 type SleepDashboardProps = {
   onAddRecord: () => void;
@@ -70,64 +69,52 @@ export function SleepDashboard({
       />
 
       <SleepChart
-        dataAndAverage={chartData(
-          processedData,
-          allProcessedData,
-          "totalTimeInBed",
-        )}
+        allData={allProcessedData}
+        selectedData={processedData}
+        dataKey="totalTimeInBed"
         label="Time in Bed"
         color="#4fc3f7"
       />
 
       <SleepChart
-        dataAndAverage={chartData(
-          processedData,
-          allProcessedData,
-          "totalTimeAsleep",
-        )}
+        allData={allProcessedData}
+        selectedData={processedData}
+        dataKey="totalTimeAsleep"
         label="Time Asleep"
         color="#81c784"
       />
 
       <SleepChart
-        dataAndAverage={chartData(
-          processedData,
-          allProcessedData,
-          "sleepEfficiency",
-        )}
+        allData={allProcessedData}
+        selectedData={processedData}
+        dataKey="sleepEfficiency"
         label="Sleep Efficiency"
         color="#ffb74d"
         isPercentage={true}
       />
 
       <SleepChart
-        dataAndAverage={chartData(
-          processedData,
-          allProcessedData,
-          "timeToFallAsleepMinutes",
-        )}
+        allData={allProcessedData}
+        selectedData={processedData}
+        dataKey="timeToFallAsleepMinutes"
         label="Time to Fall Asleep"
         color="#ba68c8"
         isMinutes={true}
       />
 
       <SleepChart
-        dataAndAverage={chartData(
-          processedData,
-          allProcessedData,
-          "timeTryingToSleepMinutes",
-        )}
+        allData={allProcessedData}
+        selectedData={processedData}
+        dataKey="timeTryingToSleepMinutes"
         label="Time Trying to Sleep After Final Awakening"
         color="#f06292"
         isMinutes={true}
       />
 
       <SleepChart
-        dataAndAverage={chartData(
-          processedData,
-          allProcessedData,
-          "timeAwakeInNightMinutes",
-        )}
+        allData={allProcessedData}
+        selectedData={processedData}
+        dataKey="timeAwakeInNightMinutes"
         label="Time Awake in Night"
         color="#ff8a65"
         isMinutes={true}

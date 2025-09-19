@@ -12,7 +12,8 @@ import {
   Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
-import type { ChartDataPoint } from "../lib/sleepUtils";
+import { chartData as getChartData } from "../lib/sleepUtils";
+import type { ProcessedSleepData, DataKey } from "../lib/sleepUtils";
 import { formatHoursMinutes, ROLLING_AVERAGE_DAYS } from "../lib/sleepUtils";
 
 ChartJS.register(
@@ -29,7 +30,9 @@ ChartJS.register(
 );
 
 type SleepChartProps = {
-  dataAndAverage: { data: ChartDataPoint[]; average: (number | null)[] };
+  allData: ProcessedSleepData[];
+  selectedData: ProcessedSleepData[];
+  dataKey: DataKey;
   label: string;
   color: string;
   isPercentage?: boolean;
@@ -37,13 +40,20 @@ type SleepChartProps = {
 };
 
 export function SleepChart({
-  dataAndAverage,
+  allData,
+  selectedData,
+  dataKey,
   label,
   color,
   isPercentage = false,
   isMinutes = false,
 }: SleepChartProps) {
-  const { data, average: rollingAverage } = dataAndAverage;
+  const { data, average: rollingAverage } = getChartData(
+    selectedData,
+    allData,
+    dataKey,
+  );
+
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [

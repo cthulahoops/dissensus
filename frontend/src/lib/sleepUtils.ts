@@ -20,25 +20,6 @@ export function calculateTimeDifference(
   return diff;
 }
 
-export function calculateRollingAverage(
-  data: (number | null)[],
-  windowSize: number,
-): (number | null)[] {
-  const result: (number | null)[] = [];
-  for (let i = 0; i < data.length; i++) {
-    const start = Math.max(0, i - windowSize + 1);
-    const window = data
-      .slice(start, i + 1)
-      .filter((val) => val !== null && !isNaN(val)) as number[];
-    if (window.length > 0) {
-      result.push(window.reduce((sum, val) => sum + val, 0) / window.length);
-    } else {
-      result.push(null);
-    }
-  }
-  return result;
-}
-
 export type ProcessedSleepData = {
   date: string;
   totalTimeInBed: number | null;
@@ -189,11 +170,83 @@ export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
   };
 }
 
-function dataAverages(allProcessedData: ProcessedSleepData[], key: DataKey) {
-  return calculateRollingAverage(
-    allProcessedData.map((d) => d[key] ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
+function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
+  if (data.length === 0) return [];
+
+  const sortedData = [...data].sort((a, b) => a.date.localeCompare(b.date));
+  const dataByDate = new Map(sortedData.map(d => [d.date, d]));
+
+  const minDate = new Date(sortedData[0].date);
+  const maxDate = new Date(sortedData[sortedData.length - 1].date);
+
+  const filledData: ProcessedSleepData[] = [];
+  const currentDate = new Date(minDate);
+
+  while (currentDate <= maxDate) {
+    const dateStr = currentDate.toISOString().split('T')[0];
+
+    if (dataByDate.has(dateStr)) {
+      filledData.push(dataByDate.get(dateStr)!);
+    } else {
+      filledData.push({
+        date: dateStr,
+        totalTimeInBed: null,
+        totalTimeAsleep: null,
+        sleepEfficiency: null,
+        timeToFallAsleepMinutes: null,
+        timeTryingToSleepMinutes: null,
+        timeAwakeInNightMinutes: null,
+      });
+    }
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return filledData;
+}
+
+function dataAverages(data: ProcessedSleepData[], key: DataKey) {
+  if (data.length === 0) return [];
+
+  const dataWithZeros = data.map(d => ({
+    ...d,
+    [key]: d[key] ?? 0
+  }));
+
+  const filledData = fillMissingDates(dataWithZeros);
+
+  const originalDateSet = new Set(data.map(d => d.date));
+  const originalIndices: number[] = [];
+
+  filledData.forEach((d, index) => {
+    if (originalDateSet.has(d.date)) {
+      originalIndices.push(index);
+    }
+  });
+
+  const filledValues = filledData.map((d) => d[key]);
+  const allAverages = calculateRollingAverage(filledValues, ROLLING_AVERAGE_DAYS);
+
+  return originalIndices.map(index => allAverages[index]);
+}
+
+export function calculateRollingAverage(
+  data: (number | null)[],
+  windowSize: number,
+): (number | null)[] {
+  const result: (number | null)[] = [];
+  for (let i = 0; i < data.length; i++) {
+    const start = Math.max(0, i - windowSize + 1);
+    const window = data
+      .slice(start, i + 1)
+      .filter((val) => val !== null && !isNaN(val)) as number[];
+    if (window.length > 0) {
+      result.push(window.reduce((sum, val) => sum + val, 0) / window.length);
+    } else {
+      result.push(null);
+    }
+  }
+  return result;
 }
 
 export function getLatestAverage(averages: AveragedData, key: DataKey) {

@@ -53,10 +53,6 @@ export function SleepChart({
     allData,
     dataKey,
   );
-
-  const isPercentage = dataUnits === "percentage";
-  const isMinutes = dataUnits === "minutes";
-
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [
@@ -100,13 +96,8 @@ export function SleepChart({
           }) {
             const value = context.parsed.y;
             const label = context.dataset.label || "Data";
-            if (isPercentage) {
-              return `${label}: ${value.toFixed(1)}%`;
-            } else if (isMinutes) {
-              return `${label}: ${value} minutes`;
-            } else {
-              return `${label}: ${formatHoursMinutes(value)}`;
-            }
+            const valueLabel = formatValue(value, dataUnits, 1);
+            return `${label}: ${valueLabel}`;
           },
         },
       },
@@ -118,17 +109,7 @@ export function SleepChart({
           color: "#e0e0e0",
         },
         ticks: {
-          callback: function (value: string | number) {
-            const numValue =
-              typeof value === "string" ? parseFloat(value) : value;
-            if (isPercentage) {
-              return numValue + "%";
-            } else if (isMinutes) {
-              return numValue + " min";
-            } else {
-              return formatHoursMinutes(numValue);
-            }
-          },
+          callback: (value: number | string) => formatValue(value, dataUnits),
         },
       },
       x: {
@@ -152,4 +133,19 @@ export function SleepChart({
       </div>
     </section>
   );
+}
+
+function formatValue(
+  value: string | number,
+  dataUnits: DataUnits,
+  precision = 0,
+) {
+  const numValue = typeof value === "string" ? parseFloat(value) : value;
+  if (dataUnits === "percentage") {
+    return numValue.toFixed(precision) + "%";
+  } else if (dataUnits === "minutes") {
+    return numValue.toFixed(precision) + " min";
+  } else {
+    return formatHoursMinutes(numValue);
+  }
 }

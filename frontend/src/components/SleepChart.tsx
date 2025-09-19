@@ -29,8 +29,7 @@ ChartJS.register(
 );
 
 type SleepChartProps = {
-  data: ChartDataPoint[];
-  rollingAverage: (number | null)[];
+  dataAndAverage: { data: ChartDataPoint[]; average: (number | null)[] };
   label: string;
   color: string;
   isPercentage?: boolean;
@@ -38,13 +37,13 @@ type SleepChartProps = {
 };
 
 export function SleepChart({
-  data,
-  rollingAverage,
+  dataAndAverage,
   label,
   color,
   isPercentage = false,
   isMinutes = false,
 }: SleepChartProps) {
+  const { data, average: rollingAverage } = dataAndAverage;
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [

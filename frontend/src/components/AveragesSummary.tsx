@@ -1,10 +1,15 @@
-import { prepareChartData, formatHoursMinutes } from "../lib/sleepUtils";
+import { formatHoursMinutes, getLatestAverage } from "../lib/sleepUtils";
+import type { ProcessedSleepData } from "../lib/sleepUtils";
+
+type AveragesSummaryProps = {
+  processedData: ProcessedSleepData[];
+  allProcessedData: ProcessedSleepData[];
+};
 
 export function AveragesSummary({
-  chartData,
-}: {
-  chartData: ReturnType<typeof prepareChartData>;
-}) {
+  processedData,
+  allProcessedData,
+}: AveragesSummaryProps) {
   return (
     <section className="averages-summary">
       <h2>7-Day Averages (Latest)</h2>
@@ -12,20 +17,36 @@ export function AveragesSummary({
         <div className="average-card">
           <h3>Time in Bed</h3>
           <div className="average-value">
-            {formatHoursMinutes(getLatestAverage(chartData.timeInBed.average))}
+            {formatHoursMinutes(
+              getLatestAverage(
+                allProcessedData,
+                processedData,
+                "totalTimeInBed",
+              ),
+            )}
           </div>
         </div>
         <div className="average-card">
           <h3>Time Asleep</h3>
           <div className="average-value">
-            {formatHoursMinutes(getLatestAverage(chartData.timeAsleep.average))}
+            {formatHoursMinutes(
+              getLatestAverage(
+                processedData,
+                allProcessedData,
+                "totalTimeAsleep",
+              ),
+            )}
           </div>
         </div>
         <div className="average-card">
           <h3>Sleep Efficiency</h3>
           <div className="average-value">
             {(() => {
-              const efficiency = getLatestAverage(chartData.efficiency.average);
+              const efficiency = getLatestAverage(
+                processedData,
+                allProcessedData,
+                "sleepEfficiency",
+              );
               return efficiency !== null ? `${efficiency.toFixed(1)}%` : "N/A";
             })()}
           </div>
@@ -34,7 +55,11 @@ export function AveragesSummary({
           <h3>Time to Fall Asleep</h3>
           <div className="average-value">
             {(() => {
-              const minutes = getLatestAverage(chartData.fallAsleep.average);
+              const minutes = getLatestAverage(
+                processedData,
+                allProcessedData,
+                "timeToFallAsleepMinutes",
+              );
               return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
             })()}
           </div>
@@ -43,7 +68,11 @@ export function AveragesSummary({
           <h3>Trying to Sleep After Awakening</h3>
           <div className="average-value">
             {(() => {
-              const minutes = getLatestAverage(chartData.tryingToSleep.average);
+              const minutes = getLatestAverage(
+                processedData,
+                allProcessedData,
+                "timeTryingToSleepMinutes",
+              );
               return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
             })()}
           </div>
@@ -53,7 +82,9 @@ export function AveragesSummary({
           <div className="average-value">
             {(() => {
               const minutes = getLatestAverage(
-                chartData.timeAwakeInNight.average,
+                processedData,
+                allProcessedData,
+                "timeAwakeInNightMinutes",
               );
               return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
             })()}
@@ -62,15 +93,4 @@ export function AveragesSummary({
       </div>
     </section>
   );
-}
-
-function getLatestAverage(averageArray: (number | null)[]): number | null {
-  if (averageArray.length === 0) return null;
-  // Find the last non-null value
-  for (let i = averageArray.length - 1; i >= 0; i--) {
-    if (averageArray[i] !== null) {
-      return averageArray[i];
-    }
-  }
-  return null;
 }

@@ -153,39 +153,7 @@ export function filterRecordsByDateRange(
 
 type DataKey = keyof Omit<ProcessedSleepData, "date">;
 
-type Series = {
-  data: { date: string; value: number | null }[];
-  average: (number | null)[];
-};
-
-type ChartResult = {
-  timeInBed: Series;
-  timeAsleep: Series;
-  efficiency: Series;
-  fallAsleep: Series;
-  tryingToSleep: Series;
-  timeAwakeInNight: Series;
-};
-
-export function prepareChartData(
-  selected: ProcessedSleepData[],
-  all: ProcessedSleepData[],
-): ChartResult {
-  return {
-    timeInBed: chartDataElement(selected, all, "totalTimeInBed"),
-    timeAsleep: chartDataElement(selected, all, "totalTimeAsleep"),
-    efficiency: chartDataElement(selected, all, "sleepEfficiency"),
-    fallAsleep: chartDataElement(selected, all, "timeToFallAsleepMinutes"),
-    tryingToSleep: chartDataElement(selected, all, "timeTryingToSleepMinutes"),
-    timeAwakeInNight: chartDataElement(
-      selected,
-      all,
-      "timeAwakeInNightMinutes",
-    ),
-  };
-}
-
-function chartDataElement(
+export function chartData(
   processedSleepData: ProcessedSleepData[],
   allProcessedData: ProcessedSleepData[],
   key: DataKey,
@@ -212,4 +180,21 @@ function dataAverages(
     allProcessedData.map((d) => d[key] ?? 0),
     ROLLING_AVERAGE_DAYS,
   ).slice(-processedData.length);
+}
+
+export function getLatestAverage(
+  processedData: ProcessedSleepData[],
+  allProcessedData: ProcessedSleepData[],
+  key: DataKey,
+) {
+  const averageArray = dataAverages(processedData, allProcessedData, key);
+
+  if (averageArray.length === 0) return null;
+  // Find the last non-null value
+  for (let i = averageArray.length - 1; i >= 0; i--) {
+    if (averageArray[i] !== null) {
+      return averageArray[i];
+    }
+  }
+  return null;
 }

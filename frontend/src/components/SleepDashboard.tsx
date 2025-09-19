@@ -1,14 +1,11 @@
 import { useState, useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
-import {
-  processData,
-  prepareChartData,
-  filterRecordsByDateRange,
-} from "../lib/sleepUtils";
+import { processData, filterRecordsByDateRange } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 import { type TimeRange } from "./TimeRangeSelector";
 import { DashboardHeader } from "./DashboardHeader";
 import { AveragesSummary } from "./AveragesSummary";
+import { chartData } from "../lib/sleepUtils";
 
 type SleepDashboardProps = {
   onAddRecord: () => void;
@@ -43,10 +40,6 @@ export function SleepDashboard({
     return processData(filteredRecords);
   }, [filteredRecords]);
 
-  const chartData = useMemo(() => {
-    return prepareChartData(processedData, allProcessedData);
-  }, [processedData, allProcessedData]);
-
   if (loading) {
     return (
       <div className="dashboard-loading">
@@ -76,49 +69,70 @@ export function SleepDashboard({
         selectedData={filteredRecords}
       />
 
-      <AveragesSummary chartData={chartData} />
+      <AveragesSummary
+        processedData={processedData}
+        allProcessedData={allProcessedData}
+      />
 
       <SleepChart
-        data={chartData.timeInBed.data}
-        rollingAverage={chartData.timeInBed.average}
+        dataAndAverage={chartData(
+          processedData,
+          allProcessedData,
+          "totalTimeInBed",
+        )}
         label="Time in Bed"
         color="#4fc3f7"
       />
 
       <SleepChart
-        data={chartData.timeAsleep.data}
-        rollingAverage={chartData.timeAsleep.average}
+        dataAndAverage={chartData(
+          processedData,
+          allProcessedData,
+          "totalTimeAsleep",
+        )}
         label="Time Asleep"
         color="#81c784"
       />
 
       <SleepChart
-        data={chartData.efficiency.data}
-        rollingAverage={chartData.efficiency.average}
+        dataAndAverage={chartData(
+          processedData,
+          allProcessedData,
+          "sleepEfficiency",
+        )}
         label="Sleep Efficiency"
         color="#ffb74d"
         isPercentage={true}
       />
 
       <SleepChart
-        data={chartData.fallAsleep.data}
-        rollingAverage={chartData.fallAsleep.average}
+        dataAndAverage={chartData(
+          processedData,
+          allProcessedData,
+          "timeToFallAsleepMinutes",
+        )}
         label="Time to Fall Asleep"
         color="#ba68c8"
         isMinutes={true}
       />
 
       <SleepChart
-        data={chartData.tryingToSleep.data}
-        rollingAverage={chartData.tryingToSleep.average}
+        dataAndAverage={chartData(
+          processedData,
+          allProcessedData,
+          "timeTryingToSleepMinutes",
+        )}
         label="Time Trying to Sleep After Final Awakening"
         color="#f06292"
         isMinutes={true}
       />
 
       <SleepChart
-        data={chartData.timeAwakeInNight.data}
-        rollingAverage={chartData.timeAwakeInNight.average}
+        dataAndAverage={chartData(
+          processedData,
+          allProcessedData,
+          "timeAwakeInNightMinutes",
+        )}
         label="Time Awake in Night"
         color="#ff8a65"
         isMinutes={true}

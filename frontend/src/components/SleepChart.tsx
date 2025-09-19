@@ -133,8 +133,11 @@ export function SleepChart({
   };
 
   return (
-    <div className="chart-container">
-      <Chart type="bar" data={chartData} options={options} />
-    </div>
+    <section>
+      <h2>{label}</h2>
+      <div className="chart-container">
+        <Chart type="bar" data={chartData} options={options} />
+      </div>
+    </section>
   );
 }

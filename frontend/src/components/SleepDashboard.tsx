@@ -6,7 +6,8 @@ import {
   filterRecordsByDateRange,
 } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
-import { TimeRangeSelector, type TimeRange } from "./TimeRangeSelector";
+import { type TimeRange } from "./TimeRangeSelector";
+import { DashboardHeader } from "./DashboardHeader";
 import { AveragesSummary } from "./AveragesSummary";
 
 type SleepDashboardProps = {
@@ -32,12 +33,6 @@ export function SleepDashboard({
   const filteredRecords = useMemo(() => {
     return filterRecordsByDateRange(sleepRecords, selectedTimeRange);
   }, [sleepRecords, selectedTimeRange]);
-
-  // Check if today's record exists
-  const todaysRecord = useMemo(() => {
-    const today = new Date().toISOString().split("T")[0];
-    return sleepRecords.find((record) => record.date === today);
-  }, [sleepRecords]);
 
   // Process all data for rolling averages and filtered data for display
   const allProcessedData = useMemo(() => {

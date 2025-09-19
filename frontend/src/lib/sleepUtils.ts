@@ -178,17 +178,14 @@ export type AveragedData = {
   timeTryingToSleepMinutes: (number | null)[];
 };
 
-export function getAveragedData(sleepData: ProcessedSleepData[]): AveragedData {
+export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
   return {
-    totalTimeInBed: dataAverages(sleepData, "totalTimeInBed"),
-    totalTimeAsleep: dataAverages(sleepData, "totalTimeAsleep"),
-    sleepEfficiency: dataAverages(sleepData, "sleepEfficiency"),
-    timeToFallAsleepMinutes: dataAverages(sleepData, "timeToFallAsleepMinutes"),
-    timeAwakeInNightMinutes: dataAverages(sleepData, "timeAwakeInNightMinutes"),
-    timeTryingToSleepMinutes: dataAverages(
-      sleepData,
-      "timeTryingToSleepMinutes",
-    ),
+    totalTimeInBed: dataAverages(data, "totalTimeInBed"),
+    totalTimeAsleep: dataAverages(data, "totalTimeAsleep"),
+    sleepEfficiency: dataAverages(data, "sleepEfficiency"),
+    timeToFallAsleepMinutes: dataAverages(data, "timeToFallAsleepMinutes"),
+    timeAwakeInNightMinutes: dataAverages(data, "timeAwakeInNightMinutes"),
+    timeTryingToSleepMinutes: dataAverages(data, "timeTryingToSleepMinutes"),
   };
 }
 

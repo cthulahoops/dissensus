@@ -1,6 +1,10 @@
 import { useState, useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
-import { processData, filterRecordsByDateRange } from "../lib/sleepUtils";
+import {
+  processData,
+  filterRecordsByDateRange,
+  getAveragedData,
+} from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
 import { type TimeRange } from "./TimeRangeSelector";
 import { DashboardHeader } from "./DashboardHeader";
@@ -25,9 +29,15 @@ export function SleepDashboard({
 }: SleepDashboardProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("14d");
 
-  const allProcessedData = useMemo(() => {
-    return processData(sleepRecords);
-  }, [sleepRecords]);
+  const allProcessedData = useMemo(
+    () => processData(sleepRecords),
+    [sleepRecords],
+  );
+
+  const averages = useMemo(
+    () => getAveragedData(allProcessedData),
+    [allProcessedData],
+  );
 
   const selectedData = useMemo(() => {
     return filterRecordsByDateRange(allProcessedData, selectedTimeRange);
@@ -62,30 +72,27 @@ export function SleepDashboard({
         selectedData={selectedData}
       />
 
-      <AveragesSummary
-        processedData={selectedData}
-        allProcessedData={allProcessedData}
-      />
+      <AveragesSummary averages={averages} />
 
       <SleepChart
-        allData={allProcessedData}
         selectedData={selectedData}
+        averages={averages}
         dataKey="totalTimeInBed"
         label="Time in Bed"
         color="#4fc3f7"
       />
 
       <SleepChart
-        allData={allProcessedData}
         selectedData={selectedData}
+        averages={averages}
         dataKey="totalTimeAsleep"
         label="Time Asleep"
         color="#81c784"
       />
 
       <SleepChart
-        allData={allProcessedData}
         selectedData={selectedData}
+        averages={averages}
         dataKey="sleepEfficiency"
         label="Sleep Efficiency"
         color="#ffb74d"
@@ -93,8 +100,8 @@ export function SleepDashboard({
       />
 
       <SleepChart
-        allData={allProcessedData}
         selectedData={selectedData}
+        averages={averages}
         dataKey="timeToFallAsleepMinutes"
         label="Time to Fall Asleep"
         color="#ba68c8"
@@ -102,8 +109,8 @@ export function SleepDashboard({
       />
 
       <SleepChart
-        allData={allProcessedData}
         selectedData={selectedData}
+        averages={averages}
         dataKey="timeTryingToSleepMinutes"
         label="Time Trying to Sleep After Final Awakening"
         color="#f06292"
@@ -111,8 +118,8 @@ export function SleepDashboard({
       />
 
       <SleepChart
-        allData={allProcessedData}
         selectedData={selectedData}
+        averages={averages}
         dataKey="timeAwakeInNightMinutes"
         label="Time Awake in Night"
         color="#ff8a65"

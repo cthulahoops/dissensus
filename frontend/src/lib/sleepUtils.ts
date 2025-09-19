@@ -155,12 +155,10 @@ export type DataKey = keyof Omit<ProcessedSleepData, "date">;
 
 export function chartData(
   processedSleepData: ProcessedSleepData[],
-  allProcessedData: ProcessedSleepData[],
   key: DataKey,
 ) {
   return {
     data: dataWithZeros(processedSleepData, key),
-    average: dataAverages(processedSleepData, allProcessedData, key),
   };
 }
 
@@ -171,23 +169,38 @@ function dataWithZeros(processedSleepData: ProcessedSleepData[], key: DataKey) {
   }));
 }
 
-function dataAverages(
-  processedData: ProcessedSleepData[],
-  allProcessedData: ProcessedSleepData[],
-  key: DataKey,
-) {
+export type AveragedData = {
+  totalTimeInBed: (number | null)[];
+  totalTimeAsleep: (number | null)[];
+  sleepEfficiency: (number | null)[];
+  timeToFallAsleepMinutes: (number | null)[];
+  timeAwakeInNightMinutes: (number | null)[];
+  timeTryingToSleepMinutes: (number | null)[];
+};
+
+export function getAveragedData(sleepData: ProcessedSleepData[]): AveragedData {
+  return {
+    totalTimeInBed: dataAverages(sleepData, "totalTimeInBed"),
+    totalTimeAsleep: dataAverages(sleepData, "totalTimeAsleep"),
+    sleepEfficiency: dataAverages(sleepData, "sleepEfficiency"),
+    timeToFallAsleepMinutes: dataAverages(sleepData, "timeToFallAsleepMinutes"),
+    timeAwakeInNightMinutes: dataAverages(sleepData, "timeAwakeInNightMinutes"),
+    timeTryingToSleepMinutes: dataAverages(
+      sleepData,
+      "timeTryingToSleepMinutes",
+    ),
+  };
+}
+
+function dataAverages(allProcessedData: ProcessedSleepData[], key: DataKey) {
   return calculateRollingAverage(
     allProcessedData.map((d) => d[key] ?? 0),
     ROLLING_AVERAGE_DAYS,
-  ).slice(-processedData.length);
+  );
 }
 
-export function getLatestAverage(
-  processedData: ProcessedSleepData[],
-  allProcessedData: ProcessedSleepData[],
-  key: DataKey,
-) {
-  const averageArray = dataAverages(processedData, allProcessedData, key);
+export function getLatestAverage(averages: AveragedData, key: DataKey) {
+  const averageArray = averages[key];
 
   if (averageArray.length === 0) return null;
   // Find the last non-null value

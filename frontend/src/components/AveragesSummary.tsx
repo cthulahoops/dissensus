@@ -1,15 +1,11 @@
 import { formatHoursMinutes, getLatestAverage } from "../lib/sleepUtils";
-import type { ProcessedSleepData } from "../lib/sleepUtils";
+import type { AveragedData } from "../lib/sleepUtils";
 
 type AveragesSummaryProps = {
-  processedData: ProcessedSleepData[];
-  allProcessedData: ProcessedSleepData[];
+  averages: AveragedData;
 };
 
-export function AveragesSummary({
-  processedData,
-  allProcessedData,
-}: AveragesSummaryProps) {
+export function AveragesSummary({ averages }: AveragesSummaryProps) {
   return (
     <section className="averages-summary">
       <h2>7-Day Averages (Latest)</h2>
@@ -17,36 +13,20 @@ export function AveragesSummary({
         <div className="average-card">
           <h3>Time in Bed</h3>
           <div className="average-value">
-            {formatHoursMinutes(
-              getLatestAverage(
-                allProcessedData,
-                processedData,
-                "totalTimeInBed",
-              ),
-            )}
+            {formatHoursMinutes(getLatestAverage(averages, "totalTimeInBed"))}
           </div>
         </div>
         <div className="average-card">
           <h3>Time Asleep</h3>
           <div className="average-value">
-            {formatHoursMinutes(
-              getLatestAverage(
-                processedData,
-                allProcessedData,
-                "totalTimeAsleep",
-              ),
-            )}
+            {formatHoursMinutes(getLatestAverage(averages, "totalTimeAsleep"))}
           </div>
         </div>
         <div className="average-card">
           <h3>Sleep Efficiency</h3>
           <div className="average-value">
             {(() => {
-              const efficiency = getLatestAverage(
-                processedData,
-                allProcessedData,
-                "sleepEfficiency",
-              );
+              const efficiency = getLatestAverage(averages, "sleepEfficiency");
               return efficiency !== null ? `${efficiency.toFixed(1)}%` : "N/A";
             })()}
           </div>
@@ -56,8 +36,7 @@ export function AveragesSummary({
           <div className="average-value">
             {(() => {
               const minutes = getLatestAverage(
-                processedData,
-                allProcessedData,
+                averages,
                 "timeToFallAsleepMinutes",
               );
               return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
@@ -69,8 +48,7 @@ export function AveragesSummary({
           <div className="average-value">
             {(() => {
               const minutes = getLatestAverage(
-                processedData,
-                allProcessedData,
+                averages,
                 "timeTryingToSleepMinutes",
               );
               return minutes !== null ? `${Math.round(minutes)} min` : "N/A";
@@ -82,8 +60,7 @@ export function AveragesSummary({
           <div className="average-value">
             {(() => {
               const minutes = getLatestAverage(
-                processedData,
-                allProcessedData,
+                averages,
                 "timeAwakeInNightMinutes",
               );
               return minutes !== null ? `${Math.round(minutes)} min` : "N/A";

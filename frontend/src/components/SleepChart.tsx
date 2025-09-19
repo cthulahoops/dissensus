@@ -12,7 +12,12 @@ import {
   Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
-import type { ChartDataPoint } from "../lib/sleepUtils";
+import { chartData as getChartData } from "../lib/sleepUtils";
+import type {
+  ProcessedSleepData,
+  DataKey,
+  AveragedData,
+} from "../lib/sleepUtils";
 import { formatHoursMinutes, ROLLING_AVERAGE_DAYS } from "../lib/sleepUtils";
 
 ChartJS.register(
@@ -29,22 +34,26 @@ ChartJS.register(
 );
 
 type SleepChartProps = {
-  data: ChartDataPoint[];
-  rollingAverage: (number | null)[];
+  selectedData: ProcessedSleepData[];
+  averages: AveragedData;
+  dataKey: DataKey;
   label: string;
   color: string;
-  isPercentage?: boolean;
-  isMinutes?: boolean;
+  dataUnits?: DataUnits;
 };
 
+type DataUnits = "hours" | "percentage" | "minutes";
+
 export function SleepChart({
-  data,
-  rollingAverage,
+  averages,
+  selectedData,
+  dataKey,
   label,
   color,
-  isPercentage = false,
-  isMinutes = false,
+  dataUnits = "hours",
 }: SleepChartProps) {
+  const { data } = getChartData(selectedData, dataKey);
+  const rollingAverage = averages[dataKey].slice(-data.length);
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [
@@ -88,13 +97,8 @@ export function SleepChart({
           }) {
             const value = context.parsed.y;
             const label = context.dataset.label || "Data";
-            if (isPercentage) {
-              return `${label}: ${value.toFixed(1)}%`;
-            } else if (isMinutes) {
-              return `${label}: ${value} minutes`;
-            } else {
-              return `${label}: ${formatHoursMinutes(value)}`;
-            }
+            const valueLabel = formatValue(value, dataUnits, 1);
+            return `${label}: ${valueLabel}`;
           },
         },
       },
@@ -106,17 +110,7 @@ export function SleepChart({
           color: "#e0e0e0",
         },
         ticks: {
-          callback: function (value: string | number) {
-            const numValue =
-              typeof value === "string" ? parseFloat(value) : value;
-            if (isPercentage) {
-              return numValue + "%";
-            } else if (isMinutes) {
-              return numValue + " min";
-            } else {
-              return formatHoursMinutes(numValue);
-            }
-          },
+          callback: (value: number | string) => formatValue(value, dataUnits),
         },
       },
       x: {
@@ -133,8 +127,26 @@ export function SleepChart({
   };
 
   return (
-    <div className="chart-container">
-      <Chart type="bar" data={chartData} options={options} />
-    </div>
+    <section>
+      <h2>{label}</h2>
+      <div className="chart-container">
+        <Chart type="bar" data={chartData} options={options} />
+      </div>
+    </section>
   );
+}
+
+function formatValue(
+  value: string | number,
+  dataUnits: DataUnits,
+  precision = 0,
+) {
+  const numValue = typeof value === "string" ? parseFloat(value) : value;
+  if (dataUnits === "percentage") {
+    return numValue.toFixed(precision) + "%";
+  } else if (dataUnits === "minutes") {
+    return numValue.toFixed(precision) + " min";
+  } else {
+    return formatHoursMinutes(numValue);
+  }
 }

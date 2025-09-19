@@ -39,7 +39,7 @@ export function calculateRollingAverage(
   return result;
 }
 
-export interface ProcessedSleepData {
+export type ProcessedSleepData = {
   date: string;
   totalTimeInBed: number | null;
   totalTimeAsleep: number | null;
@@ -47,7 +47,7 @@ export interface ProcessedSleepData {
   timeToFallAsleepMinutes: number | null;
   timeTryingToSleepMinutes: number | null;
   timeAwakeInNightMinutes: number | null;
-}
+};
 
 export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
   return sleepData.map((record) => {
@@ -125,10 +125,10 @@ export interface ChartDataPoint {
 
 export type TimeRange = "all" | "30d" | "14d" | "7d";
 
-export function filterRecordsByDateRange(
-  records: SleepRecord[],
+export function filterRecordsByDateRange<T extends { date: string }>(
+  records: T[],
   timeRange: TimeRange,
-): SleepRecord[] {
+): T[] {
   if (timeRange === "all") {
     return records;
   }
@@ -151,102 +151,60 @@ export function filterRecordsByDateRange(
   });
 }
 
-export function prepareChartData(
-  processedData: ProcessedSleepData[],
-  allProcessedData?: ProcessedSleepData[],
+export type DataKey = keyof Omit<ProcessedSleepData, "date">;
+
+export function chartData(
+  processedSleepData: ProcessedSleepData[],
+  key: DataKey,
 ) {
-  // Prepare data for charts - include all dates, but replace null with 0 for display
-  const timeInBedData: ChartDataPoint[] = processedData.map((d) => ({
-    date: d.date,
-    value: d.totalTimeInBed ?? 0,
-  }));
-
-  const timeAsleepData: ChartDataPoint[] = processedData.map((d) => ({
-    date: d.date,
-    value: d.totalTimeAsleep ?? 0,
-  }));
-
-  const efficiencyData: ChartDataPoint[] = processedData.map((d) => ({
-    date: d.date,
-    value: d.sleepEfficiency ?? 0,
-  }));
-
-  const fallAsleepData: ChartDataPoint[] = processedData.map((d) => ({
-    date: d.date,
-    value: d.timeToFallAsleepMinutes ?? 0,
-  }));
-
-  const tryingToSleepData: ChartDataPoint[] = processedData.map((d) => ({
-    date: d.date,
-    value: d.timeTryingToSleepMinutes ?? 0,
-  }));
-
-  const timeAwakeInNightData: ChartDataPoint[] = processedData.map((d) => ({
-    date: d.date,
-    value: d.timeAwakeInNightMinutes ?? 0,
-  }));
-
-  // Calculate rolling averages - use all data if provided, otherwise use filtered data
-  // This ensures rolling averages include historical context even when viewing filtered date ranges
-  const dataForAverages = allProcessedData || processedData;
-
-  const timeInBedAvg = calculateRollingAverage(
-    dataForAverages.map((d) => d.totalTimeInBed ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
-  const timeAsleepAvg = calculateRollingAverage(
-    dataForAverages.map((d) => d.totalTimeAsleep ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
-  const efficiencyAvg = calculateRollingAverage(
-    dataForAverages.map((d) => d.sleepEfficiency ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
-  const fallAsleepAvg = calculateRollingAverage(
-    dataForAverages.map((d) => d.timeToFallAsleepMinutes ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
-  const tryingToSleepAvg = calculateRollingAverage(
-    dataForAverages.map((d) => d.timeTryingToSleepMinutes ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
-  const timeAwakeInNightAvg = calculateRollingAverage(
-    dataForAverages.map((d) => d.timeAwakeInNightMinutes ?? 0),
-    ROLLING_AVERAGE_DAYS,
-  );
-
-  // Filter rolling averages to match the displayed data range
-  const filteredTimeInBedAvg = allProcessedData
-    ? timeInBedAvg.slice(-processedData.length)
-    : timeInBedAvg;
-  const filteredTimeAsleepAvg = allProcessedData
-    ? timeAsleepAvg.slice(-processedData.length)
-    : timeAsleepAvg;
-  const filteredEfficiencyAvg = allProcessedData
-    ? efficiencyAvg.slice(-processedData.length)
-    : efficiencyAvg;
-  const filteredFallAsleepAvg = allProcessedData
-    ? fallAsleepAvg.slice(-processedData.length)
-    : fallAsleepAvg;
-  const filteredTryingToSleepAvg = allProcessedData
-    ? tryingToSleepAvg.slice(-processedData.length)
-    : tryingToSleepAvg;
-  const filteredTimeAwakeInNightAvg = allProcessedData
-    ? timeAwakeInNightAvg.slice(-processedData.length)
-    : timeAwakeInNightAvg;
-
   return {
-    timeInBed: { data: timeInBedData, average: filteredTimeInBedAvg },
-    timeAsleep: { data: timeAsleepData, average: filteredTimeAsleepAvg },
-    efficiency: { data: efficiencyData, average: filteredEfficiencyAvg },
-    fallAsleep: { data: fallAsleepData, average: filteredFallAsleepAvg },
-    tryingToSleep: {
-      data: tryingToSleepData,
-      average: filteredTryingToSleepAvg,
-    },
-    timeAwakeInNight: {
-      data: timeAwakeInNightData,
-      average: filteredTimeAwakeInNightAvg,
-    },
+    data: dataWithZeros(processedSleepData, key),
   };
+}
+
+function dataWithZeros(processedSleepData: ProcessedSleepData[], key: DataKey) {
+  return processedSleepData.map((d) => ({
+    date: d.date,
+    value: d[key] ?? 0,
+  }));
+}
+
+export type AveragedData = {
+  totalTimeInBed: (number | null)[];
+  totalTimeAsleep: (number | null)[];
+  sleepEfficiency: (number | null)[];
+  timeToFallAsleepMinutes: (number | null)[];
+  timeAwakeInNightMinutes: (number | null)[];
+  timeTryingToSleepMinutes: (number | null)[];
+};
+
+export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
+  return {
+    totalTimeInBed: dataAverages(data, "totalTimeInBed"),
+    totalTimeAsleep: dataAverages(data, "totalTimeAsleep"),
+    sleepEfficiency: dataAverages(data, "sleepEfficiency"),
+    timeToFallAsleepMinutes: dataAverages(data, "timeToFallAsleepMinutes"),
+    timeAwakeInNightMinutes: dataAverages(data, "timeAwakeInNightMinutes"),
+    timeTryingToSleepMinutes: dataAverages(data, "timeTryingToSleepMinutes"),
+  };
+}
+
+function dataAverages(allProcessedData: ProcessedSleepData[], key: DataKey) {
+  return calculateRollingAverage(
+    allProcessedData.map((d) => d[key] ?? 0),
+    ROLLING_AVERAGE_DAYS,
+  );
+}
+
+export function getLatestAverage(averages: AveragedData, key: DataKey) {
+  const averageArray = averages[key];
+
+  if (averageArray.length === 0) return null;
+  // Find the last non-null value
+  for (let i = averageArray.length - 1; i >= 0; i--) {
+    if (averageArray[i] !== null) {
+      return averageArray[i];
+    }
+  }
+  return null;
 }

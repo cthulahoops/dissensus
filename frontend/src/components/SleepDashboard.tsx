@@ -2,11 +2,12 @@ import { useState, useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
 import {
   processData,
-  prepareChartData,
   filterRecordsByDateRange,
+  getAveragedData,
 } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
-import { TimeRangeSelector, type TimeRange } from "./TimeRangeSelector";
+import { type TimeRange } from "./TimeRangeSelector";
+import { DashboardHeader } from "./DashboardHeader";
 import { AveragesSummary } from "./AveragesSummary";
 
 type SleepDashboardProps = {
@@ -28,29 +29,19 @@ export function SleepDashboard({
 }: SleepDashboardProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("14d");
 
-  // Filter records based on selected time range
-  const filteredRecords = useMemo(() => {
-    return filterRecordsByDateRange(sleepRecords, selectedTimeRange);
-  }, [sleepRecords, selectedTimeRange]);
+  const allProcessedData = useMemo(
+    () => processData(sleepRecords),
+    [sleepRecords],
+  );
 
-  // Check if today's record exists
-  const todaysRecord = useMemo(() => {
-    const today = new Date().toISOString().split("T")[0];
-    return sleepRecords.find((record) => record.date === today);
-  }, [sleepRecords]);
+  const averages = useMemo(
+    () => getAveragedData(allProcessedData),
+    [allProcessedData],
+  );
 
-  // Process all data for rolling averages and filtered data for display
-  const allProcessedData = useMemo(() => {
-    return processData(sleepRecords);
-  }, [sleepRecords]);
-
-  const processedData = useMemo(() => {
-    return processData(filteredRecords);
-  }, [filteredRecords]);
-
-  const chartData = useMemo(() => {
-    return prepareChartData(processedData, allProcessedData);
-  }, [processedData, allProcessedData]);
+  const selectedData = useMemo(() => {
+    return filterRecordsByDateRange(allProcessedData, selectedTimeRange);
+  }, [allProcessedData, selectedTimeRange]);
 
   if (loading) {
     return (
@@ -71,96 +62,69 @@ export function SleepDashboard({
 
   return (
     <main>
-      <header className="dashboard-header">
-        <h1>
-          {isSharedView ? "Shared Sleep Dashboard" : "Sleep Tracker Dashboard"}
-        </h1>
-        {isSharedView && sharedViewInfo && (
-          <p style={{ marginBottom: "var(--spacing-md)", opacity: 0.9 }}>
-            {sharedViewInfo}
-          </p>
-        )}
-        <div className="dashboard-controls">
-          <TimeRangeSelector
-            selectedRange={selectedTimeRange}
-            onRangeChange={setSelectedTimeRange}
-          />
-          {!isSharedView && (
-            <button onClick={onAddRecord}>
-              {todaysRecord ? "Edit Record" : "Add New Record"}
-            </button>
-          )}
-        </div>
-        <p>
-          {isSharedView ? "Viewing" : "Tracking"} {sleepRecords.length} total
-          records, showing {processedData.length} filtered entries
-        </p>
-      </header>
+      <DashboardHeader
+        selectedTimeRange={selectedTimeRange}
+        setSelectedTimeRange={setSelectedTimeRange}
+        onAddRecord={onAddRecord}
+        sleepRecords={sleepRecords}
+        isSharedView={isSharedView}
+        sharedViewInfo={sharedViewInfo}
+        selectedData={selectedData}
+      />
 
-      <AveragesSummary chartData={chartData} />
-      <section>
-        <h2>Time in Bed</h2>
-        <SleepChart
-          data={chartData.timeInBed.data}
-          rollingAverage={chartData.timeInBed.average}
-          label="Time in Bed"
-          color="#4fc3f7"
-        />
-      </section>
+      <AveragesSummary averages={averages} />
 
-      <section>
-        <h2>Time Asleep</h2>
-        <SleepChart
-          data={chartData.timeAsleep.data}
-          rollingAverage={chartData.timeAsleep.average}
-          label="Time Asleep"
-          color="#81c784"
-        />
-      </section>
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="totalTimeInBed"
+        label="Time in Bed"
+        color="#4fc3f7"
+      />
 
-      <section>
-        <h2>Sleep Efficiency</h2>
-        <SleepChart
-          data={chartData.efficiency.data}
-          rollingAverage={chartData.efficiency.average}
-          label="Sleep Efficiency"
-          color="#ffb74d"
-          isPercentage={true}
-        />
-      </section>
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="totalTimeAsleep"
+        label="Time Asleep"
+        color="#81c784"
+      />
 
-      <section>
-        <h2>Time to Fall Asleep</h2>
-        <SleepChart
-          data={chartData.fallAsleep.data}
-          rollingAverage={chartData.fallAsleep.average}
-          label="Time to Fall Asleep"
-          color="#ba68c8"
-          isMinutes={true}
-        />
-      </section>
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="sleepEfficiency"
+        label="Sleep Efficiency"
+        color="#ffb74d"
+        dataUnits="percentage"
+      />
 
-      <section>
-        <h2>Time Trying to Sleep After Final Awakening</h2>
-        <SleepChart
-          data={chartData.tryingToSleep.data}
-          rollingAverage={chartData.tryingToSleep.average}
-          label="Time Trying to Sleep"
-          color="#f06292"
-          isMinutes={true}
-        />
-      </section>
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="timeToFallAsleepMinutes"
+        label="Time to Fall Asleep"
+        color="#ba68c8"
+        dataUnits="minutes"
+      />
 
-      <section>
-        <h2>Time Awake in Night</h2>
-        <SleepChart
-          data={chartData.timeAwakeInNight.data}
-          rollingAverage={chartData.timeAwakeInNight.average}
-          label="Time Awake in Night"
-          color="#ff8a65"
-          isMinutes={true}
-        />
-      </section>
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="timeTryingToSleepMinutes"
+        label="Time Trying to Sleep After Final Awakening"
+        color="#f06292"
+        dataUnits="minutes"
+      />
+
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="timeAwakeInNightMinutes"
+        label="Time Awake in Night"
+        color="#ff8a65"
+        dataUnits="minutes"
+      />
     </main>
   );
 }

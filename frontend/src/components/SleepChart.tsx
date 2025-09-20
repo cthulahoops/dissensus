@@ -105,12 +105,14 @@ export function SleepChart({
     },
     scales: {
       y: {
-        beginAtZero: true,
+        min: 0,
+        max: dataUnits === "percentage" ? 100 : undefined,
         grid: {
           color: "#e0e0e0",
         },
         ticks: {
           callback: (value: number | string) => formatValue(value, dataUnits),
+          precision: 0,
         },
       },
       x: {

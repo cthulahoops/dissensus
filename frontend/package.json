@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "format": "prettier --write .",
-    "generate-types": "npx supabase gen types typescript --schema public > src/database.types.ts"
+    "generate-types": "supabase gen types typescript --schema public > src/database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.2",
@@ -32,6 +32,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "prettier": "^3.6.2",
+    "supabase": "^2.40.7",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
     "vite": "^7.0.0",

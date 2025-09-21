@@ -84,14 +84,9 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       totalTimeAsleep,
       sleepEfficiency,
       timeToFallAsleepMinutes,
-      timeTryingToSleepMinutes,
-      timeAwakeInNightMinutes: totalAwakeMinutes,
-      woreBiteGuard:
-        record.wore_bite_guard !== null
-          ? record.wore_bite_guard
-            ? 1
-            : 0
-          : null,
+      timeTryingToSleepMinutes: timeTryingToSleepMinutes ?? 0,
+      timeAwakeInNightMinutes: totalAwakeMinutes ?? 0,
+      woreBiteGuard: record.wore_bite_guard !== null ? (record.wore_bite_guard ? 100 : 0) : null,
     };
   });
 }
@@ -153,7 +148,7 @@ export function chartData(
 function dataWithZeros(processedSleepData: ProcessedSleepData[], key: DataKey) {
   return processedSleepData.map((d) => ({
     date: d.date,
-    value: d[key] ?? 0,
+    value: d[key],
   }));
 }
 
@@ -218,12 +213,7 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
 function dataAverages(data: ProcessedSleepData[], key: DataKey) {
   if (data.length === 0) return [];
 
-  const dataWithZeros = data.map((d) => ({
-    ...d,
-    [key]: d[key] ?? 0,
-  }));
-
-  const filledData = fillMissingDates(dataWithZeros);
+  const filledData = fillMissingDates(data);
 
   const originalDateSet = new Set(data.map((d) => d.date));
   const originalIndices: number[] = [];

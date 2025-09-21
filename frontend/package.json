@@ -11,7 +11,8 @@
     "check": "tsc -b --noEmit && npm run lint",
     "preview": "vite preview",
     "test": "vitest",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate-types": "npx supabase gen types typescript --schema public > src/database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.2",

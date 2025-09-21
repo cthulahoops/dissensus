@@ -87,7 +87,7 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       timeTryingToSleepMinutes: timeTryingToSleepMinutes ?? 0,
       timeAwakeInNightMinutes: totalAwakeMinutes ?? 0,
       woreBiteGuard:
-        record.wore_bite_guard !== null
+        typeof record.wore_bite_guard === "boolean"
           ? record.wore_bite_guard
             ? 100
             : 0

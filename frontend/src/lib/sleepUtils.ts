@@ -174,7 +174,7 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
   if (data.length === 0) return [];
 
   const sortedData = [...data].sort((a, b) => a.date.localeCompare(b.date));
-  const dataByDate = new Map(sortedData.map(d => [d.date, d]));
+  const dataByDate = new Map(sortedData.map((d) => [d.date, d]));
 
   const minDate = new Date(sortedData[0].date);
   const maxDate = new Date(sortedData[sortedData.length - 1].date);
@@ -183,7 +183,7 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
   const currentDate = new Date(minDate);
 
   while (currentDate <= maxDate) {
-    const dateStr = currentDate.toISOString().split('T')[0];
+    const dateStr = currentDate.toISOString().split("T")[0];
 
     if (dataByDate.has(dateStr)) {
       filledData.push(dataByDate.get(dateStr)!);
@@ -208,14 +208,14 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
 function dataAverages(data: ProcessedSleepData[], key: DataKey) {
   if (data.length === 0) return [];
 
-  const dataWithZeros = data.map(d => ({
+  const dataWithZeros = data.map((d) => ({
     ...d,
-    [key]: d[key] ?? 0
+    [key]: d[key] ?? 0,
   }));
 
   const filledData = fillMissingDates(dataWithZeros);
 
-  const originalDateSet = new Set(data.map(d => d.date));
+  const originalDateSet = new Set(data.map((d) => d.date));
   const originalIndices: number[] = [];
 
   filledData.forEach((d, index) => {
@@ -225,9 +225,12 @@ function dataAverages(data: ProcessedSleepData[], key: DataKey) {
   });
 
   const filledValues = filledData.map((d) => d[key]);
-  const allAverages = calculateRollingAverage(filledValues, ROLLING_AVERAGE_DAYS);
+  const allAverages = calculateRollingAverage(
+    filledValues,
+    ROLLING_AVERAGE_DAYS,
+  );
 
-  return originalIndices.map(index => allAverages[index]);
+  return originalIndices.map((index) => allAverages[index]);
 }
 
 export function calculateRollingAverage(

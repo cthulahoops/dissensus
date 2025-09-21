@@ -125,6 +125,15 @@ export function SleepDashboard({
         color="#ff8a65"
         dataUnits="minutes"
       />
+
+      <SleepChart
+        selectedData={selectedData}
+        averages={averages}
+        dataKey="woreBiteGuard"
+        label="Bite Guard Usage"
+        color="#9c27b0"
+        dataUnits="percentage"
+      />
     </main>
   );
 }

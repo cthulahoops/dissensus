@@ -54,12 +54,23 @@ export function SleepChart({
 }: SleepChartProps) {
   const { data } = getChartData(selectedData, dataKey);
   const rollingAverage = averages[dataKey].slice(-data.length);
+
+  // Convert bite guard data to percentage (0 = 0%, 1 = 100%)
+  const chartDataValues =
+    dataKey === "woreBiteGuard"
+      ? data.map((d) => (d.value !== null ? d.value * 100 : null))
+      : data.map((d) => d.value);
+
+  const averageDataValues =
+    dataKey === "woreBiteGuard"
+      ? rollingAverage.map((avg) => (avg !== null ? avg * 100 : null))
+      : rollingAverage;
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [
       {
         label: label,
-        data: data.map((d) => d.value),
+        data: chartDataValues,
         backgroundColor: color + "80",
         borderColor: color,
         borderWidth: 1,
@@ -68,7 +79,7 @@ export function SleepChart({
       },
       {
         label: `${ROLLING_AVERAGE_DAYS}-Day Rolling Average`,
-        data: rollingAverage,
+        data: averageDataValues,
         type: "line" as const,
         borderColor: "#ff6b6b",
         backgroundColor: "transparent",

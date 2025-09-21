@@ -28,6 +28,7 @@ export type ProcessedSleepData = {
   timeToFallAsleepMinutes: number | null;
   timeTryingToSleepMinutes: number | null;
   timeAwakeInNightMinutes: number | null;
+  woreBiteGuard: number | null;
 };
 
 export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
@@ -85,6 +86,12 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       timeToFallAsleepMinutes,
       timeTryingToSleepMinutes,
       timeAwakeInNightMinutes: totalAwakeMinutes,
+      woreBiteGuard:
+        record.wore_bite_guard !== null
+          ? record.wore_bite_guard
+            ? 1
+            : 0
+          : null,
     };
   });
 }
@@ -157,6 +164,7 @@ export type AveragedData = {
   timeToFallAsleepMinutes: (number | null)[];
   timeAwakeInNightMinutes: (number | null)[];
   timeTryingToSleepMinutes: (number | null)[];
+  woreBiteGuard: (number | null)[];
 };
 
 export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
@@ -167,6 +175,7 @@ export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
     timeToFallAsleepMinutes: dataAverages(data, "timeToFallAsleepMinutes"),
     timeAwakeInNightMinutes: dataAverages(data, "timeAwakeInNightMinutes"),
     timeTryingToSleepMinutes: dataAverages(data, "timeTryingToSleepMinutes"),
+    woreBiteGuard: dataAverages(data, "woreBiteGuard"),
   };
 }
 
@@ -196,6 +205,7 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
         timeToFallAsleepMinutes: null,
         timeTryingToSleepMinutes: null,
         timeAwakeInNightMinutes: null,
+        woreBiteGuard: null,
       });
     }
 

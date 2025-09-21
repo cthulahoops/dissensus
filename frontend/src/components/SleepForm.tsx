@@ -30,6 +30,7 @@ export function SleepForm({
       "",
     time_got_out_of_bed: existingRecord?.time_got_out_of_bed || "",
     sleep_quality_rating: existingRecord?.sleep_quality_rating || "",
+    wore_bite_guard: existingRecord?.wore_bite_guard?.toString() || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,6 +90,10 @@ export function SleepForm({
         record.time_trying_to_sleep_after_final_awakening_mins = parseInt(
           formData.time_trying_to_sleep_after_final_awakening_mins,
         );
+      }
+
+      if (formData.wore_bite_guard !== "") {
+        record.wore_bite_guard = formData.wore_bite_guard === "true";
       }
 
       // Pass the record to parent component for handling
@@ -259,6 +264,20 @@ export function SleepForm({
                 <option value="Fair">Fair</option>
                 <option value="Poor">Poor</option>
                 <option value="Very Poor">Very Poor</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="wore_bite_guard">Wore Bite Guard</label>
+              <select
+                id="wore_bite_guard"
+                name="wore_bite_guard"
+                value={formData.wore_bite_guard}
+                onChange={handleInputChange}
+              >
+                <option value="">Select...</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
             </div>
           </fieldset>

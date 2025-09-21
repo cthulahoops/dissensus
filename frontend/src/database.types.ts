@@ -28,6 +28,7 @@ export type Database = {
           uid: string | null;
           updated_at: string | null;
           user_id: string | null;
+          wore_bite_guard: boolean | null;
         };
         Insert: {
           comments?: string | null;
@@ -47,6 +48,7 @@ export type Database = {
           uid?: string | null;
           updated_at?: string | null;
           user_id?: string | null;
+          wore_bite_guard?: boolean | null;
         };
         Update: {
           comments?: string | null;
@@ -66,6 +68,7 @@ export type Database = {
           uid?: string | null;
           updated_at?: string | null;
           user_id?: string | null;
+          wore_bite_guard?: boolean | null;
         };
         Relationships: [];
       };

@@ -28,6 +28,7 @@ export type ProcessedSleepData = {
   timeToFallAsleepMinutes: number | null;
   timeTryingToSleepMinutes: number | null;
   timeAwakeInNightMinutes: number | null;
+  woreBiteGuard: number | null;
 };
 
 export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
@@ -83,8 +84,14 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       totalTimeAsleep,
       sleepEfficiency,
       timeToFallAsleepMinutes,
-      timeTryingToSleepMinutes,
-      timeAwakeInNightMinutes: totalAwakeMinutes,
+      timeTryingToSleepMinutes: timeTryingToSleepMinutes ?? 0,
+      timeAwakeInNightMinutes: totalAwakeMinutes ?? 0,
+      woreBiteGuard:
+        typeof record.wore_bite_guard === "boolean"
+          ? record.wore_bite_guard
+            ? 100
+            : 0
+          : null,
     };
   });
 }
@@ -134,22 +141,6 @@ export function filterRecordsByDateRange<T extends { date: string }>(
 
 export type DataKey = keyof Omit<ProcessedSleepData, "date">;
 
-export function chartData(
-  processedSleepData: ProcessedSleepData[],
-  key: DataKey,
-) {
-  return {
-    data: dataWithZeros(processedSleepData, key),
-  };
-}
-
-function dataWithZeros(processedSleepData: ProcessedSleepData[], key: DataKey) {
-  return processedSleepData.map((d) => ({
-    date: d.date,
-    value: d[key] ?? 0,
-  }));
-}
-
 export type AveragedData = {
   totalTimeInBed: (number | null)[];
   totalTimeAsleep: (number | null)[];
@@ -157,6 +148,7 @@ export type AveragedData = {
   timeToFallAsleepMinutes: (number | null)[];
   timeAwakeInNightMinutes: (number | null)[];
   timeTryingToSleepMinutes: (number | null)[];
+  woreBiteGuard: (number | null)[];
 };
 
 export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
@@ -167,6 +159,7 @@ export function getAveragedData(data: ProcessedSleepData[]): AveragedData {
     timeToFallAsleepMinutes: dataAverages(data, "timeToFallAsleepMinutes"),
     timeAwakeInNightMinutes: dataAverages(data, "timeAwakeInNightMinutes"),
     timeTryingToSleepMinutes: dataAverages(data, "timeTryingToSleepMinutes"),
+    woreBiteGuard: dataAverages(data, "woreBiteGuard"),
   };
 }
 
@@ -196,6 +189,7 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
         timeToFallAsleepMinutes: null,
         timeTryingToSleepMinutes: null,
         timeAwakeInNightMinutes: null,
+        woreBiteGuard: null,
       });
     }
 
@@ -208,12 +202,7 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
 function dataAverages(data: ProcessedSleepData[], key: DataKey) {
   if (data.length === 0) return [];
 
-  const dataWithZeros = data.map((d) => ({
-    ...d,
-    [key]: d[key] ?? 0,
-  }));
-
-  const filledData = fillMissingDates(dataWithZeros);
+  const filledData = fillMissingDates(data);
 
   const originalDateSet = new Set(data.map((d) => d.date));
   const originalIndices: number[] = [];

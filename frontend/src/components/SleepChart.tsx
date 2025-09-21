@@ -12,7 +12,6 @@ import {
   Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
-import { chartData as getChartData } from "../lib/sleepUtils";
 import type {
   ProcessedSleepData,
   DataKey,
@@ -52,8 +51,12 @@ export function SleepChart({
   color,
   dataUnits = "hours",
 }: SleepChartProps) {
-  const { data } = getChartData(selectedData, dataKey);
+  const data = selectedData.map((d) => ({
+    date: d.date,
+    value: d[dataKey],
+  }));
   const rollingAverage = averages[dataKey].slice(-data.length);
+
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [

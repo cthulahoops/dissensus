@@ -86,7 +86,12 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       timeToFallAsleepMinutes,
       timeTryingToSleepMinutes: timeTryingToSleepMinutes ?? 0,
       timeAwakeInNightMinutes: totalAwakeMinutes ?? 0,
-      woreBiteGuard: record.wore_bite_guard !== null ? (record.wore_bite_guard ? 100 : 0) : null,
+      woreBiteGuard:
+        record.wore_bite_guard !== null
+          ? record.wore_bite_guard
+            ? 100
+            : 0
+          : null,
     };
   });
 }
@@ -135,22 +140,6 @@ export function filterRecordsByDateRange<T extends { date: string }>(
 }
 
 export type DataKey = keyof Omit<ProcessedSleepData, "date">;
-
-export function chartData(
-  processedSleepData: ProcessedSleepData[],
-  key: DataKey,
-) {
-  return {
-    data: dataWithZeros(processedSleepData, key),
-  };
-}
-
-function dataWithZeros(processedSleepData: ProcessedSleepData[], key: DataKey) {
-  return processedSleepData.map((d) => ({
-    date: d.date,
-    value: d[key],
-  }));
-}
 
 export type AveragedData = {
   totalTimeInBed: (number | null)[];

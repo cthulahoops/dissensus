@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { formatHoursMinutes } from "./sleepUtils";
+import { describe, it, expect, vi } from "vitest";
+import { formatHoursMinutes, filterRecordsByDateRange } from "./sleepUtils";
 
 describe("formatHoursMinutes", () => {
   it("should format exact hours correctly", () => {
@@ -33,5 +33,153 @@ describe("formatHoursMinutes", () => {
   it("should handle edge cases around minute boundaries", () => {
     expect(formatHoursMinutes(7.016)).toBe("7:01"); // 7.016 hours = 7:00.96 minutes, rounds to 7:01
     expect(formatHoursMinutes(7.983)).toBe("7:59"); // 7.983 hours = 7:58.98 minutes, rounds to 7:59
+  });
+});
+
+describe("filterRecordsByDateRange", () => {
+  const mockRecords = [
+    { date: "2024-01-01", value: 1 },
+    { date: "2024-01-05", value: 2 },
+    { date: "2024-01-10", value: 3 },
+    { date: "2024-01-15", value: 4 },
+    { date: "2024-01-20", value: 5 },
+    { date: "2024-01-25", value: 6 },
+    { date: "2024-01-30", value: 7 },
+  ];
+
+  it('should return all records when timeRange is "all"', () => {
+    const result = filterRecordsByDateRange(mockRecords, "all");
+    expect(result).toEqual(mockRecords);
+    expect(result.length).toBe(7);
+  });
+
+  it("should filter records for 7-day range", () => {
+    // Mock the current date to be 2024-01-30
+    const mockDate = new Date("2024-01-30T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(mockRecords, "7d");
+
+    // Should include records after 2024-01-23 (7 days before 2024-01-30)
+    expect(result).toEqual([
+      { date: "2024-01-25", value: 6 },
+      { date: "2024-01-30", value: 7 },
+    ]);
+    expect(result.length).toBe(2);
+
+    vi.useRealTimers();
+  });
+
+  it("should filter records for 14-day range", () => {
+    const mockDate = new Date("2024-01-30T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(mockRecords, "14d");
+
+    // Should include records after 2024-01-16 (14 days before 2024-01-30)
+    expect(result).toEqual([
+      { date: "2024-01-20", value: 5 },
+      { date: "2024-01-25", value: 6 },
+      { date: "2024-01-30", value: 7 },
+    ]);
+    expect(result.length).toBe(3);
+
+    vi.useRealTimers();
+  });
+
+  it("should filter records for 30-day range", () => {
+    const mockDate = new Date("2024-01-30T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(mockRecords, "30d");
+
+    // Should include records after 2023-12-31 (30 days before 2024-01-30)
+    expect(result).toEqual(mockRecords);
+    expect(result.length).toBe(7);
+
+    vi.useRealTimers();
+  });
+
+  it("should handle empty records array", () => {
+    const result = filterRecordsByDateRange([], "7d");
+    expect(result).toEqual([]);
+  });
+
+  it("should handle records with no matches in date range", () => {
+    const oldRecords = [
+      { date: "2023-01-01", value: 1 },
+      { date: "2023-01-02", value: 2 },
+    ];
+
+    const mockDate = new Date("2024-01-30T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(oldRecords, "7d");
+    expect(result).toEqual([]);
+
+    vi.useRealTimers();
+  });
+
+  it("should handle boundary conditions correctly", () => {
+    const boundaryRecords = [
+      { date: "2024-01-23", value: 1 }, // Exactly 7 days before
+      { date: "2024-01-24", value: 2 }, // 6 days before
+      { date: "2024-01-30", value: 3 }, // Current day
+    ];
+
+    const mockDate = new Date("2024-01-30T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(boundaryRecords, "7d");
+
+    // Should exclude the record exactly 7 days before (2024-01-23)
+    // and include records after that date
+    expect(result).toEqual([
+      { date: "2024-01-24", value: 2 },
+      { date: "2024-01-30", value: 3 },
+    ]);
+    expect(result.length).toBe(2);
+
+    vi.useRealTimers();
+  });
+
+  it("should work with different record types containing date property", () => {
+    const sleepRecords = [
+      { date: "2024-01-25", totalTimeInBed: 8.0, sleepEfficiency: 90 },
+      { date: "2024-01-30", totalTimeInBed: 7.5, sleepEfficiency: 85 },
+    ];
+
+    const mockDate = new Date("2024-01-30T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(sleepRecords, "7d");
+    expect(result).toEqual(sleepRecords);
+    expect(result.length).toBe(2);
+
+    vi.useRealTimers();
+  });
+
+  it("should handle month boundaries correctly", () => {
+    const crossMonthRecords = [
+      { date: "2024-01-28", value: 1 },
+      { date: "2024-01-31", value: 2 },
+      { date: "2024-02-01", value: 3 },
+      { date: "2024-02-05", value: 4 },
+    ];
+
+    const mockDate = new Date("2024-02-05T12:00:00Z");
+    vi.setSystemTime(mockDate);
+
+    const result = filterRecordsByDateRange(crossMonthRecords, "7d");
+
+    // Should include records after 2024-01-29 (7 days before 2024-02-05)
+    expect(result).toEqual([
+      { date: "2024-01-31", value: 2 },
+      { date: "2024-02-01", value: 3 },
+      { date: "2024-02-05", value: 4 },
+    ]);
+    expect(result.length).toBe(3);
+
+    vi.useRealTimers();
   });
 });

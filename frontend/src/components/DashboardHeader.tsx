@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { SleepRecord } from "../lib/supabase";
-import { TimeRangeSelector, type TimeRange } from "./TimeRangeSelector";
+import { TimeRangeSelector } from "./TimeRangeSelector";
+import { type TimeRange } from "../lib/sleepUtils";
 
 type DashboardHeaderProps = {
   selectedTimeRange: TimeRange;

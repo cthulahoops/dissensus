@@ -58,7 +58,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-01-30T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(mockRecords, "7d");
+    const result = filterRecordsByDateRange(mockRecords, 7);
 
     // Should include records after 2024-01-23 (7 days before 2024-01-30)
     expect(result).toEqual([
@@ -74,7 +74,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-01-30T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(mockRecords, "14d");
+    const result = filterRecordsByDateRange(mockRecords, 14);
 
     // Should include records after 2024-01-16 (14 days before 2024-01-30)
     expect(result).toEqual([
@@ -91,7 +91,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-01-30T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(mockRecords, "30d");
+    const result = filterRecordsByDateRange(mockRecords, 30);
 
     // Should include records after 2023-12-31 (30 days before 2024-01-30)
     expect(result).toEqual(mockRecords);
@@ -101,7 +101,7 @@ describe("filterRecordsByDateRange", () => {
   });
 
   it("should handle empty records array", () => {
-    const result = filterRecordsByDateRange([], "7d");
+    const result = filterRecordsByDateRange([], 7);
     expect(result).toEqual([]);
   });
 
@@ -114,7 +114,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-01-30T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(oldRecords, "7d");
+    const result = filterRecordsByDateRange(oldRecords, 7);
     expect(result).toEqual([]);
 
     vi.useRealTimers();
@@ -130,7 +130,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-01-30T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(boundaryRecords, "7d");
+    const result = filterRecordsByDateRange(boundaryRecords, 7);
 
     // Should exclude the record exactly 7 days before (2024-01-23)
     // and include records after that date
@@ -152,7 +152,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-01-30T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(sleepRecords, "7d");
+    const result = filterRecordsByDateRange(sleepRecords, 7);
     expect(result).toEqual(sleepRecords);
     expect(result.length).toBe(2);
 
@@ -170,7 +170,7 @@ describe("filterRecordsByDateRange", () => {
     const mockDate = new Date("2024-02-05T12:00:00Z");
     vi.setSystemTime(mockDate);
 
-    const result = filterRecordsByDateRange(crossMonthRecords, "7d");
+    const result = filterRecordsByDateRange(crossMonthRecords, 7);
 
     // Should include records after 2024-01-29 (7 days before 2024-02-05)
     expect(result).toEqual([

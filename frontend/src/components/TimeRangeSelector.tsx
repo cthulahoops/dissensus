@@ -22,7 +22,11 @@ export function TimeRangeSelector({
       <select
         id="time-range"
         value={selectedRange}
-        onChange={(e) => onRangeChange(e.target.value as TimeRange)}
+        onChange={(e) =>
+          onRangeChange(
+            e.target.value == "all" ? "all" : Number(e.target.value),
+          )
+        }
         className="time-range-select"
       >
         {timeRangeOptions.map((option) => (

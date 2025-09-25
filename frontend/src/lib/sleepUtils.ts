@@ -132,10 +132,10 @@ export function filterRecordsByDateRange<T extends { date: string }>(
   const cutoffDate = new Date(now);
   cutoffDate.setDate(now.getDate() - daysToSubtract);
   cutoffDate.setHours(0, 0, 0, 0); // Start of the day
+  const cutoffDateStr = cutoffDate.toLocaleDateString("en-CA"); // YYYY-MM-DD format
 
   return records.filter((record) => {
-    const recordDate = new Date(record.date);
-    return recordDate >= cutoffDate;
+    return record.date >= cutoffDateStr;
   });
 }
 

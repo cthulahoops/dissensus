@@ -121,7 +121,6 @@ export function filterRecordsByDateRange<T extends { date: string }>(
     return records;
   }
 
-  const now = new Date();
   const daysMap = {
     "7d": 7,
     "14d": 14,
@@ -129,8 +128,8 @@ export function filterRecordsByDateRange<T extends { date: string }>(
   };
 
   const daysToSubtract = daysMap[timeRange];
-  const cutoffDate = new Date(now);
-  cutoffDate.setDate(now.getDate() - daysToSubtract);
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - daysToSubtract);
   cutoffDate.setHours(0, 0, 0, 0); // Start of the day
   const cutoffDateStr = cutoffDate.toLocaleDateString("en-CA"); // YYYY-MM-DD format
 

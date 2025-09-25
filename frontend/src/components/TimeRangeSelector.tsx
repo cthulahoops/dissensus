@@ -9,8 +9,8 @@ export function TimeRangeSelector({
   selectedRange,
   onRangeChange,
 }: TimeRangeSelectorProps) {
-  const timeRangeOptions = [
-    { value: "all" as const, label: "All Time" },
+  const timeRangeOptions: { value: TimeRange; label: string }[] = [
+    { value: "all", label: "All Time" },
     { value: 30, label: "Last 30 Days" },
     { value: 14, label: "Last 14 Days" },
     { value: 7, label: "Last 7 Days" },

@@ -1,4 +1,4 @@
-export type TimeRange = "all" | "30d" | "14d" | "7d";
+import type { TimeRange } from "../lib/sleepUtils";
 
 type TimeRangeSelectorProps = {
   selectedRange: TimeRange;
@@ -9,11 +9,11 @@ export function TimeRangeSelector({
   selectedRange,
   onRangeChange,
 }: TimeRangeSelectorProps) {
-  const timeRangeOptions = [
-    { value: "all" as const, label: "All Time" },
-    { value: "30d" as const, label: "Last 30 Days" },
-    { value: "14d" as const, label: "Last 14 Days" },
-    { value: "7d" as const, label: "Last 7 Days" },
+  const timeRangeOptions: { value: TimeRange; label: string }[] = [
+    { value: "all", label: "All Time" },
+    { value: 30, label: "Last 30 Days" },
+    { value: 14, label: "Last 14 Days" },
+    { value: 7, label: "Last 7 Days" },
   ];
 
   return (
@@ -22,7 +22,11 @@ export function TimeRangeSelector({
       <select
         id="time-range"
         value={selectedRange}
-        onChange={(e) => onRangeChange(e.target.value as TimeRange)}
+        onChange={(e) =>
+          onRangeChange(
+            e.target.value == "all" ? "all" : Number(e.target.value),
+          )
+        }
         className="time-range-select"
       >
         {timeRangeOptions.map((option) => (

@@ -111,7 +111,7 @@ export interface ChartDataPoint {
   value: number | null;
 }
 
-export type TimeRange = "all" | "30d" | "14d" | "7d";
+export type TimeRange = "all" | number;
 
 export function filterRecordsByDateRange<T extends { date: string }>(
   records: T[],
@@ -121,16 +121,8 @@ export function filterRecordsByDateRange<T extends { date: string }>(
     return records;
   }
 
-  const now = new Date();
-  const daysMap = {
-    "7d": 7,
-    "14d": 14,
-    "30d": 30,
-  };
-
-  const daysToSubtract = daysMap[timeRange];
-  const cutoffDate = new Date(now);
-  cutoffDate.setDate(now.getDate() - daysToSubtract);
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - timeRange);
   cutoffDate.setHours(0, 0, 0, 0); // Start of the day
   const cutoffDateStr = cutoffDate.toLocaleDateString("en-CA"); // YYYY-MM-DD format
 

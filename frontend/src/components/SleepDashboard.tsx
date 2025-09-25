@@ -4,9 +4,9 @@ import {
   processData,
   filterRecordsByDateRange,
   getAveragedData,
+  type TimeRange,
 } from "../lib/sleepUtils";
 import { SleepChart } from "./SleepChart";
-import { type TimeRange } from "./TimeRangeSelector";
 import { DashboardHeader } from "./DashboardHeader";
 import { AveragesSummary } from "./AveragesSummary";
 
@@ -27,7 +27,7 @@ export function SleepDashboard({
   isSharedView = false,
   sharedViewInfo,
 }: SleepDashboardProps) {
-  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("14d");
+  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>(14);
 
   const allProcessedData = useMemo(
     () => processData(sleepRecords),

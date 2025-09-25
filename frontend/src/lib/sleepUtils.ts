@@ -1,4 +1,5 @@
 import type { SleepRecord } from "./supabase";
+import { Temporal } from "@js-temporal/polyfill";
 
 // Configuration constants
 export const ROLLING_AVERAGE_DAYS = 7;
@@ -121,10 +122,9 @@ export function filterRecordsByDateRange<T extends { date: string }>(
     return records;
   }
 
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - timeRange);
-  cutoffDate.setHours(0, 0, 0, 0); // Start of the day
-  const cutoffDateStr = cutoffDate.toLocaleDateString("en-CA"); // YYYY-MM-DD format
+  const today = Temporal.Now.plainDateISO();
+  const cutoffDate = today.subtract({ days: timeRange });
+  const cutoffDateStr = cutoffDate.toString(); // Already in YYYY-MM-DD format
 
   return records.filter((record) => {
     return record.date > cutoffDateStr;

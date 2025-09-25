@@ -15,6 +15,7 @@
     "generate-types": "supabase gen types typescript --schema public > src/database.types.ts"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
     "@supabase/supabase-js": "^2.50.2",
     "@types/node": "^24.0.4",
     "chart.js": "^4.5.0",

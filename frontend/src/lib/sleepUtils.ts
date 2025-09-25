@@ -161,19 +161,14 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
   const sortedData = [...data].sort((a, b) => a.date.localeCompare(b.date));
   const dataByDate = new Map(sortedData.map((d) => [d.date, d]));
 
-  const minDate = new Date(sortedData[0].date);
-  const maxDate = new Date(sortedData[sortedData.length - 1].date);
+  let current = Temporal.PlainDate.from(sortedData[0].date);
+  const end = Temporal.PlainDate.from(sortedData[sortedData.length - 1].date);
 
-  const filledData: ProcessedSleepData[] = [];
-  const currentDate = new Date(minDate);
-
-  while (currentDate <= maxDate) {
-    const dateStr = currentDate.toISOString().split("T")[0];
-
-    if (dataByDate.has(dateStr)) {
-      filledData.push(dataByDate.get(dateStr)!);
-    } else {
-      filledData.push({
+  const filled: ProcessedSleepData[] = [];
+  while (Temporal.PlainDate.compare(current, end) <= 0) {
+    const dateStr = current.toString();
+    filled.push(
+      dataByDate.get(dateStr) ?? {
         date: dateStr,
         totalTimeInBed: null,
         totalTimeAsleep: null,
@@ -182,13 +177,11 @@ function fillMissingDates(data: ProcessedSleepData[]): ProcessedSleepData[] {
         timeTryingToSleepMinutes: null,
         timeAwakeInNightMinutes: null,
         woreBiteGuard: null,
-      });
-    }
-
-    currentDate.setDate(currentDate.getDate() + 1);
+      },
+    );
+    current = current.add({ days: 1 });
   }
-
-  return filledData;
+  return filled;
 }
 
 function dataAverages(data: ProcessedSleepData[], key: DataKey) {

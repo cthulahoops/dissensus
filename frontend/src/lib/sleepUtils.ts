@@ -135,7 +135,7 @@ export function filterRecordsByDateRange<T extends { date: string }>(
   const cutoffDateStr = cutoffDate.toLocaleDateString("en-CA"); // YYYY-MM-DD format
 
   return records.filter((record) => {
-    return record.date >= cutoffDateStr;
+    return record.date > cutoffDateStr;
   });
 }
 

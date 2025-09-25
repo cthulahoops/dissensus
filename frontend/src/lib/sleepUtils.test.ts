@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { formatHoursMinutes, filterRecordsByDateRange } from "./sleepUtils";
 
 describe("formatHoursMinutes", () => {
@@ -47,6 +47,10 @@ describe("filterRecordsByDateRange", () => {
     { date: "2024-01-30", value: 7 },
   ];
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should return all records when timeRange is "all"', () => {
     const result = filterRecordsByDateRange(mockRecords, "all");
     expect(result).toEqual(mockRecords);
@@ -66,8 +70,6 @@ describe("filterRecordsByDateRange", () => {
       { date: "2024-01-30", value: 7 },
     ]);
     expect(result.length).toBe(2);
-
-    vi.useRealTimers();
   });
 
   it("should filter records for 14-day range", () => {
@@ -83,8 +85,6 @@ describe("filterRecordsByDateRange", () => {
       { date: "2024-01-30", value: 7 },
     ]);
     expect(result.length).toBe(3);
-
-    vi.useRealTimers();
   });
 
   it("should filter records for 30-day range", () => {
@@ -96,8 +96,6 @@ describe("filterRecordsByDateRange", () => {
     // Should include records after 2023-12-31 (30 days before 2024-01-30)
     expect(result).toEqual(mockRecords);
     expect(result.length).toBe(7);
-
-    vi.useRealTimers();
   });
 
   it("should handle empty records array", () => {
@@ -116,8 +114,6 @@ describe("filterRecordsByDateRange", () => {
 
     const result = filterRecordsByDateRange(oldRecords, 7);
     expect(result).toEqual([]);
-
-    vi.useRealTimers();
   });
 
   it("should handle boundary conditions correctly", () => {
@@ -139,8 +135,6 @@ describe("filterRecordsByDateRange", () => {
       { date: "2024-01-30", value: 3 },
     ]);
     expect(result.length).toBe(2);
-
-    vi.useRealTimers();
   });
 
   it("should work with different record types containing date property", () => {
@@ -155,8 +149,6 @@ describe("filterRecordsByDateRange", () => {
     const result = filterRecordsByDateRange(sleepRecords, 7);
     expect(result).toEqual(sleepRecords);
     expect(result.length).toBe(2);
-
-    vi.useRealTimers();
   });
 
   it("should handle month boundaries correctly", () => {
@@ -179,7 +171,5 @@ describe("filterRecordsByDateRange", () => {
       { date: "2024-02-05", value: 4 },
     ]);
     expect(result.length).toBe(3);
-
-    vi.useRealTimers();
   });
 });

@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { sleepRecordsAPI } from "../lib/supabase";
 import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
 
@@ -9,77 +8,76 @@ interface SleepDataState {
   error: string | null;
   addRecord: (record: SleepRecordInsert) => Promise<SleepRecord | null>;
   deleteRecord: (id: string) => Promise<void>;
-  updateRecord: (id: string, updates: Partial<SleepRecord>) => Promise<void>;
+  updateRecord: (id: string, updates: Partial<SleepRecord>) => Promise<SleepRecord>;
 }
 
 export function useSleepData(userId: string | undefined): SleepDataState {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const { data: records } = useQuery<SleepRecord[]>({
+  const {
+    data: records,
+    isLoading: loading,
+    error,
+  } = useQuery<SleepRecord[]>({
     queryKey: ["sleepRecords", userId],
     queryFn: () => sleepRecordsAPI.getAll(userId!),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const addRecord = async (record: SleepRecordInsert) => {
-    if (!userId) {
-      setError("Cannot add record without a user.");
-      return null;
-    }
-    setLoading(true);
-    try {
-      const newRecord = await sleepRecordsAPI.create(record);
-      // setRecords((prev) => [...prev, newRecord]);
-      return newRecord;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
-      setError(`Failed to add sleep record: ${errorMessage}`);
-      console.error("Error adding sleep record:", err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const queryClient = useQueryClient();
 
-  const deleteRecord = async (id: string) => {
-    setLoading(true);
-    try {
-      await sleepRecordsAPI.delete(id);
-      // setRecords((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
-      setError(`Failed to delete sleep record: ${errorMessage}`);
-      console.error("Error deleting sleep record:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const addRecordMutation = useMutation({
+    mutationFn: (record: SleepRecordInsert) => sleepRecordsAPI.create(record),
+    onSuccess: (newRecord: SleepRecord) => {
+      queryClient.setQueryData(
+        ["sleepRecords", userId],
+        (old: SleepRecord[]) => (old ? [...old, newRecord] : [newRecord]),
+      );
+    },
+  });
 
-  const updateRecord = async (id: string, updates: Partial<SleepRecord>) => {
-    setLoading(true);
-    try {
-      await sleepRecordsAPI.update(id, updates);
-      //      const updatedRecord =
-      //      setRecords((prev) => prev.map((r) => (r.id === id ? updatedRecord : r)));
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
-      setError(`Failed to update sleep record: ${errorMessage}`);
-      console.error("Error updating sleep record:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const deleteRecordMutation = useMutation({
+    mutationFn: (id: string) => sleepRecordsAPI.delete(id),
+    onSuccess: (_: void, id: string) => {
+      queryClient.setQueryData(
+        ["sleepRecords", userId],
+        (old: SleepRecord[]) => old?.filter((r) => r.id !== id) || [],
+      );
+    },
+  });
+
+  const updateRecordMutation = useMutation({
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<SleepRecord>;
+    }) => sleepRecordsAPI.update(id, updates),
+    onSuccess: (updatedRecord: SleepRecord) => {
+      queryClient.setQueryData(
+        ["sleepRecords", userId],
+        (old: SleepRecord[]) =>
+          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ||
+          [],
+      );
+    },
+  });
 
   return {
     records: records ?? [],
-    loading,
-    error,
-    addRecord,
-    deleteRecord,
-    updateRecord,
+    loading:
+      loading ||
+      addRecordMutation.isPending ||
+      deleteRecordMutation.isPending ||
+      updateRecordMutation.isPending,
+    error:
+      error?.message ||
+      addRecordMutation.error?.message ||
+      deleteRecordMutation.error?.message ||
+      updateRecordMutation.error?.message ||
+      null,
+    addRecord: addRecordMutation.mutateAsync,
+    deleteRecord: deleteRecordMutation.mutateAsync,
+    updateRecord: (id: string, updates: Partial<SleepRecord>) =>
+      updateRecordMutation.mutateAsync({ id, updates }),
   };
 }

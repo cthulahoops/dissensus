@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "./hooks/useAuth";
 import { useAppRouter } from "./hooks/useAppRouter";
 import { LoginPage } from "./pages/LoginPage";
@@ -7,8 +8,9 @@ import { SharedDashboardPage } from "./pages/SharedDashboardPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { AddRecordPage } from "./pages/AddRecordPage";
 import { ShareManagerPage } from "./pages/ShareManagerPage";
-import { SleepDataProvider } from "./contexts/SleepDataProvider";
 import "./components/SleepDashboard.css";
+
+const queryClient = new QueryClient();
 
 export const Router = () => {
   const { appView, setAppView } = useAppRouter();
@@ -72,7 +74,7 @@ export const Router = () => {
             </div>
           </header>
 
-          <SleepDataProvider>
+          <QueryClientProvider client={queryClient}>
             {appView.view === "dashboard" && (
               <DashboardPage
                 onAddRecord={() => setAppView({ view: "add-record" })}
@@ -89,7 +91,7 @@ export const Router = () => {
                 onClose={() => setAppView({ view: "dashboard" })}
               />
             )}
-          </SleepDataProvider>
+          </QueryClientProvider>
         </div>
       );
   }

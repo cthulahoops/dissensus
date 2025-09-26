@@ -1,8 +1,10 @@
 import { SleepDashboard } from "../components/SleepDashboard";
-import { useSleepDataContext } from "../contexts/useSleepDataContext";
+import { useSleepData } from "../hooks/useSleepData";
+import { useAuth } from "../hooks/useAuth";
 
 export const DashboardPage = ({ onAddRecord }: { onAddRecord: () => void }) => {
-  const { records: sleepRecords, loading, error } = useSleepDataContext();
+  const { user } = useAuth();
+  const { records: sleepRecords, loading, error } = useSleepData(user?.id);
 
   return (
     <SleepDashboard

@@ -1,48 +1,19 @@
 import { useState, useEffect } from "react";
-import { supabase, type SleepRecord } from "../lib/supabase";
+import { supabase } from "../lib/supabase";
 import { SleepDashboard } from "./SleepDashboard";
 import type { User } from "@supabase/supabase-js";
+import { useSharedData } from "../hooks/useSharedData";
 
 type SharedDashboardProps = {
   token: string;
 };
 
 export function SharedDashboard({ token }: SharedDashboardProps) {
-  const [sleepRecords, setSleepRecords] = useState<SleepRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadSharedData();
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const loadSharedData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Use a stored procedure that sets the token and fetches data in one transaction
-      // The RPC function will validate the token internally and throw an error if invalid
-      const { data: records, error: fetchError } = await supabase.rpc(
-        "fetch_shared_sleep_records",
-        { share_token: token },
-      );
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      // If we get here, the token is valid (even if no records exist)
-      setSleepRecords(records || []);
-    } catch (err) {
-      console.error("Error loading shared data:", err);
-      setError(
-        "Invalid or expired share link. Please check the URL and try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: sleepRecords,
+    error,
+    isPending: loading,
+  } = useSharedData(token);
 
   // For shared dashboards, we don't want the add record functionality
   const handleAddRecord = () => {
@@ -88,7 +59,7 @@ export function SharedDashboard({ token }: SharedDashboardProps) {
         <main>
           <section>
             <h2>Access Error</h2>
-            <div className="form-error">{error}</div>
+            <div className="form-error">{error?.message}</div>
             <p>
               If you believe this link should work, please contact the person
               who shared it with you.

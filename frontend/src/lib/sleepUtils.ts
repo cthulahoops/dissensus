@@ -1,5 +1,5 @@
 import type { SleepRecord } from "./supabase";
-import { Temporal } from "@js-temporal/polyfill";
+import { Temporal } from "temporal-polyfill";
 
 // Configuration constants
 export const ROLLING_AVERAGE_DAYS = 7;

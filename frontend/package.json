@@ -15,13 +15,13 @@
     "generate-types": "supabase gen types typescript --schema public > src/database.types.ts"
   },
   "dependencies": {
-    "@js-temporal/polyfill": "^0.5.1",
     "@supabase/supabase-js": "^2.50.2",
     "@types/node": "^24.0.4",
     "chart.js": "^4.5.0",
     "react": "^19.1.0",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "temporal-polyfill": "^0.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

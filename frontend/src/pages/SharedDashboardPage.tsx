@@ -29,7 +29,7 @@ function SharedDashboardBody({ token }: { token: string }) {
   const { data: sleepRecords, error, isPending } = useSharedData(token);
 
   if (isPending) {
-    <div className="loading">Loading shared sleep data...</div>;
+    return <div className="loading">Loading shared sleep data...</div>;
   }
 
   if (error) {

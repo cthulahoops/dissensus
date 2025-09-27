@@ -8,18 +8,22 @@ interface SleepDataState {
   error: string | null;
   addRecord: (record: SleepRecordInsert) => Promise<SleepRecord | null>;
   deleteRecord: (id: string) => Promise<void>;
-  updateRecord: (id: string, updates: Partial<SleepRecord>) => Promise<SleepRecord>;
+  updateRecord: (
+    id: string,
+    updates: Partial<SleepRecord>,
+  ) => Promise<SleepRecord>;
 }
 
 export function useSleepData(userId: string | undefined): SleepDataState {
   const {
     data: records,
-    isLoading: loading,
+    isPending: loading,
     error,
   } = useQuery<SleepRecord[]>({
     queryKey: ["sleepRecords", userId],
     queryFn: () => sleepRecordsAPI.getAll(userId!),
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!userId,
   });
 
   const queryClient = useQueryClient();

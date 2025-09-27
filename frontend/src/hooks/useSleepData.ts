@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { sleepRecordsAPI } from "../lib/supabase";
 import type { SleepRecord } from "../lib/supabase";
+import type { User } from "@supabase/supabase-js";
 
 interface SleepDataState {
   records: SleepRecord[];
@@ -8,16 +9,15 @@ interface SleepDataState {
   error: string | null;
 }
 
-export function useSleepData(userId: string | undefined): SleepDataState {
+export function useSleepData(user: User): SleepDataState {
   const {
     data: records,
     isPending: loading,
     error,
   } = useQuery<SleepRecord[]>({
-    queryKey: ["sleepRecords", userId],
-    queryFn: () => sleepRecordsAPI.getAll(userId!),
+    queryKey: ["sleepRecords", user.id],
+    queryFn: () => sleepRecordsAPI.getAll(user.id),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!userId,
   });
 
   return {

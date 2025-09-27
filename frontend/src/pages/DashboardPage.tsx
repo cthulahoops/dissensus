@@ -1,10 +1,14 @@
 import { SleepDashboard } from "../components/SleepDashboard";
 import { useSleepData } from "../hooks/useSleepData";
-import { useAuth } from "../hooks/useAuth";
+import type { User } from "@supabase/supabase-js";
 
-export const DashboardPage = ({ onAddRecord }: { onAddRecord: () => void }) => {
-  const { user } = useAuth();
-  const { records: sleepRecords, loading, error } = useSleepData(user?.id);
+type DashboardPageProps = {
+  user: User;
+  onAddRecord: () => void;
+};
+
+export const DashboardPage = ({ user, onAddRecord }: DashboardPageProps) => {
+  const { records: sleepRecords, loading, error } = useSleepData(user);
 
   return (
     <SleepDashboard

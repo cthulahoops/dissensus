@@ -1,23 +1,23 @@
 import { useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { User } from "@supabase/supabase-js";
 import { SleepForm } from "../components/SleepForm";
 import { useSleepData } from "../hooks/useSleepData";
-import { useAuth } from "../hooks/useAuth";
 import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
 import { sleepRecordsAPI } from "../lib/supabase";
 
 export const AddRecordPage = ({
+  user,
   onSuccess,
   onCancel,
 }: {
+  user: User;
   onSuccess: () => void;
   onCancel: () => void;
 }) => {
-  const { user } = useAuth();
-  if (!user) throw new Error("User must be logged in");
-  const { records } = useSleepData(user?.id);
-  const addRecord = useAddRecord(user.id);
-  const updateRecord = useUpdateRecord(user.id);
+  const { records } = useSleepData(user);
+  const addRecord = useAddRecord(user);
+  const updateRecord = useUpdateRecord(user);
 
   // Check if today's record exists
   const todaysRecord = useMemo(() => {
@@ -26,8 +26,6 @@ export const AddRecordPage = ({
   }, [records]);
 
   const handleSubmit = async (record: SleepRecordInsert) => {
-    if (!user) return;
-
     if (todaysRecord) {
       // Update existing record
       await updateRecord.mutateAsync({
@@ -43,9 +41,6 @@ export const AddRecordPage = ({
 
     onSuccess();
   };
-
-  if (!user) return null; // Or a loading/error state
-
   return (
     <SleepForm
       userId={user.id}
@@ -56,14 +51,14 @@ export const AddRecordPage = ({
   );
 };
 
-function useAddRecord(userId: string) {
+function useAddRecord(user: User) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (record: SleepRecordInsert) => sleepRecordsAPI.create(record),
     onSuccess: (newRecord: SleepRecord) => {
       queryClient.setQueryData(
-        ["sleepRecords", userId],
+        ["sleepRecords", user.id],
         (old: SleepRecord[]) =>
           old ? sortRecordsByDate([...old, newRecord]) : [newRecord],
       );
@@ -71,7 +66,7 @@ function useAddRecord(userId: string) {
   });
 }
 
-function useUpdateRecord(userId: string) {
+function useUpdateRecord(user: User) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -83,12 +78,14 @@ function useUpdateRecord(userId: string) {
       updates: Partial<SleepRecord>;
     }) => sleepRecordsAPI.update(id, updates),
     onSuccess: (updatedRecord: SleepRecord) => {
-      queryClient.setQueryData(["sleepRecords", userId], (old: SleepRecord[]) =>
-        sortRecordsByDate(
-          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ?? [
-            updatedRecord,
-          ],
-        ),
+      queryClient.setQueryData(
+        ["sleepRecords", user.id],
+        (old: SleepRecord[]) =>
+          sortRecordsByDate(
+            old?.map((r) =>
+              r.id === updatedRecord.id ? updatedRecord : r,
+            ) ?? [updatedRecord],
+          ),
       );
     },
   });

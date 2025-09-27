@@ -9,6 +9,7 @@ import { SharedDashboardPage } from "./pages/SharedDashboardPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { AddRecordPage } from "./pages/AddRecordPage";
 import { ShareManagerPage } from "./pages/ShareManagerPage";
+import { AppHeader } from "./components/AppHeader";
 import "./components/SleepDashboard.css";
 
 export const Router = () => {
@@ -66,19 +67,11 @@ export const Router = () => {
 
       return (
         <div className="App">
-          <header className="app-header">
-            <div className="user-info">
-              <span>Signed in as: {user.email}</span>
-              <div>
-                <button onClick={() => setAppView({ view: "share-manager" })}>
-                  Share
-                </button>
-                <button onClick={handleSignOut} className="btn-cancel">
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          </header>
+          <AppHeader
+            user={user}
+            setAppView={setAppView}
+            handleSignOut={handleSignOut}
+          />
 
           {appView.view === "dashboard" && (
             <DashboardPage

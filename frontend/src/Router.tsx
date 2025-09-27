@@ -34,6 +34,11 @@ export const Router = () => {
     setAppView({ view: "dashboard" });
   };
 
+  const handleSignOut = () => {
+    signOut();
+    queryClient.clear();
+  };
+
   if (appView.view === "loading") {
     return (
       <div className="loading">
@@ -67,7 +72,7 @@ export const Router = () => {
                 <button onClick={() => setAppView({ view: "share-manager" })}>
                   Share
                 </button>
-                <button onClick={signOut} className="btn-cancel">
+                <button onClick={handleSignOut} className="btn-cancel">
                   Sign Out
                 </button>
               </div>

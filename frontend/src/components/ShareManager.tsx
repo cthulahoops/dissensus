@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   createShareLink,
   getUserShareLinks,
@@ -12,49 +13,37 @@ type ShareManagerProps = {
 };
 
 export function ShareManager({ onClose }: ShareManagerProps) {
-  const [shareLinks, setShareLinks] = useState<ShareLink[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadShareLinks();
-  }, []);
+  const queryClient = useQueryClient();
 
-  const loadShareLinks = async () => {
-    try {
-      setLoading(true);
-      const links = await getUserShareLinks();
-      setShareLinks(links);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: shareLinks,
+    isPending,
+    error,
+  } = useQuery<ShareLink[]>({
+    queryKey: ["shareLinks"],
+    queryFn: getUserShareLinks,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const handleCreateLink = async () => {
-    try {
-      setCreating(true);
-      setError(null);
-      const newLink = await createShareLink(7); // 7 day expiry
-      setShareLinks((prev) => [newLink, ...prev]);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setCreating(false);
-    }
-  };
+  const { mutateAsync: handleCreateLink, isPending: creating } = useMutation({
+    mutationFn: createShareLink,
+    onSuccess: (newLink: ShareLink) => {
+      queryClient.setQueryData<ShareLink[]>(["shareLinks"], (old) =>
+        old ? [newLink, ...old] : [newLink],
+      );
+    },
+  });
 
-  const handleDeleteLink = async (linkId: string) => {
-    try {
-      await deleteShareLink(linkId);
-      setShareLinks((prev) => prev.filter((link) => link.id !== linkId));
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  };
+  const { mutateAsync: handleDeleteLink, isPending: deleting } = useMutation({
+    mutationFn: deleteShareLink,
+    onSuccess: (_: void, linkId: string) => {
+      queryClient.setQueryData<ShareLink[]>(["shareLinks"], (old) =>
+        old ? old.filter((link) => link.id !== linkId) : [],
+      );
+    },
+  });
 
   const handleCopyLink = async (token: string) => {
     const url = generateShareUrl(token);
@@ -89,7 +78,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
     return new Date(dateString) < new Date();
   };
 
-  if (loading) {
+  if (isPending || !shareLinks) {
     return (
       <main>
         <section>
@@ -100,13 +89,17 @@ export function ShareManager({ onClose }: ShareManagerProps) {
     );
   }
 
+  if (error) {
+    return <main>Error fetching shared data.</main>;
+  }
+
   return (
     <main>
       <section>
         <h2>Manage Share Links</h2>
 
         <div className="form-group">
-          <button onClick={handleCreateLink} disabled={creating}>
+          <button onClick={() => handleCreateLink(7)} disabled={creating}>
             {creating ? "Creating..." : "Create New Share Link"}
           </button>
           <p
@@ -173,6 +166,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
                     <button
                       onClick={() => handleDeleteLink(link.id)}
                       className="btn-danger"
+                      disabled={deleting}
                     >
                       Delete
                     </button>

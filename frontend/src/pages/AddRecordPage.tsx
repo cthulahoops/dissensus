@@ -96,5 +96,5 @@ function useUpdateRecord(userId: string) {
 
 function sortRecordsByDate(records: SleepRecord[]): SleepRecord[] {
   // Date format is YYYY-MM-DD, so string comparison works for sorting.
-  return records.slice().sort((a, b) => b.date.localeCompare(a.date));
+  return records.slice().sort((a, b) => a.date.localeCompare(b.date));
 }

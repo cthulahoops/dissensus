@@ -85,8 +85,9 @@ function useUpdateRecord(userId: string) {
     onSuccess: (updatedRecord: SleepRecord) => {
       queryClient.setQueryData(["sleepRecords", userId], (old: SleepRecord[]) =>
         sortRecordsByDate(
-          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ??
-            [],
+          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ?? [
+            updatedRecord,
+          ],
         ),
       );
     },

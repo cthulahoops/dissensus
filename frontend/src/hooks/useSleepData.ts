@@ -44,7 +44,8 @@ export function useSleepMutations(userId: string): {
     onSuccess: (newRecord: SleepRecord) => {
       queryClient.setQueryData(
         ["sleepRecords", userId],
-        (old: SleepRecord[]) => (old ? [...old, newRecord] : [newRecord]),
+        (old: SleepRecord[]) =>
+          old ? sortRecordsByDate([...old, newRecord]) : [newRecord],
       );
     },
   });
@@ -71,8 +72,9 @@ export function useSleepMutations(userId: string): {
       queryClient.setQueryData(
         ["sleepRecords", userId],
         (old: SleepRecord[]) =>
-          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ||
-          [],
+          sortRecordsByDate(
+            old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)),
+          ) || [],
       );
     },
   });
@@ -92,4 +94,9 @@ export function useSleepMutations(userId: string): {
     updateRecord: (id: string, updates: Partial<SleepRecord>) =>
       updateRecordMutation.mutateAsync({ id, updates }),
   };
+}
+
+function sortRecordsByDate(records: SleepRecord[]): SleepRecord[] {
+  // Date format is YYYY-MM-DD, so string comparison works for sorting.
+  return records.slice().sort((a, b) => b.date.localeCompare(a.date));
 }

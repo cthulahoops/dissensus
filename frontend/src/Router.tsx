@@ -66,7 +66,7 @@ export const Router = () => {
       }
 
       return (
-        <div className="App">
+        <>
           <AppHeader user={user}>
             <button onClick={() => setAppView({ view: "share-manager" })}>
               Share
@@ -94,7 +94,7 @@ export const Router = () => {
               onClose={() => setAppView({ view: "dashboard" })}
             />
           )}
-        </div>
+        </>
       );
   }
 };

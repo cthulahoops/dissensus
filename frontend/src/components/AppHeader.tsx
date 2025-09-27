@@ -1,25 +1,20 @@
-import type { AppView } from "../hooks/useAppRouter";
 import type { User } from "@supabase/supabase-js";
 
 type AppHeaderProps = {
-  user: User;
-  setAppView: (view: AppView) => void;
-  handleSignOut: () => void;
+  user: User | null;
+  children?: React.ReactNode;
 };
 
-export function AppHeader({ user, setAppView, handleSignOut }: AppHeaderProps) {
+export function AppHeader({ user, children }: AppHeaderProps) {
   return (
     <header className="app-header">
       <div className="user-info">
-        <span>Signed in as: {user.email}</span>
-        <div>
-          <button onClick={() => setAppView({ view: "share-manager" })}>
-            Share
-          </button>
-          <button onClick={handleSignOut} className="btn-cancel">
-            Sign Out
-          </button>
-        </div>
+        {user ? (
+          <span>Signed in as: {user.email}</span>
+        ) : (
+          <span>Not signed in</span>
+        )}
+        <div>{children}</div>
       </div>
     </header>
   );

@@ -67,11 +67,14 @@ export const Router = () => {
 
       return (
         <div className="App">
-          <AppHeader
-            user={user}
-            setAppView={setAppView}
-            handleSignOut={handleSignOut}
-          />
+          <AppHeader user={user}>
+            <button onClick={() => setAppView({ view: "share-manager" })}>
+              Share
+            </button>
+            <button onClick={handleSignOut} className="btn-cancel">
+              Sign Out
+            </button>
+          </AppHeader>
 
           {appView.view === "dashboard" && (
             <DashboardPage

@@ -1,5 +1,6 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { useEffect } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "./hooks/useAuth";
 import { useAppRouter } from "./hooks/useAppRouter";
 import { LoginPage } from "./pages/LoginPage";
@@ -9,8 +10,6 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { AddRecordPage } from "./pages/AddRecordPage";
 import { ShareManagerPage } from "./pages/ShareManagerPage";
 import "./components/SleepDashboard.css";
-
-const queryClient = new QueryClient();
 
 export const Router = () => {
   const { appView, setAppView } = useAppRouter();
@@ -33,6 +32,8 @@ export const Router = () => {
     window.history.replaceState({}, "", "/");
     setAppView({ view: "dashboard" });
   };
+
+  const queryClient = useQueryClient();
 
   const handleSignOut = () => {
     signOut();
@@ -79,26 +80,24 @@ export const Router = () => {
             </div>
           </header>
 
-          <QueryClientProvider client={queryClient}>
-            {appView.view === "dashboard" && (
-              <DashboardPage
-                user={user}
-                onAddRecord={() => setAppView({ view: "add-record" })}
-              />
-            )}
-            {appView.view === "add-record" && (
-              <AddRecordPage
-                user={user}
-                onSuccess={() => setAppView({ view: "dashboard" })}
-                onCancel={() => setAppView({ view: "dashboard" })}
-              />
-            )}
-            {appView.view === "share-manager" && (
-              <ShareManagerPage
-                onClose={() => setAppView({ view: "dashboard" })}
-              />
-            )}
-          </QueryClientProvider>
+          {appView.view === "dashboard" && (
+            <DashboardPage
+              user={user}
+              onAddRecord={() => setAppView({ view: "add-record" })}
+            />
+          )}
+          {appView.view === "add-record" && (
+            <AddRecordPage
+              user={user}
+              onSuccess={() => setAppView({ view: "dashboard" })}
+              onCancel={() => setAppView({ view: "dashboard" })}
+            />
+          )}
+          {appView.view === "share-manager" && (
+            <ShareManagerPage
+              onClose={() => setAppView({ view: "dashboard" })}
+            />
+          )}
         </div>
       );
   }

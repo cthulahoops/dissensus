@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { SleepForm } from "../components/SleepForm";
-import { useSleepDataContext } from "../contexts/useSleepDataContext";
+import { useSleepData } from "../hooks/useSleepData";
 import { useAuth } from "../hooks/useAuth";
 import type { SleepRecordInsert } from "../lib/supabase";
 
@@ -11,8 +11,8 @@ export const AddRecordPage = ({
   onSuccess: () => void;
   onCancel: () => void;
 }) => {
-  const { addRecord, updateRecord, records } = useSleepDataContext();
   const { user } = useAuth();
+  const { addRecord, updateRecord, records } = useSleepData(user?.id);
 
   // Check if today's record exists
   const todaysRecord = useMemo(() => {

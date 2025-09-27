@@ -30,7 +30,7 @@ export function useSleepData(userId: string | undefined): SleepDataState {
 export function useSleepMutations(userId: string): {
   loading: boolean;
   error: string | null;
-  addRecord: (record: SleepRecordInsert) => Promise<SleepRecord | null>;
+  addRecord: (record: SleepRecordInsert) => Promise<SleepRecord>;
   deleteRecord: (id: string) => Promise<void>;
   updateRecord: (
     id: string,

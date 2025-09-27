@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../lib/supabase";
 import { SleepDashboard } from "./SleepDashboard";
-import type { User } from "@supabase/supabase-js";
 import { useSharedData } from "../hooks/useSharedData";
+import { useAuth } from "../hooks/useAuth";
 
 type SharedDashboardProps = {
   token: string;
@@ -20,18 +18,7 @@ export function SharedDashboard({ token }: SharedDashboardProps) {
     // Do nothing - shared dashboards are read-only
   };
 
-  // Check if user is authenticated for the "Back to Dashboard" button
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setUser(session?.user || null);
-    };
-    checkAuth();
-  }, []);
+  const { user } = useAuth();
 
   if (loading) {
     return (

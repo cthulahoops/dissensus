@@ -82,11 +82,13 @@ export const Router = () => {
           <QueryClientProvider client={queryClient}>
             {appView.view === "dashboard" && (
               <DashboardPage
+                user={user}
                 onAddRecord={() => setAppView({ view: "add-record" })}
               />
             )}
             {appView.view === "add-record" && (
               <AddRecordPage
+                user={user}
                 onSuccess={() => setAppView({ view: "dashboard" })}
                 onCancel={() => setAppView({ view: "dashboard" })}
               />

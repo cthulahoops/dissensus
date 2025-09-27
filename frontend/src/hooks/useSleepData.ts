@@ -1,87 +1,28 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { sleepRecordsAPI } from "../lib/supabase";
-import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
+import type { SleepRecord } from "../lib/supabase";
+import type { User } from "@supabase/supabase-js";
 
 interface SleepDataState {
   records: SleepRecord[];
   loading: boolean;
   error: string | null;
-  addRecord: (record: SleepRecordInsert) => Promise<SleepRecord | null>;
-  deleteRecord: (id: string) => Promise<void>;
-  updateRecord: (
-    id: string,
-    updates: Partial<SleepRecord>,
-  ) => Promise<SleepRecord>;
 }
 
-export function useSleepData(userId: string | undefined): SleepDataState {
+export function useSleepData(user: User): SleepDataState {
   const {
     data: records,
     isPending: loading,
     error,
   } = useQuery<SleepRecord[]>({
-    queryKey: ["sleepRecords", userId],
-    queryFn: () => sleepRecordsAPI.getAll(userId!),
+    queryKey: ["sleepRecords", user.id],
+    queryFn: () => sleepRecordsAPI.getAll(user.id),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!userId,
-  });
-
-  const queryClient = useQueryClient();
-
-  const addRecordMutation = useMutation({
-    mutationFn: (record: SleepRecordInsert) => sleepRecordsAPI.create(record),
-    onSuccess: (newRecord: SleepRecord) => {
-      queryClient.setQueryData(
-        ["sleepRecords", userId],
-        (old: SleepRecord[]) => (old ? [...old, newRecord] : [newRecord]),
-      );
-    },
-  });
-
-  const deleteRecordMutation = useMutation({
-    mutationFn: (id: string) => sleepRecordsAPI.delete(id),
-    onSuccess: (_: void, id: string) => {
-      queryClient.setQueryData(
-        ["sleepRecords", userId],
-        (old: SleepRecord[]) => old?.filter((r) => r.id !== id) || [],
-      );
-    },
-  });
-
-  const updateRecordMutation = useMutation({
-    mutationFn: ({
-      id,
-      updates,
-    }: {
-      id: string;
-      updates: Partial<SleepRecord>;
-    }) => sleepRecordsAPI.update(id, updates),
-    onSuccess: (updatedRecord: SleepRecord) => {
-      queryClient.setQueryData(
-        ["sleepRecords", userId],
-        (old: SleepRecord[]) =>
-          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ||
-          [],
-      );
-    },
   });
 
   return {
     records: records ?? [],
-    loading:
-      loading ||
-      addRecordMutation.isPending ||
-      deleteRecordMutation.isPending ||
-      updateRecordMutation.isPending,
-    error:
-      error?.message ||
-      addRecordMutation.error?.message ||
-      deleteRecordMutation.error?.message ||
-      updateRecordMutation.error?.message ||
-      null,
-    addRecord: addRecordMutation.mutateAsync,
-    deleteRecord: deleteRecordMutation.mutateAsync,
-    updateRecord: (id: string, updates: Partial<SleepRecord>) =>
-      updateRecordMutation.mutateAsync({ id, updates }),
+    loading: loading,
+    error: error?.message || null,
   };
 }

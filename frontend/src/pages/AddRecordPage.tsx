@@ -1,8 +1,10 @@
 import { useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SleepForm } from "../components/SleepForm";
-import { useSleepData, useSleepMutations } from "../hooks/useSleepData";
+import { useSleepData } from "../hooks/useSleepData";
 import { useAuth } from "../hooks/useAuth";
-import type { SleepRecordInsert } from "../lib/supabase";
+import type { SleepRecord, SleepRecordInsert } from "../lib/supabase";
+import { sleepRecordsAPI } from "../lib/supabase";
 
 export const AddRecordPage = ({
   onSuccess,
@@ -14,7 +16,8 @@ export const AddRecordPage = ({
   const { user } = useAuth();
   if (!user) throw new Error("User must be logged in");
   const { records } = useSleepData(user?.id);
-  const { addRecord, updateRecord } = useSleepMutations(user.id);
+  const addRecord = useAddRecord(user.id);
+  const updateRecord = useUpdateRecord(user.id);
 
   // Check if today's record exists
   const todaysRecord = useMemo(() => {
@@ -27,11 +30,14 @@ export const AddRecordPage = ({
 
     if (todaysRecord) {
       // Update existing record
-      await updateRecord(todaysRecord.id, { ...record, user_id: user.id });
+      await updateRecord.mutateAsync({
+        id: todaysRecord.id,
+        updates: { ...record, user_id: user.id },
+      });
     } else {
       // Create new record
       const newRecord = { ...record, user_id: user.id };
-      const result = await addRecord(newRecord);
+      const result = await addRecord.mutateAsync(newRecord);
       if (!result) return;
     }
 
@@ -49,3 +55,46 @@ export const AddRecordPage = ({
     />
   );
 };
+
+function useAddRecord(userId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (record: SleepRecordInsert) => sleepRecordsAPI.create(record),
+    onSuccess: (newRecord: SleepRecord) => {
+      queryClient.setQueryData(
+        ["sleepRecords", userId],
+        (old: SleepRecord[]) =>
+          old ? sortRecordsByDate([...old, newRecord]) : [newRecord],
+      );
+    },
+  });
+}
+
+function useUpdateRecord(userId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<SleepRecord>;
+    }) => sleepRecordsAPI.update(id, updates),
+    onSuccess: (updatedRecord: SleepRecord) => {
+      queryClient.setQueryData(
+        ["sleepRecords", userId],
+        (old: SleepRecord[]) =>
+          sortRecordsByDate(
+            old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)),
+          ) || [],
+      );
+    },
+  });
+}
+
+function sortRecordsByDate(records: SleepRecord[]): SleepRecord[] {
+  // Date format is YYYY-MM-DD, so string comparison works for sorting.
+  return records.slice().sort((a, b) => b.date.localeCompare(a.date));
+}

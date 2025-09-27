@@ -11,12 +11,12 @@ import { DashboardHeader } from "./DashboardHeader";
 import { AveragesSummary } from "./AveragesSummary";
 
 type SleepDashboardProps = {
-  onAddRecord: () => void;
   sleepRecords: SleepRecord[];
   loading: boolean;
   error: string | null;
   isSharedView?: boolean;
   sharedViewInfo?: string;
+  onAddRecord?: () => void;
 };
 
 export function SleepDashboard({

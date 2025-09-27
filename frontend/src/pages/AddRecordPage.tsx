@@ -83,12 +83,11 @@ function useUpdateRecord(userId: string) {
       updates: Partial<SleepRecord>;
     }) => sleepRecordsAPI.update(id, updates),
     onSuccess: (updatedRecord: SleepRecord) => {
-      queryClient.setQueryData(
-        ["sleepRecords", userId],
-        (old: SleepRecord[]) =>
-          sortRecordsByDate(
-            old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)),
-          ) || [],
+      queryClient.setQueryData(["sleepRecords", userId], (old: SleepRecord[]) =>
+        sortRecordsByDate(
+          old?.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)) ??
+            [],
+        ),
       );
     },
   });

@@ -6,12 +6,6 @@ interface SleepDataState {
   records: SleepRecord[];
   loading: boolean;
   error: string | null;
-  addRecord: (record: SleepRecordInsert) => Promise<SleepRecord | null>;
-  deleteRecord: (id: string) => Promise<void>;
-  updateRecord: (
-    id: string,
-    updates: Partial<SleepRecord>,
-  ) => Promise<SleepRecord>;
 }
 
 export function useSleepData(userId: string | undefined): SleepDataState {
@@ -26,6 +20,23 @@ export function useSleepData(userId: string | undefined): SleepDataState {
     enabled: !!userId,
   });
 
+  return {
+    records: records ?? [],
+    loading: loading,
+    error: error?.message || null,
+  };
+}
+
+export function useSleepMutations(userId: string): {
+  loading: boolean;
+  error: string | null;
+  addRecord: (record: SleepRecordInsert) => Promise<SleepRecord | null>;
+  deleteRecord: (id: string) => Promise<void>;
+  updateRecord: (
+    id: string,
+    updates: Partial<SleepRecord>,
+  ) => Promise<SleepRecord>;
+} {
   const queryClient = useQueryClient();
 
   const addRecordMutation = useMutation({
@@ -67,14 +78,11 @@ export function useSleepData(userId: string | undefined): SleepDataState {
   });
 
   return {
-    records: records ?? [],
     loading:
-      loading ||
       addRecordMutation.isPending ||
       deleteRecordMutation.isPending ||
       updateRecordMutation.isPending,
     error:
-      error?.message ||
       addRecordMutation.error?.message ||
       deleteRecordMutation.error?.message ||
       updateRecordMutation.error?.message ||

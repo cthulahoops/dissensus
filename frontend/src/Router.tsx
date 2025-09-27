@@ -54,7 +54,7 @@ export const Router = () => {
     case "auth-callback":
       return <AuthCallbackPage onSuccess={handleAuthSuccess} />;
     case "shared-dashboard":
-      return <SharedDashboardPage token={appView.token} />;
+      return <SharedDashboardPage token={appView.token} user={user} />;
     default:
       if (!user) {
         return (

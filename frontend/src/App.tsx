@@ -6,10 +6,8 @@ const queryClient = new QueryClient();
 
 export function App() {
   return (
-    <div className="App">
-      <QueryClientProvider client={queryClient}>
-        <Router />
-      </QueryClientProvider>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <Router />
+    </QueryClientProvider>
   );
 }

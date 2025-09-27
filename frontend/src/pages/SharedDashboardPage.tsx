@@ -47,7 +47,6 @@ function SharedDashboardBody({ token }: { token: string }) {
 
   return (
     <SleepDashboard
-      onAddRecord={() => {}}
       sleepRecords={sleepRecords ?? []}
       loading={false}
       error={null}

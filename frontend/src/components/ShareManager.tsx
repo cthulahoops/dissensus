@@ -27,7 +27,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
     staleTime: 1000 * 60 * 5,
   });
 
-  const { mutateAsync: handleCreateLink, isPending: creating } = useMutation({
+  const { mutate: handleCreateLink, isPending: creating } = useMutation({
     mutationFn: createShareLink,
     onSuccess: (newLink: ShareLink) => {
       queryClient.setQueryData<ShareLink[]>(["shareLinks"], (old) =>
@@ -36,7 +36,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
     },
   });
 
-  const { mutateAsync: handleDeleteLink, isPending: deleting } = useMutation({
+  const { mutate: handleDeleteLink, isPending: deleting } = useMutation({
     mutationFn: deleteShareLink,
     onSuccess: (_: void, linkId: string) => {
       queryClient.setQueryData<ShareLink[]>(["shareLinks"], (old) =>

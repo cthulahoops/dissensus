@@ -1,5 +1,6 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { useEffect } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "./hooks/useAuth";
 import { useAppRouter } from "./hooks/useAppRouter";
 import { LoginPage } from "./pages/LoginPage";
@@ -8,9 +9,8 @@ import { SharedDashboardPage } from "./pages/SharedDashboardPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { AddRecordPage } from "./pages/AddRecordPage";
 import { ShareManagerPage } from "./pages/ShareManagerPage";
+import { AppHeader } from "./components/AppHeader";
 import "./components/SleepDashboard.css";
-
-const queryClient = new QueryClient();
 
 export const Router = () => {
   const { appView, setAppView } = useAppRouter();
@@ -34,6 +34,8 @@ export const Router = () => {
     setAppView({ view: "dashboard" });
   };
 
+  const queryClient = useQueryClient();
+
   const handleSignOut = () => {
     signOut();
     queryClient.clear();
@@ -53,7 +55,7 @@ export const Router = () => {
     case "auth-callback":
       return <AuthCallbackPage onSuccess={handleAuthSuccess} />;
     case "shared-dashboard":
-      return <SharedDashboardPage token={appView.token} />;
+      return <SharedDashboardPage token={appView.token} user={user} />;
     default:
       if (!user) {
         return (
@@ -64,42 +66,35 @@ export const Router = () => {
       }
 
       return (
-        <div className="App">
-          <header className="app-header">
-            <div className="user-info">
-              <span>Signed in as: {user.email}</span>
-              <div>
-                <button onClick={() => setAppView({ view: "share-manager" })}>
-                  Share
-                </button>
-                <button onClick={handleSignOut} className="btn-cancel">
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          </header>
+        <>
+          <AppHeader user={user}>
+            <button onClick={() => setAppView({ view: "share-manager" })}>
+              Share
+            </button>
+            <button onClick={handleSignOut} className="btn-cancel">
+              Sign Out
+            </button>
+          </AppHeader>
 
-          <QueryClientProvider client={queryClient}>
-            {appView.view === "dashboard" && (
-              <DashboardPage
-                user={user}
-                onAddRecord={() => setAppView({ view: "add-record" })}
-              />
-            )}
-            {appView.view === "add-record" && (
-              <AddRecordPage
-                user={user}
-                onSuccess={() => setAppView({ view: "dashboard" })}
-                onCancel={() => setAppView({ view: "dashboard" })}
-              />
-            )}
-            {appView.view === "share-manager" && (
-              <ShareManagerPage
-                onClose={() => setAppView({ view: "dashboard" })}
-              />
-            )}
-          </QueryClientProvider>
-        </div>
+          {appView.view === "dashboard" && (
+            <DashboardPage
+              user={user}
+              onAddRecord={() => setAppView({ view: "add-record" })}
+            />
+          )}
+          {appView.view === "add-record" && (
+            <AddRecordPage
+              user={user}
+              onSuccess={() => setAppView({ view: "dashboard" })}
+              onCancel={() => setAppView({ view: "dashboard" })}
+            />
+          )}
+          {appView.view === "share-manager" && (
+            <ShareManagerPage
+              onClose={() => setAppView({ view: "dashboard" })}
+            />
+          )}
+        </>
       );
   }
 };

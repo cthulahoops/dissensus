@@ -3,10 +3,6 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-.App {
-  min-height: 100vh;
-}
-
 .app-header {
   padding: var(--spacing-md) var(--spacing-lg);
   background: var(--color-background);

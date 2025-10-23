@@ -2,7 +2,8 @@ import type { SleepRecord } from "./supabase";
 import { Temporal } from "temporal-polyfill";
 
 // Configuration constants
-export const ROLLING_AVERAGE_DAYS = 7;
+export const ROLLING_AVERAGE_DAYS = 7; // Kept for backward compatibility
+export const COMPOSITE_AVERAGE_WINDOWS = [5, 7, 9]; // Window sizes for composite averaging
 
 // Utility functions (ported from your existing main.js)
 export function parseTime(timeStr: string | null | undefined): number | null {
@@ -199,9 +200,9 @@ function dataAverages(data: ProcessedSleepData[], key: DataKey) {
   });
 
   const filledValues = filledData.map((d) => d[key]);
-  const allAverages = calculateRollingAverage(
+  const allAverages = calculateCompositeAverage(
     filledValues,
-    ROLLING_AVERAGE_DAYS,
+    COMPOSITE_AVERAGE_WINDOWS,
   );
 
   return originalIndices.map((index) => allAverages[index]);
@@ -223,6 +224,44 @@ export function calculateRollingAverage(
       result.push(null);
     }
   }
+  return result;
+}
+
+/**
+ * Calculates a composite rolling average by averaging multiple moving averages.
+ * This technique provides better smoothing and reduces lag compared to a single long-period average.
+ *
+ * @param data - Array of values (can include nulls)
+ * @param windowSizes - Array of window sizes to average together (e.g., [5, 7, 9])
+ * @returns Array of composite averaged values
+ */
+export function calculateCompositeAverage(
+  data: (number | null)[],
+  windowSizes: number[],
+): (number | null)[] {
+  if (windowSizes.length === 0) {
+    return data.map(() => null);
+  }
+
+  // Calculate moving average for each window size
+  const allAverages = windowSizes.map((windowSize) =>
+    calculateRollingAverage(data, windowSize)
+  );
+
+  // Average the averages for each point
+  const result: (number | null)[] = [];
+  for (let i = 0; i < data.length; i++) {
+    const values = allAverages
+      .map((avg) => avg[i])
+      .filter((val) => val !== null && !isNaN(val)) as number[];
+
+    if (values.length > 0) {
+      result.push(values.reduce((sum, val) => sum + val, 0) / values.length);
+    } else {
+      result.push(null);
+    }
+  }
+
   return result;
 }
 

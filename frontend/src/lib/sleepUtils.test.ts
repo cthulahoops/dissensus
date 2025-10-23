@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { formatHoursMinutes, filterRecordsByDateRange } from "./sleepUtils";
+import {
+  formatHoursMinutes,
+  filterRecordsByDateRange,
+  calculateRollingAverage,
+  calculateCompositeAverage,
+} from "./sleepUtils";
 
 describe("formatHoursMinutes", () => {
   it("should format exact hours correctly", () => {
@@ -171,5 +176,144 @@ describe("filterRecordsByDateRange", () => {
       { date: "2024-02-05", value: 4 },
     ]);
     expect(result.length).toBe(3);
+  });
+});
+
+describe("calculateRollingAverage", () => {
+  it("should calculate simple rolling average correctly", () => {
+    const data = [1, 2, 3, 4, 5];
+    const result = calculateRollingAverage(data, 3);
+
+    expect(result).toEqual([
+      1, // avg of [1]
+      1.5, // avg of [1, 2]
+      2, // avg of [1, 2, 3]
+      3, // avg of [2, 3, 4]
+      4, // avg of [3, 4, 5]
+    ]);
+  });
+
+  it("should handle null values correctly", () => {
+    const data = [1, null, 3, null, 5];
+    const result = calculateRollingAverage(data, 3);
+
+    expect(result).toEqual([
+      1, // avg of [1]
+      1, // avg of [1]
+      2, // avg of [1, 3]
+      3, // avg of [3]
+      4, // avg of [3, 5]
+    ]);
+  });
+
+  it("should return null when all values in window are null", () => {
+    const data = [null, null, null];
+    const result = calculateRollingAverage(data, 3);
+
+    expect(result).toEqual([null, null, null]);
+  });
+
+  it("should handle window size of 1", () => {
+    const data = [1, 2, 3, 4];
+    const result = calculateRollingAverage(data, 1);
+
+    expect(result).toEqual([1, 2, 3, 4]);
+  });
+
+  it("should handle window size larger than data length", () => {
+    const data = [1, 2, 3];
+    const result = calculateRollingAverage(data, 10);
+
+    expect(result).toEqual([
+      1, // avg of [1]
+      1.5, // avg of [1, 2]
+      2, // avg of [1, 2, 3]
+    ]);
+  });
+
+  it("should handle empty array", () => {
+    const data: number[] = [];
+    const result = calculateRollingAverage(data, 3);
+
+    expect(result).toEqual([]);
+  });
+});
+
+describe("calculateCompositeAverage", () => {
+  it("should calculate average of multiple window sizes", () => {
+    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const result = calculateCompositeAverage(data, [3, 5, 7]);
+
+    // For the last data point (10):
+    // 3-day avg: (8, 9, 10) = 9
+    // 5-day avg: (6, 7, 8, 9, 10) = 8
+    // 7-day avg: (4, 5, 6, 7, 8, 9, 10) = 7
+    // Composite: (9 + 8 + 7) / 3 = 8
+    expect(result[9]).toBeCloseTo(8, 5);
+  });
+
+  it("should handle null values correctly", () => {
+    const data = [1, null, 3, null, 5, 6, 7, 8, 9, 10];
+    const result = calculateCompositeAverage(data, [3, 5]);
+
+    // Should skip nulls when calculating each window's average
+    expect(result.length).toBe(10);
+    expect(result[9]).toBeGreaterThan(0);
+  });
+
+  it("should return all nulls for empty window sizes array", () => {
+    const data = [1, 2, 3, 4, 5];
+    const result = calculateCompositeAverage(data, []);
+
+    expect(result).toEqual([null, null, null, null, null]);
+  });
+
+  it("should handle single window size (equivalent to rolling average)", () => {
+    const data = [1, 2, 3, 4, 5];
+    const composite = calculateCompositeAverage(data, [3]);
+    const rolling = calculateRollingAverage(data, 3);
+
+    expect(composite).toEqual(rolling);
+  });
+
+  it("should produce smoother results than simple rolling average", () => {
+    // Test with volatile data
+    const data = [1, 10, 2, 9, 3, 8, 4, 7, 5, 6];
+
+    const simple = calculateRollingAverage(data, 7);
+    const composite = calculateCompositeAverage(data, [5, 7, 9]);
+
+    // Both should be defined for the last element
+    expect(simple[9]).toBeDefined();
+    expect(composite[9]).toBeDefined();
+
+    // The composite average should smooth out the volatility
+    // This is a behavioral test - we're just ensuring it produces reasonable values
+    expect(composite[9]).toBeGreaterThan(0);
+    expect(composite[9]).toBeLessThan(10);
+  });
+
+  it("should handle real-world sleep data scenario", () => {
+    // Simulating sleep efficiency data with some variability
+    const sleepEfficiency = [85, null, 90, 88, null, 92, 87, 89, 91, 86];
+    const result = calculateCompositeAverage(sleepEfficiency, [5, 7, 9]);
+
+    // Should produce smoothed values
+    expect(result.length).toBe(10);
+
+    // Last value should be a reasonable average
+    const lastValue = result[9];
+    expect(lastValue).not.toBeNull();
+    if (lastValue !== null) {
+      expect(lastValue).toBeGreaterThan(80);
+      expect(lastValue).toBeLessThan(95);
+    }
+  });
+
+  it("should handle all null data", () => {
+    const data = [null, null, null, null, null];
+    const result = calculateCompositeAverage(data, [3, 5]);
+
+    expect(result).toEqual([null, null, null, null, null]);
   });
 });

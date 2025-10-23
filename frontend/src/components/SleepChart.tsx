@@ -17,7 +17,10 @@ import type {
   DataKey,
   AveragedData,
 } from "../lib/sleepUtils";
-import { formatHoursMinutes, ROLLING_AVERAGE_DAYS } from "../lib/sleepUtils";
+import {
+  formatHoursMinutes,
+  COMPOSITE_AVERAGE_WINDOWS,
+} from "../lib/sleepUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -70,7 +73,7 @@ export function SleepChart({
         order: 2,
       },
       {
-        label: `${ROLLING_AVERAGE_DAYS}-Day Rolling Average`,
+        label: `Composite Average (${COMPOSITE_AVERAGE_WINDOWS.join(", ")} days)`,
         data: rollingAverage,
         type: "line" as const,
         borderColor: "#ff6b6b",

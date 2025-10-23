@@ -2,7 +2,10 @@ import type { SleepRecord } from "./supabase";
 import { Temporal } from "temporal-polyfill";
 
 // Configuration constants
-export const ROLLING_AVERAGE_DAYS = 7; // Kept for backward compatibility
+// BREAKING CHANGE: The averaging algorithm has changed from a simple 7-day rolling average
+// to a composite average of multiple windows. This constant is maintained to avoid import errors,
+// but consumers must update to use COMPOSITE_AVERAGE_WINDOWS for accurate labeling.
+export const ROLLING_AVERAGE_DAYS = 7; // Deprecated - use COMPOSITE_AVERAGE_WINDOWS instead
 export const COMPOSITE_AVERAGE_WINDOWS = [5, 7, 9]; // Window sizes for composite averaging
 
 // Utility functions (ported from your existing main.js)

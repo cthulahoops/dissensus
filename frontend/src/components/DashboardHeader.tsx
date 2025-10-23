@@ -6,7 +6,7 @@ import { type TimeRange } from "../lib/sleepUtils";
 type DashboardHeaderProps = {
   selectedTimeRange: TimeRange;
   setSelectedTimeRange: (range: TimeRange) => void;
-  onAddRecord: () => void;
+  onAddRecord?: () => void;
   sleepRecords: SleepRecord[];
   isSharedView?: boolean;
   sharedViewInfo?: string;
@@ -42,7 +42,7 @@ export function DashboardHeader({
           selectedRange={selectedTimeRange}
           onRangeChange={setSelectedTimeRange}
         />
-        {!isSharedView && (
+        {onAddRecord && (
           <button onClick={onAddRecord}>
             {todaysRecord ? "Edit Record" : "Add New Record"}
           </button>

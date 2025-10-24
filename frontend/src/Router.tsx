@@ -12,6 +12,8 @@ import { ShareManagerPage } from "./pages/ShareManagerPage";
 import { WorkoutDashboardPage } from "./pages/WorkoutDashboardPage";
 import { ScannerPage } from "./pages/ScannerPage";
 import { AppHeader } from "./components/AppHeader";
+import { AppFooter } from "./components/AppFooter";
+import "./components/Dashboard.css";
 import "./components/SleepDashboard.css";
 
 export const Router = () => {
@@ -69,7 +71,7 @@ export const Router = () => {
 
       return (
         <>
-          <AppHeader user={user}>
+          <AppHeader>
             <button
               onClick={() => {
                 window.history.pushState({}, "", "/");
@@ -85,12 +87,6 @@ export const Router = () => {
               }}
             >
               Workouts
-            </button>
-            <button onClick={() => setAppView({ view: "share-manager" })}>
-              Share
-            </button>
-            <button onClick={handleSignOut} className="btn-cancel">
-              Sign Out
             </button>
           </AppHeader>
 
@@ -130,6 +126,12 @@ export const Router = () => {
               }}
             />
           )}
+
+          <AppFooter
+            user={user}
+            onShare={() => setAppView({ view: "share-manager" })}
+            onSignOut={handleSignOut}
+          />
         </>
       );
   }

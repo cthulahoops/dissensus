@@ -11,7 +11,7 @@ type SharedDashboardPageProps = {
 export function SharedDashboardPage({ token, user }: SharedDashboardPageProps) {
   return (
     <>
-      <AppHeader user={user}>
+      <AppHeader>
         {user && (
           <button onClick={() => (window.location.href = "/")}>
             Back to My Dashboard

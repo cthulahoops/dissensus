@@ -71,7 +71,7 @@ export const Router = () => {
 
       return (
         <>
-          <AppHeader user={user}>
+          <AppHeader>
             <button
               onClick={() => {
                 window.history.pushState({}, "", "/");

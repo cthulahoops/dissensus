@@ -53,8 +53,7 @@
 }
 
 /* Stats Grid - used by both dashboards */
-.stats-grid,
-.averages-grid {
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-md);
@@ -62,8 +61,7 @@
 }
 
 /* Stat Cards - used by both dashboards */
-.stat-card,
-.average-card {
+.stat-card {
   background: var(--color-background);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -72,8 +70,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.stat-value,
-.average-value {
+.stat-value {
   font-size: 2rem;
   font-weight: bold;
   color: var(--color-primary);
@@ -81,14 +78,14 @@
 }
 
 .stat-label,
-.average-card h3 {
+.stat-card h3 {
   font-size: 0.875rem;
   color: var(--color-text-light);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.average-card h3 {
+.stat-card h3 {
   margin: 0 0 var(--spacing-sm) 0;
   font-weight: 600;
 }
@@ -152,8 +149,7 @@
     gap: 1rem;
   }
 
-  .stats-grid,
-  .averages-grid {
+  .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }

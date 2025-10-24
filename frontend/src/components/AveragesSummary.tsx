@@ -9,7 +9,7 @@ export function AveragesSummary({ averages }: AveragesSummaryProps) {
   return (
     <section className="averages-summary">
       <h2>7-Day Averages (Latest)</h2>
-      <div className="averages-grid">
+      <div className="stats-grid">
         <AverageCard
           averages={averages}
           dataKey="totalTimeInBed"
@@ -62,9 +62,9 @@ function AverageCard({ averages, dataKey, unit, title }: AverageCardProps) {
   const value = getLatestAverage(averages, dataKey);
 
   return (
-    <div className="average-card">
+    <div className="stat-card">
       <h3>{title}</h3>
-      <div className="average-value">{formatValue(value, unit)}</div>
+      <div className="stat-value">{formatValue(value, unit)}</div>
     </div>
   );
 }

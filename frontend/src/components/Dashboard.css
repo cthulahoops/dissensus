@@ -1,0 +1,159 @@
+/* Shared Dashboard Styles */
+
+/* Dashboard Header */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
+  color: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.dashboard-header p {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.dashboard-header button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-header button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+/* Stats Grid - used by both dashboards */
+.stats-grid,
+.averages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Stat Cards - used by both dashboards */
+.stat-card,
+.average-card {
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value,
+.average-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.stat-label,
+.average-card h3 {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.average-card h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: calc(var(--spacing-lg) * 2);
+}
+
+.empty-state h2 {
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state p {
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Loading and Error States */
+.dashboard-loading,
+.dashboard-error {
+  text-align: center;
+  padding: calc(var(--spacing-lg) * 3) var(--spacing-md);
+  margin: calc(var(--spacing-lg) * 2) auto;
+  max-width: 600px;
+  background: var(--color-background);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-loading h2 {
+  color: #667eea;
+  margin: 0;
+}
+
+.dashboard-error h2 {
+  color: #e53e3e;
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.dashboard-error p {
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .dashboard-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .stats-grid,
+  .averages-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

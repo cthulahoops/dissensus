@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { Workout } from "../lib/supabase";
+import "./Dashboard.css";
 import "./WorkoutDashboard.css";
 
 type WorkoutDashboardProps = {

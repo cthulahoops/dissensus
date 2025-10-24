@@ -13,6 +13,7 @@ import { WorkoutDashboardPage } from "./pages/WorkoutDashboardPage";
 import { ScannerPage } from "./pages/ScannerPage";
 import { AppHeader } from "./components/AppHeader";
 import { AppFooter } from "./components/AppFooter";
+import "./components/Dashboard.css";
 import "./components/SleepDashboard.css";
 
 export const Router = () => {

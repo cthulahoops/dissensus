@@ -137,9 +137,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          id?: string
-          user_id?: string | null
-          workout_id?: string
+          // Omit immutable fields: id, user_id, workout_id, created_at, updated_at
           workout_date?: string
           duration_seconds?: number | null
           calories?: number | null
@@ -150,8 +148,6 @@ export type Database = {
           max_heart_rate?: number | null
           avg_watts?: number | null
           raw_data?: Json
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }

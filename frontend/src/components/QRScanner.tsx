@@ -15,9 +15,28 @@ export const QRScanner = ({ onScan, onError }: QRScannerProps) => {
 
   useEffect(() => {
     return () => {
-      // Cleanup on unmount
-      if (scannerRef.current?.isScanning) {
-        scannerRef.current.stop().catch(console.error);
+      // Cleanup on unmount - properly release camera and DOM resources
+      const scanner = scannerRef.current;
+      if (scanner) {
+        if (scanner.isScanning) {
+          scanner
+            .stop()
+            .then(() => {
+              try {
+                scanner.clear();
+              } catch (e) {
+                console.error("Error clearing scanner:", e);
+              }
+            })
+            .catch(console.error);
+        } else {
+          try {
+            scanner.clear();
+          } catch (e) {
+            console.error("Error clearing scanner:", e);
+          }
+        }
+        scannerRef.current = null;
       }
     };
   }, []);
@@ -54,9 +73,15 @@ export const QRScanner = ({ onScan, onError }: QRScannerProps) => {
   };
 
   const stopScanning = async () => {
-    if (scannerRef.current?.isScanning) {
+    const scanner = scannerRef.current;
+    if (scanner?.isScanning) {
       try {
-        await scannerRef.current.stop();
+        await scanner.stop();
+        try {
+          scanner.clear();
+        } catch (e) {
+          console.error("Error clearing scanner:", e);
+        }
         scannerRef.current = null;
         setIsScanning(false);
       } catch (err) {

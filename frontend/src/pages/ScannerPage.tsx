@@ -24,6 +24,26 @@ interface HaloWorkoutData {
   aw?: string; // Max heart rate (avg watts in some cases)
 }
 
+// Decode URL-safe Base64 (handles '-', '_', and missing padding)
+const decodeUrlSafeBase64 = (str: string): string => {
+  // Replace URL-safe characters with standard Base64 characters
+  let normalized = str.replace(/-/g, "+").replace(/_/g, "/");
+
+  // Add padding if needed (must be multiple of 4)
+  while (normalized.length % 4 !== 0) {
+    normalized += "=";
+  }
+
+  return atob(normalized);
+};
+
+// Convert distance/speed to metric (km/kmh) if needed
+const toKm = (val: number, unit?: string): number =>
+  unit?.toLowerCase().includes("mi") ? val * 1.60934 : val;
+
+const toKmh = (val: number, unit?: string): number =>
+  unit?.toLowerCase().includes("mph") ? val * 1.60934 : val;
+
 export const ScannerPage = ({ user, onBack }: ScannerPageProps) => {
   const [status, setStatus] = useState<{
     type: "idle" | "success" | "error";
@@ -43,8 +63,8 @@ export const ScannerPage = ({ user, onBack }: ScannerPageProps) => {
         throw new Error("No 'r' parameter found in QR code");
       }
 
-      // Decode Base64
-      const decoded = atob(rParam);
+      // Decode URL-safe Base64
+      const decoded = decodeUrlSafeBase64(rParam);
       const data: HaloWorkoutData = JSON.parse(decoded);
 
       // Prevent duplicate scans
@@ -52,18 +72,20 @@ export const ScannerPage = ({ user, onBack }: ScannerPageProps) => {
         throw new Error("This workout has already been scanned");
       }
 
-      // Parse workout data
+      // Parse workout data with unit conversion
       const workout: WorkoutInsert = {
         user_id: user.id,
         workout_id: data.id,
         workout_date: data.dt,
         duration_seconds: data.et ? parseInt(data.et, 10) : null,
         calories: data.c ? parseInt(data.c, 10) : null,
-        distance_km: data.d ? parseFloat(data.d.v) : null,
-        avg_speed_kmh: data.as ? parseFloat(data.as.v) : null,
+        distance_km: data.d ? toKm(parseFloat(data.d.v), data.d.u) : null,
+        avg_speed_kmh: data.as ? toKmh(parseFloat(data.as.v), data.as.u) : null,
         avg_pace: data.ap?.v || null,
         avg_heart_rate: data.ahr ? parseInt(data.ahr, 10) : null,
-        max_heart_rate: data.aw ? parseInt(data.aw, 10) : null,
+        // Note: 'aw' field meaning is unclear (could be max HR or avg watts)
+        // Leaving both null until confirmed from actual QR codes
+        max_heart_rate: null,
         avg_watts: null,
         raw_data: data as unknown as Json,
       };

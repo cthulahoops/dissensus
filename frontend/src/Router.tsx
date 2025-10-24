@@ -9,6 +9,8 @@ import { SharedDashboardPage } from "./pages/SharedDashboardPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { AddRecordPage } from "./pages/AddRecordPage";
 import { ShareManagerPage } from "./pages/ShareManagerPage";
+import { WorkoutDashboardPage } from "./pages/WorkoutDashboardPage";
+import { ScannerPage } from "./pages/ScannerPage";
 import { AppHeader } from "./components/AppHeader";
 import "./components/SleepDashboard.css";
 
@@ -68,6 +70,22 @@ export const Router = () => {
       return (
         <>
           <AppHeader user={user}>
+            <button
+              onClick={() => {
+                window.history.pushState({}, "", "/");
+                setAppView({ view: "dashboard" });
+              }}
+            >
+              Sleep Tracker
+            </button>
+            <button
+              onClick={() => {
+                window.history.pushState({}, "", "/workouts");
+                setAppView({ view: "workout-dashboard" });
+              }}
+            >
+              Workouts
+            </button>
             <button onClick={() => setAppView({ view: "share-manager" })}>
               Share
             </button>
@@ -92,6 +110,24 @@ export const Router = () => {
           {appView.view === "share-manager" && (
             <ShareManagerPage
               onClose={() => setAppView({ view: "dashboard" })}
+            />
+          )}
+          {appView.view === "workout-dashboard" && (
+            <WorkoutDashboardPage
+              user={user}
+              onScanQR={() => {
+                window.history.pushState({}, "", "/workouts/scan");
+                setAppView({ view: "scan-qr" });
+              }}
+            />
+          )}
+          {appView.view === "scan-qr" && (
+            <ScannerPage
+              user={user}
+              onBack={() => {
+                window.history.pushState({}, "", "/workouts");
+                setAppView({ view: "workout-dashboard" });
+              }}
             />
           )}
         </>

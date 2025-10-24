@@ -25,6 +25,10 @@ export type SleepRecord = Selectable<"sleep_records">;
 export type SleepRecordInsert = Insertable<"sleep_records">;
 export type SleepRecordUpdate = Updateable<"sleep_records">;
 
+export type Workout = Selectable<"workouts">;
+export type WorkoutInsert = Insertable<"workouts">;
+export type WorkoutUpdate = Updateable<"workouts">;
+
 export const sleepRecordsAPI = {
   async getAll(userId: string): Promise<SleepRecord[]> {
     const { data, error } = await supabase
@@ -78,6 +82,59 @@ export const sleepRecordsAPI = {
       .from("sleep_records")
       .delete()
       .eq("id", id);
+
+    if (error) throw error;
+  },
+};
+
+export const workoutsAPI = {
+  async getAll(userId: string): Promise<Workout[]> {
+    const { data, error } = await supabase
+      .from("workouts")
+      .select("*")
+      .eq("user_id", userId)
+      .order("workout_date", { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async getById(id: string): Promise<Workout | null> {
+    const { data, error } = await supabase
+      .from("workouts")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error && error.code !== "PGRST116") throw error;
+    return data;
+  },
+
+  async create(workout: WorkoutInsert): Promise<Workout> {
+    const { data, error } = await supabase
+      .from("workouts")
+      .insert(workout)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async update(id: string, updates: WorkoutUpdate): Promise<Workout> {
+    const { data, error } = await supabase
+      .from("workouts")
+      .update(updates)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase.from("workouts").delete().eq("id", id);
 
     if (error) throw error;
   },

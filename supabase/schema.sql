@@ -119,3 +119,49 @@ CREATE POLICY "Allow shared access via token" ON sleep_records
     )
   );
 
+-- Workouts table for Halo Fitness QR code workout tracking
+CREATE TABLE IF NOT EXISTS workouts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  workout_id TEXT NOT NULL,
+  workout_date TIMESTAMPTZ NOT NULL,
+  duration_seconds INTEGER,
+  calories INTEGER,
+  distance_km NUMERIC(10, 3),
+  avg_speed_kmh NUMERIC(10, 3),
+  avg_pace TEXT,
+  avg_heart_rate INTEGER,
+  max_heart_rate INTEGER,
+  avg_watts INTEGER,
+  raw_data JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, workout_id)
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_workouts_user_id ON workouts(user_id);
+CREATE INDEX IF NOT EXISTS idx_workouts_user_date ON workouts(user_id, workout_date DESC);
+
+-- Enable Row Level Security
+ALTER TABLE workouts ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for workouts
+CREATE POLICY "Users can view own workouts" ON workouts
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own workouts" ON workouts
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own workouts" ON workouts
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own workouts" ON workouts
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create updated_at trigger for workouts
+CREATE TRIGGER update_workouts_updated_at
+    BEFORE UPDATE ON workouts
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_updated_at_column();
+

@@ -8,12 +8,22 @@ export type AppView =
   | { view: "dashboard" }
   | { view: "add-record" }
   | { view: "share-manager" }
-  | { view: "shared-dashboard"; token: string };
+  | { view: "shared-dashboard"; token: string }
+  | { view: "workout-dashboard" }
+  | { view: "scan-qr" };
 
 const getInitialView = (): AppView => {
   const currentPath = window.location.pathname;
   if (currentPath === "/auth/callback") {
     return { view: "auth-callback" };
+  }
+
+  if (currentPath === "/workouts") {
+    return { view: "workout-dashboard" };
+  }
+
+  if (currentPath === "/workouts/scan") {
+    return { view: "scan-qr" };
   }
 
   const isShare = isShareUrl(currentPath);

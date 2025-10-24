@@ -101,6 +101,60 @@ export type Database = {
         }
         Relationships: []
       }
+      workouts: {
+        Row: {
+          id: string
+          user_id: string | null
+          workout_id: string
+          workout_date: string
+          duration_seconds: number | null
+          calories: number | null
+          distance_km: number | null
+          avg_speed_kmh: number | null
+          avg_pace: string | null
+          avg_heart_rate: number | null
+          max_heart_rate: number | null
+          avg_watts: number | null
+          raw_data: Json
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          workout_id: string
+          workout_date: string
+          duration_seconds?: number | null
+          calories?: number | null
+          distance_km?: number | null
+          avg_speed_kmh?: number | null
+          avg_pace?: string | null
+          avg_heart_rate?: number | null
+          max_heart_rate?: number | null
+          avg_watts?: number | null
+          raw_data: Json
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          workout_id?: string
+          workout_date?: string
+          duration_seconds?: number | null
+          calories?: number | null
+          distance_km?: number | null
+          avg_speed_kmh?: number | null
+          avg_pace?: string | null
+          avg_heart_rate?: number | null
+          max_heart_rate?: number | null
+          avg_watts?: number | null
+          raw_data?: Json
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

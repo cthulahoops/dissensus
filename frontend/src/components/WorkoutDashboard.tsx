@@ -72,16 +72,17 @@ export function WorkoutDashboard({
 
   return (
     <main>
-      <div className="workout-dashboard">
-        <div className="dashboard-header">
-          <h1>Workout Tracker</h1>
-          {onScanQR && (
-            <button onClick={onScanQR} className="btn-primary">
-              Scan QR Code
-            </button>
-          )}
-        </div>
+      <header className="dashboard-header">
+        <h1>Workout Tracker</h1>
+        {onScanQR && (
+          <button onClick={onScanQR}>
+            Scan QR Code
+          </button>
+        )}
+        <p>Tracking {workouts.length} total workouts</p>
+      </header>
 
+      <div className="workout-dashboard">
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-value">{stats.totalWorkouts}</div>

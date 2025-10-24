@@ -12,6 +12,7 @@ import { ShareManagerPage } from "./pages/ShareManagerPage";
 import { WorkoutDashboardPage } from "./pages/WorkoutDashboardPage";
 import { ScannerPage } from "./pages/ScannerPage";
 import { AppHeader } from "./components/AppHeader";
+import { AppFooter } from "./components/AppFooter";
 import "./components/SleepDashboard.css";
 
 export const Router = () => {
@@ -86,12 +87,6 @@ export const Router = () => {
             >
               Workouts
             </button>
-            <button onClick={() => setAppView({ view: "share-manager" })}>
-              Share
-            </button>
-            <button onClick={handleSignOut} className="btn-cancel">
-              Sign Out
-            </button>
           </AppHeader>
 
           {appView.view === "dashboard" && (
@@ -130,6 +125,12 @@ export const Router = () => {
               }}
             />
           )}
+
+          <AppFooter
+            user={user}
+            onShare={() => setAppView({ view: "share-manager" })}
+            onSignOut={handleSignOut}
+          />
         </>
       );
   }

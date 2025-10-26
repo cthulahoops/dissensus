@@ -14,8 +14,55 @@ export function parseTime(timeStr: string | null | undefined): number | null {
 export function calculateTimeDifference(
   startTime: number,
   endTime: number,
+  date?: string,
 ): number | null {
   if (startTime == null || endTime == null) return null;
+
+  // If we have a date, use proper date-time calculation to handle DST
+  if (date) {
+    try {
+      const wakeDate = Temporal.PlainDate.from(date);
+
+      // Convert decimal hours to hours and minutes
+      const startHours = Math.floor(startTime);
+      const startMinutes = Math.round((startTime - startHours) * 60);
+      const endHours = Math.floor(endTime);
+      const endMinutes = Math.round((endTime - endHours) * 60);
+
+      // Determine if start time is on the previous day
+      // If endTime < startTime, it's overnight, so start time was yesterday
+      const sleepDate = endTime < startTime
+        ? wakeDate.subtract({ days: 1 })
+        : wakeDate;
+
+      // Create PlainDateTime objects
+      const startDateTime = sleepDate.toPlainDateTime({
+        hour: startHours,
+        minute: startMinutes,
+      });
+      const endDateTime = wakeDate.toPlainDateTime({
+        hour: endHours,
+        minute: endMinutes,
+      });
+
+      // Convert to ZonedDateTime in the system timezone
+      const timeZone = Temporal.Now.timeZoneId();
+      const startZoned = startDateTime.toZonedDateTime(timeZone);
+      const endZoned = endDateTime.toZonedDateTime(timeZone);
+
+      // Calculate the duration
+      const duration = startZoned.until(endZoned);
+
+      // Convert to decimal hours
+      const totalHours = duration.total('hours');
+      return totalHours;
+    } catch (error) {
+      console.error('Error calculating time difference with DST:', error);
+      // Fall back to simple arithmetic if there's an error
+    }
+  }
+
+  // Fallback: simple arithmetic (pre-DST fix behavior)
   let diff = endTime - startTime;
   if (diff < 0) diff += 24; // Handle overnight
   return diff;
@@ -49,7 +96,7 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
 
     // Calculate total time in bed
     if (timeInBed !== null && timeOutOfBed !== null) {
-      totalTimeInBed = calculateTimeDifference(timeInBed, timeOutOfBed);
+      totalTimeInBed = calculateTimeDifference(timeInBed, timeOutOfBed, record.date);
     }
 
     // Calculate total time asleep: (wake time - sleep attempt time) - time to fall asleep - time awake during night
@@ -57,6 +104,7 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       const sleepPeriod = calculateTimeDifference(
         timeTriedToSleep,
         finalAwakeningTime,
+        record.date,
       );
       if (sleepPeriod !== null) {
         const timeToFallAsleepHours = (timeToFallAsleepMinutes || 0) / 60;

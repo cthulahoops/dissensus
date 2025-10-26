@@ -4,6 +4,7 @@ import {
   filterRecordsByDateRange,
   calculateRollingAverage,
   calculateCompositeAverage,
+  calculateTimeDifference,
 } from "./sleepUtils";
 
 describe("formatHoursMinutes", () => {
@@ -315,5 +316,63 @@ describe("calculateCompositeAverage", () => {
     const result = calculateCompositeAverage(data, [3, 5]);
 
     expect(result).toEqual([null, null, null, null, null]);
+  });
+});
+
+describe("calculateTimeDifference", () => {
+  it("should calculate simple same-day time difference", () => {
+    // 9:00 to 17:00 = 8 hours
+    const result = calculateTimeDifference(9.0, 17.0, "2025-10-15");
+    expect(result).toBeCloseTo(8.0, 2);
+  });
+
+  it("should calculate overnight time difference without DST", () => {
+    // 23:00 to 07:00 = 8 hours (on a normal day)
+    const result = calculateTimeDifference(23.0, 7.0, "2025-06-15");
+    expect(result).toBeCloseTo(8.0, 2);
+  });
+
+  it("should handle DST end correctly (clocks go back)", () => {
+    // October 26, 2025 - DST ends in Europe (clocks go back at 2:00 AM)
+    // Sleep at 23:50 (Oct 25) to wake at 6:10 (Oct 26)
+    // Should be 7h 20m = 7.333... hours (not 6h 20m = 6.333... hours)
+    const startTime = 23 + 50/60; // 23.833...
+    const endTime = 6 + 10/60;    // 6.166...
+    const result = calculateTimeDifference(startTime, endTime, "2025-10-26");
+
+    // Expected: 7 hours 20 minutes = 7.333... hours
+    expect(result).toBeCloseTo(7.333, 2);
+  });
+
+  it("should handle DST start correctly (clocks go forward)", () => {
+    // March 30, 2025 - DST starts in Europe (clocks go forward at 1:00 AM)
+    // Sleep at 23:00 (Mar 29) to wake at 7:00 (Mar 30)
+    // Should be 7 hours (not 8 hours, because we lose an hour)
+    const result = calculateTimeDifference(23.0, 7.0, "2025-03-30");
+
+    // Expected: 7 hours (one hour is skipped)
+    expect(result).toBeCloseTo(7.0, 2);
+  });
+
+  it("should fall back to simple arithmetic when no date provided", () => {
+    // Without date, should use simple arithmetic
+    const result = calculateTimeDifference(23.0, 7.0);
+    expect(result).toBeCloseTo(8.0, 2);
+  });
+
+  it("should handle fractional hours correctly with DST", () => {
+    // Test with minutes included during DST change
+    const startTime = 22 + 30/60; // 22:30
+    const endTime = 8 + 45/60;    // 08:45
+    const result = calculateTimeDifference(startTime, endTime, "2025-10-26");
+
+    // Expected: 10 hours 15 minutes + 1 hour DST = 11.25 hours
+    expect(result).toBeCloseTo(11.25, 2);
+  });
+
+  it("should return null for null inputs", () => {
+    expect(calculateTimeDifference(null as any, 7.0, "2025-10-26")).toBeNull();
+    expect(calculateTimeDifference(23.0, null as any, "2025-10-26")).toBeNull();
+    expect(calculateTimeDifference(null as any, null as any, "2025-10-26")).toBeNull();
   });
 });

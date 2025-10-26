@@ -35,15 +35,19 @@ export function calculateTimeDifference(
         ? wakeDate.subtract({ days: 1 })
         : wakeDate;
 
-      // Create PlainDateTime objects
-      const startDateTime = sleepDate.toPlainDateTime({
+      // Create PlainTime objects from hours and minutes
+      const startPlainTime = Temporal.PlainTime.from({
         hour: startHours,
         minute: startMinutes,
       });
-      const endDateTime = wakeDate.toPlainDateTime({
+      const endPlainTime = Temporal.PlainTime.from({
         hour: endHours,
         minute: endMinutes,
       });
+
+      // Create PlainDateTime objects by combining dates and times
+      const startDateTime = sleepDate.toPlainDateTime(startPlainTime);
+      const endDateTime = wakeDate.toPlainDateTime(endPlainTime);
 
       // Convert to ZonedDateTime in the system timezone
       const timeZone = Temporal.Now.timeZoneId();

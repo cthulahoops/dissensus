@@ -88,7 +88,7 @@ export function WorkoutDashboard({
             label="Total Workouts"
           />
           <StatCard
-            value={`${stats.totalDistance.toFixed(2)} km`}
+            value={{ value: stats.totalDistance, unit: "km" }}
             label="Total Distance"
           />
           <StatCard

@@ -5,7 +5,7 @@ type StatValue =
   | string
   | {
       value: number | null;
-      unit: "hours" | "percent" | "minutes";
+      unit: "hours" | "percent" | "minutes" | "km";
     };
 
 type StatCardProps = {
@@ -33,6 +33,8 @@ function formatValue(val: StatValue): string {
       return `${value.toFixed(1)}%`;
     case "minutes":
       return `${Math.round(value)} min`;
+    case "km":
+      return `${value.toFixed(2)} km`;
     default:
       return value.toString();
   }

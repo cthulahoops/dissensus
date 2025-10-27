@@ -5,7 +5,10 @@ type AppHeaderProps = {
 export function AppHeader({ children }: AppHeaderProps) {
   return (
     <header className="app-header">
-      <nav className="nav-links">{children}</nav>
+      <div className="contained-width flex-between">
+        <div />
+        <nav className="buttons">{children}</nav>
+      </div>
     </header>
   );
 }

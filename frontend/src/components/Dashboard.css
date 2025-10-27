@@ -52,14 +52,6 @@
   flex-wrap: wrap;
 }
 
-/* Stats Grid - used by both dashboards */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
 /* Stat Cards - used by both dashboards */
 .stat-card {
   background: var(--color-background);
@@ -147,9 +139,5 @@
   .dashboard-controls {
     flex-direction: column;
     gap: 1rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

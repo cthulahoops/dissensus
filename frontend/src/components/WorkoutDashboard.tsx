@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { Workout } from "../lib/supabase";
 import "./Dashboard.css";
 import "./WorkoutDashboard.css";
+import { BalancedGrid } from "./ui/BalancedGrid";
 
 type WorkoutDashboardProps = {
   workouts: Workout[];
@@ -75,22 +76,20 @@ export function WorkoutDashboard({
     <main>
       <header className="dashboard-header">
         <h1>Workout Tracker</h1>
-        {onScanQR && (
-          <button onClick={onScanQR}>
-            Scan QR Code
-          </button>
-        )}
+        {onScanQR && <button onClick={onScanQR}>Scan QR Code</button>}
         <p>Tracking {workouts.length} total workouts</p>
       </header>
 
       <div className="workout-dashboard">
-        <div className="stats-grid">
+        <BalancedGrid>
           <div className="stat-card">
             <div className="stat-value">{stats.totalWorkouts}</div>
             <div className="stat-label">Total Workouts</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{stats.totalDistance.toFixed(2)} km</div>
+            <div className="stat-value">
+              {stats.totalDistance.toFixed(2)} km
+            </div>
             <div className="stat-label">Total Distance</div>
           </div>
           <div className="stat-card">
@@ -103,7 +102,7 @@ export function WorkoutDashboard({
             </div>
             <div className="stat-label">Total Duration</div>
           </div>
-        </div>
+        </BalancedGrid>
 
         {workouts.length === 0 ? (
           <section className="empty-state">

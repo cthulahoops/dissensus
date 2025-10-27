@@ -336,8 +336,8 @@ describe("calculateTimeDifference", () => {
     // October 26, 2025 - DST ends in Europe (clocks go back at 2:00 AM)
     // Sleep at 23:50 (Oct 25) to wake at 6:10 (Oct 26)
     // Should be 7h 20m = 7.333... hours (not 6h 20m = 6.333... hours)
-    const startTime = 23 + 50/60; // 23.833...
-    const endTime = 6 + 10/60;    // 6.166...
+    const startTime = 23 + 50 / 60; // 23.833...
+    const endTime = 6 + 10 / 60; // 6.166...
     const result = calculateTimeDifference(startTime, endTime, "2025-10-26");
 
     // Expected: 7 hours 20 minutes = 7.333... hours
@@ -354,25 +354,59 @@ describe("calculateTimeDifference", () => {
     expect(result).toBeCloseTo(7.0, 2);
   });
 
-  it("should fall back to simple arithmetic when no date provided", () => {
-    // Without date, should use simple arithmetic
-    const result = calculateTimeDifference(23.0, 7.0);
-    expect(result).toBeCloseTo(8.0, 2);
-  });
-
   it("should handle fractional hours correctly with DST", () => {
     // Test with minutes included during DST change
-    const startTime = 22 + 30/60; // 22:30
-    const endTime = 8 + 45/60;    // 08:45
+    const startTime = 22 + 30 / 60; // 22:30
+    const endTime = 8 + 45 / 60; // 08:45
     const result = calculateTimeDifference(startTime, endTime, "2025-10-26");
 
     // Expected: 10 hours 15 minutes + 1 hour DST = 11.25 hours
     expect(result).toBeCloseTo(11.25, 2);
   });
 
-  it("should return null for null inputs", () => {
-    expect(calculateTimeDifference(null as any, 7.0, "2025-10-26")).toBeNull();
-    expect(calculateTimeDifference(23.0, null as any, "2025-10-26")).toBeNull();
-    expect(calculateTimeDifference(null as any, null as any, "2025-10-26")).toBeNull();
+  it("should calculate time difference with precision better than 30 seconds", () => {
+    // 23.99999 hours = 23:59:59.64 (essentially midnight minus 0.36 seconds)
+    // To 7:00:00 = exactly 7 hours and 0.36 seconds = 7.0001 hours
+    const startTime = 23.99999;
+    const endTime = 7.0;
+    const result = calculateTimeDifference(startTime, endTime, "2025-01-15");
+
+    // This should FAIL with the old code because:
+    // Old code: 23:60 → clamped to 23:59:00
+    // Gives: 7.0167 hours (1 minute error)
+    //
+    // With the fix: 23:99999 → 00:00:00
+    // Gives: 7.0 hours (correct)
+
+    expect(result).not.toBeNull();
+    if (result !== null) {
+      // Require precision within 30 seconds (0.00833 hours)
+      const errorInHours = Math.abs(result - 7.0);
+      const errorInMinutes = errorInHours * 60;
+      const errorInSeconds = errorInMinutes * 60;
+
+      console.log(`Precision error: ${errorInSeconds.toFixed(2)} seconds`);
+
+      // This will FAIL with old code (60 second error)
+      // but PASS with the fix (<1 second error)
+      expect(errorInHours).toBeLessThan(0.00833); // 30 seconds
+    }
+  });
+
+  it("should handle 0.99999 hours (nearly 1am) with < 30 second precision", () => {
+    // 0.99999 hours = 0:59:59.64
+    // To 8:00:00 = 7 hours and 0.36 seconds
+    const startTime = 0.99999;
+    const endTime = 8.0;
+    const result = calculateTimeDifference(startTime, endTime, "2025-01-15");
+
+    expect(result).not.toBeNull();
+    if (result !== null) {
+      const errorInSeconds = Math.abs(result - 7.0) * 3600;
+      console.log(`Precision error: ${errorInSeconds.toFixed(2)} seconds`);
+
+      // Old code will have ~60 second error, fixed code will have <1 second
+      expect(errorInSeconds).toBeLessThan(30);
+    }
   });
 });

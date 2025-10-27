@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
+import { Temporal } from "temporal-polyfill";
 import {
   formatHoursMinutes,
   filterRecordsByDateRange,
@@ -320,6 +321,10 @@ describe("calculateCompositeAverage", () => {
 });
 
 describe("calculateTimeDifference", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("should calculate simple same-day time difference", () => {
     // 9:00 to 17:00 = 8 hours
     const result = calculateTimeDifference(9.0, 17.0, "2025-10-15");
@@ -333,6 +338,9 @@ describe("calculateTimeDifference", () => {
   });
 
   it("should handle DST end correctly (clocks go back)", () => {
+    // Mock timezone to Europe/London for consistent DST behavior
+    const timeZoneSpy = vi.spyOn(Temporal.Now, 'timeZoneId').mockReturnValue('Europe/London');
+
     // October 26, 2025 - DST ends in Europe (clocks go back at 2:00 AM)
     // Sleep at 23:50 (Oct 25) to wake at 6:10 (Oct 26)
     // Should be 7h 20m = 7.333... hours (not 6h 20m = 6.333... hours)
@@ -342,9 +350,14 @@ describe("calculateTimeDifference", () => {
 
     // Expected: 7 hours 20 minutes = 7.333... hours
     expect(result).toBeCloseTo(7.333, 2);
+
+    timeZoneSpy.mockRestore();
   });
 
   it("should handle DST start correctly (clocks go forward)", () => {
+    // Mock timezone to Europe/London for consistent DST behavior
+    const timeZoneSpy = vi.spyOn(Temporal.Now, 'timeZoneId').mockReturnValue('Europe/London');
+
     // March 30, 2025 - DST starts in Europe (clocks go forward at 1:00 AM)
     // Sleep at 23:00 (Mar 29) to wake at 7:00 (Mar 30)
     // Should be 7 hours (not 8 hours, because we lose an hour)
@@ -352,9 +365,14 @@ describe("calculateTimeDifference", () => {
 
     // Expected: 7 hours (one hour is skipped)
     expect(result).toBeCloseTo(7.0, 2);
+
+    timeZoneSpy.mockRestore();
   });
 
   it("should handle fractional hours correctly with DST", () => {
+    // Mock timezone to Europe/London for consistent DST behavior
+    const timeZoneSpy = vi.spyOn(Temporal.Now, 'timeZoneId').mockReturnValue('Europe/London');
+
     // Test with minutes included during DST change
     const startTime = 22 + 30 / 60; // 22:30
     const endTime = 8 + 45 / 60; // 08:45
@@ -362,6 +380,8 @@ describe("calculateTimeDifference", () => {
 
     // Expected: 10 hours 15 minutes + 1 hour DST = 11.25 hours
     expect(result).toBeCloseTo(11.25, 2);
+
+    timeZoneSpy.mockRestore();
   });
 
   it("should calculate time difference with precision better than 30 seconds", () => {

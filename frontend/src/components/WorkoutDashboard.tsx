@@ -83,12 +83,18 @@ export function WorkoutDashboard({
 
       <div className="workout-dashboard">
         <BalancedGrid>
-          <StatCard value={stats.totalWorkouts} label="Total Workouts" />
+          <StatCard
+            value={stats.totalWorkouts.toString()}
+            label="Total Workouts"
+          />
           <StatCard
             value={`${stats.totalDistance.toFixed(2)} km`}
             label="Total Distance"
           />
-          <StatCard value={stats.totalCalories} label="Total Calories" />
+          <StatCard
+            value={stats.totalCalories.toString()}
+            label="Total Calories"
+          />
           <StatCard
             value={formatDuration(stats.totalDuration)}
             label="Total Duration"

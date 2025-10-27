@@ -1,4 +1,4 @@
-import { formatHoursMinutes, getLatestAverage } from "../lib/sleepUtils";
+import { getLatestAverage } from "../lib/sleepUtils";
 import type { AveragedData } from "../lib/sleepUtils";
 import { BalancedGrid } from "./ui/BalancedGrid";
 import { StatCard } from "./ui/StatCard";
@@ -60,22 +60,5 @@ type AverageCardProps = {
 function AverageCard({ averages, dataKey, unit, title }: AverageCardProps) {
   const value = getLatestAverage(averages, dataKey);
 
-  return <StatCard value={formatValue(value, unit)} label={title} />;
-}
-
-function formatValue(
-  value: number | null,
-  unit: "hours" | "percent" | "minutes",
-) {
-  if (value === null) {
-    return "N/A";
-  } else if (unit === "hours") {
-    return formatHoursMinutes(value);
-  } else if (unit === "percent") {
-    return `${value.toFixed(1)}%`;
-  } else if (unit === "minutes") {
-    return `${Math.round(value)} min`;
-  } else {
-    return value.toString();
-  }
+  return <StatCard value={{ value, unit }} label={title} />;
 }

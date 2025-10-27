@@ -177,7 +177,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
           )}
         </fieldset>
 
-        <div className="form-actions">
+        <div className="buttons">
           <button onClick={onClose} className="btn-cancel">
             Back to Dashboard
           </button>

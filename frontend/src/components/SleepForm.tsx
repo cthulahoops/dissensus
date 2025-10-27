@@ -300,7 +300,7 @@ export function SleepForm({
           </fieldset>
 
           {/* Form Actions */}
-          <div className="form-actions">
+          <div className="buttons">
             <button type="button" onClick={onCancel} className="btn-cancel">
               Cancel
             </button>

@@ -1,6 +1,7 @@
 import { formatHoursMinutes, getLatestAverage } from "../lib/sleepUtils";
 import type { AveragedData } from "../lib/sleepUtils";
 import { BalancedGrid } from "./ui/BalancedGrid";
+import { StatCard } from "./ui/StatCard";
 
 type AveragesSummaryProps = {
   averages: AveragedData;
@@ -59,12 +60,7 @@ type AverageCardProps = {
 function AverageCard({ averages, dataKey, unit, title }: AverageCardProps) {
   const value = getLatestAverage(averages, dataKey);
 
-  return (
-    <div className="stat-card">
-      <h3>{title}</h3>
-      <div className="stat-value">{formatValue(value, unit)}</div>
-    </div>
-  );
+  return <StatCard value={formatValue(value, unit)} label={title} />;
 }
 
 function formatValue(

@@ -3,6 +3,7 @@ import type { Workout } from "../lib/supabase";
 import "./Dashboard.css";
 import "./WorkoutDashboard.css";
 import { BalancedGrid } from "./ui/BalancedGrid";
+import { StatCard } from "./ui/StatCard";
 
 type WorkoutDashboardProps = {
   workouts: Workout[];
@@ -82,26 +83,16 @@ export function WorkoutDashboard({
 
       <div className="workout-dashboard">
         <BalancedGrid>
-          <div className="stat-card">
-            <div className="stat-value">{stats.totalWorkouts}</div>
-            <div className="stat-label">Total Workouts</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">
-              {stats.totalDistance.toFixed(2)} km
-            </div>
-            <div className="stat-label">Total Distance</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{stats.totalCalories}</div>
-            <div className="stat-label">Total Calories</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">
-              {formatDuration(stats.totalDuration)}
-            </div>
-            <div className="stat-label">Total Duration</div>
-          </div>
+          <StatCard value={stats.totalWorkouts} label="Total Workouts" />
+          <StatCard
+            value={`${stats.totalDistance.toFixed(2)} km`}
+            label="Total Distance"
+          />
+          <StatCard value={stats.totalCalories} label="Total Calories" />
+          <StatCard
+            value={formatDuration(stats.totalDuration)}
+            label="Total Duration"
+          />
         </BalancedGrid>
 
         {workouts.length === 0 ? (

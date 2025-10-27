@@ -1,5 +1,4 @@
 import type { User } from "@supabase/supabase-js";
-import "./AppFooter.css";
 
 type AppFooterProps = {
   user: User | null;
@@ -9,23 +8,19 @@ type AppFooterProps = {
 
 export function AppFooter({ user, onShare, onSignOut }: AppFooterProps) {
   return (
-    <footer className="app-footer">
-      <div className="footer-content">
-        <div className="user-info-footer">
+    <footer>
+      <div className="contained-width flex-between">
+        <div>
           {user ? (
             <span>Signed in as: {user.email}</span>
           ) : (
             <span>Not signed in</span>
           )}
         </div>
-        <div className="footer-actions">
-          {onShare && (
-            <button onClick={onShare} className="btn-footer">
-              Share
-            </button>
-          )}
+        <div className="buttons">
+          {onShare && <button onClick={onShare}>Share</button>}
           {onSignOut && (
-            <button onClick={onSignOut} className="btn-footer btn-cancel">
+            <button onClick={onSignOut} className="btn-cancel">
               Sign Out
             </button>
           )}

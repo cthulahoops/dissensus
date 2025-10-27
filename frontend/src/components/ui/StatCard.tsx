@@ -42,7 +42,7 @@ function formatValue(val: StatValue): string {
 
 export function StatCard({ value, label }: StatCardProps) {
   return (
-    <div className="stat-card">
+    <div className="stat-card card">
       <div className="stat-value">{formatValue(value)}</div>
       <div className="stat-label">{label}</div>
     </div>

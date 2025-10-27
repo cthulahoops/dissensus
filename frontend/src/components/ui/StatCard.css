@@ -1,11 +1,5 @@
-/* Stat Cards */
 .stat-card {
-  background: var(--color-background);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .stat-value {

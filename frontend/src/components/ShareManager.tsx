@@ -81,7 +81,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
   if (isPending || !shareLinks) {
     return (
       <main>
-        <section>
+        <section className="card">
           <h2>Manage Share Links</h2>
           <div className="loading">Loading share links...</div>
         </section>
@@ -95,7 +95,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
 
   return (
     <main>
-      <section>
+      <section className="card">
         <h2>Manage Share Links</h2>
 
         <div className="form-group">

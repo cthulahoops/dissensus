@@ -119,7 +119,7 @@ export function SleepForm({
         </button>
       </header>
 
-      <section>
+      <section className="card">
         {error && <div className="form-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="sleep-form">

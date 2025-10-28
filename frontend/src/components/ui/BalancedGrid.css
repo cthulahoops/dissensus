@@ -18,8 +18,8 @@
   }
 }
 
-@container (min-width: 600px) {
-  .balanced-grid:has(> :first-child:nth-last-child(3n)) {
-    --columns: 3;
+@container (min-width: 800px) {
+  .balanced-grid:has(> :first-child:nth-last-child(4n)) {
+    --columns: 4;
   }
 }

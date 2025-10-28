@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import type { Workout } from "../lib/supabase";
 import "./Dashboard.css";
 import "./WorkoutDashboard.css";
+import { BalancedGrid } from "./ui/BalancedGrid";
+import { StatCard } from "./ui/StatCard";
 
 type WorkoutDashboardProps = {
   workouts: Workout[];
@@ -75,35 +77,29 @@ export function WorkoutDashboard({
     <main>
       <header className="dashboard-header">
         <h1>Workout Tracker</h1>
-        {onScanQR && (
-          <button onClick={onScanQR}>
-            Scan QR Code
-          </button>
-        )}
+        {onScanQR && <button onClick={onScanQR}>Scan QR Code</button>}
         <p>Tracking {workouts.length} total workouts</p>
       </header>
 
       <div className="workout-dashboard">
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-value">{stats.totalWorkouts}</div>
-            <div className="stat-label">Total Workouts</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{stats.totalDistance.toFixed(2)} km</div>
-            <div className="stat-label">Total Distance</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{stats.totalCalories}</div>
-            <div className="stat-label">Total Calories</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">
-              {formatDuration(stats.totalDuration)}
-            </div>
-            <div className="stat-label">Total Duration</div>
-          </div>
-        </div>
+        <BalancedGrid>
+          <StatCard
+            value={stats.totalWorkouts.toString()}
+            label="Total Workouts"
+          />
+          <StatCard
+            value={{ value: stats.totalDistance, unit: "km" }}
+            label="Total Distance"
+          />
+          <StatCard
+            value={stats.totalCalories.toString()}
+            label="Total Calories"
+          />
+          <StatCard
+            value={formatDuration(stats.totalDuration)}
+            label="Total Duration"
+          />
+        </BalancedGrid>
 
         {workouts.length === 0 ? (
           <section className="empty-state">

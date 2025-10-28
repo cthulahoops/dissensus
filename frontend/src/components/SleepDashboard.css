@@ -56,19 +56,6 @@
   container-type: inline-size;
 }
 
-/* Override default stats-grid with container queries for better responsiveness */
-@container (min-width: 400px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@container (min-width: 600px) {
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   section {

@@ -1,0 +1,25 @@
+.balanced-grid {
+  display: grid;
+  --columns: 1;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  gap: var(--grid-gap, var(--spacing-md));
+  margin-bottom: var(--spacing-lg);
+}
+
+@container (min-width: 400px) {
+  .balanced-grid {
+    --columns: 2;
+  }
+}
+
+@container (min-width: 600px) {
+  .balanced-grid:has(> :first-child:nth-last-child(3n)) {
+    --columns: 3;
+  }
+}
+
+@container (min-width: 800px) {
+  .balanced-grid:has(> :first-child:nth-last-child(4n)) {
+    --columns: 4;
+  }
+}

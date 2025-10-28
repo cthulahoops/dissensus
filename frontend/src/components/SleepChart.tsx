@@ -135,7 +135,7 @@ export function SleepChart({
   };
 
   return (
-    <section>
+    <section className="card">
       <h2>{label}</h2>
       <div className="chart-container">
         <Chart type="bar" data={chartData} options={options} />

@@ -119,7 +119,7 @@ export function SleepForm({
         </button>
       </header>
 
-      <section>
+      <section className="card">
         {error && <div className="form-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="sleep-form">
@@ -300,7 +300,7 @@ export function SleepForm({
           </fieldset>
 
           {/* Form Actions */}
-          <div className="form-actions">
+          <div className="buttons">
             <button type="button" onClick={onCancel} className="btn-cancel">
               Cancel
             </button>

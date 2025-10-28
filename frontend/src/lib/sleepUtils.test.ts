@@ -338,8 +338,7 @@ describe("calculateTimeDifference", () => {
   });
 
   it("should handle DST end correctly (clocks go back)", () => {
-    // Mock timezone to Europe/London for consistent DST behavior
-    const timeZoneSpy = vi.spyOn(Temporal.Now, 'timeZoneId').mockReturnValue('Europe/London');
+    vi.spyOn(Temporal.Now, "timeZoneId").mockReturnValue("Europe/London");
 
     // October 26, 2025 - DST ends in Europe (clocks go back at 2:00 AM)
     // Sleep at 23:50 (Oct 25) to wake at 6:10 (Oct 26)
@@ -350,13 +349,11 @@ describe("calculateTimeDifference", () => {
 
     // Expected: 7 hours 20 minutes = 7.333... hours
     expect(result).toBeCloseTo(7.333, 2);
-
-    timeZoneSpy.mockRestore();
   });
 
   it("should handle DST start correctly (clocks go forward)", () => {
     // Mock timezone to Europe/London for consistent DST behavior
-    const timeZoneSpy = vi.spyOn(Temporal.Now, 'timeZoneId').mockReturnValue('Europe/London');
+    vi.spyOn(Temporal.Now, "timeZoneId").mockReturnValue("Europe/London");
 
     // March 30, 2025 - DST starts in Europe (clocks go forward at 1:00 AM)
     // Sleep at 23:00 (Mar 29) to wake at 7:00 (Mar 30)
@@ -365,13 +362,11 @@ describe("calculateTimeDifference", () => {
 
     // Expected: 7 hours (one hour is skipped)
     expect(result).toBeCloseTo(7.0, 2);
-
-    timeZoneSpy.mockRestore();
   });
 
   it("should handle fractional hours correctly with DST", () => {
     // Mock timezone to Europe/London for consistent DST behavior
-    const timeZoneSpy = vi.spyOn(Temporal.Now, 'timeZoneId').mockReturnValue('Europe/London');
+    vi.spyOn(Temporal.Now, "timeZoneId").mockReturnValue("Europe/London");
 
     // Test with minutes included during DST change
     const startTime = 22 + 30 / 60; // 22:30
@@ -380,8 +375,6 @@ describe("calculateTimeDifference", () => {
 
     // Expected: 10 hours 15 minutes + 1 hour DST = 11.25 hours
     expect(result).toBeCloseTo(11.25, 2);
-
-    timeZoneSpy.mockRestore();
   });
 
   it("should calculate time difference with precision better than 30 seconds", () => {

@@ -10,6 +10,7 @@ export type AppView =
   | { view: "share-manager" }
   | { view: "shared-dashboard"; token: string }
   | { view: "workout-dashboard" }
+  | { view: "add-workout" }
   | { view: "scan-qr" };
 
 const getInitialView = (): AppView => {
@@ -20,6 +21,10 @@ const getInitialView = (): AppView => {
 
   if (currentPath === "/workouts") {
     return { view: "workout-dashboard" };
+  }
+
+  if (currentPath === "/workouts/add") {
+    return { view: "add-workout" };
   }
 
   if (currentPath === "/workouts/scan") {

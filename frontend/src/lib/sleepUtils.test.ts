@@ -384,25 +384,15 @@ describe("calculateTimeDifference", () => {
     const endTime = 7.0;
     const result = calculateTimeDifference(startTime, endTime, "2025-01-15");
 
-    // This should FAIL with the old code because:
-    // Old code: 23:60 → clamped to 23:59:00
-    // Gives: 7.0167 hours (1 minute error)
-    //
-    // With the fix: 23:99999 → 00:00:00
-    // Gives: 7.0 hours (correct)
-
     expect(result).not.toBeNull();
     if (result !== null) {
       // Require precision within 30 seconds (0.00833 hours)
       const errorInHours = Math.abs(result - 7.0);
-      const errorInMinutes = errorInHours * 60;
-      const errorInSeconds = errorInMinutes * 60;
+      const errorInSeconds = errorInHours * 3600;
 
       console.log(`Precision error: ${errorInSeconds.toFixed(2)} seconds`);
 
-      // This will FAIL with old code (60 second error)
-      // but PASS with the fix (<1 second error)
-      expect(errorInHours).toBeLessThan(0.00833); // 30 seconds
+      expect(errorInSeconds).toBeLessThan(5);
     }
   });
 
@@ -418,8 +408,7 @@ describe("calculateTimeDifference", () => {
       const errorInSeconds = Math.abs(result - 7.0) * 3600;
       console.log(`Precision error: ${errorInSeconds.toFixed(2)} seconds`);
 
-      // Old code will have ~60 second error, fixed code will have <1 second
-      expect(errorInSeconds).toBeLessThan(30);
+      expect(errorInSeconds).toBeLessThan(5);
     }
   });
 });

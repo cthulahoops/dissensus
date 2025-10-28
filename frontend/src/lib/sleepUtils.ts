@@ -14,11 +14,57 @@ export function parseTime(timeStr: string | null | undefined): number | null {
 export function calculateTimeDifference(
   startTime: number,
   endTime: number,
+  date: string,
 ): number | null {
   if (startTime == null || endTime == null) return null;
-  let diff = endTime - startTime;
-  if (diff < 0) diff += 24; // Handle overnight
-  return diff;
+
+  const wakeDate = Temporal.PlainDate.from(date);
+
+  // Convert decimal hours to hours, minutes, and seconds
+  // Using seconds for maximum precision and proper normalization
+  const decimalHoursToTime = (timeValue: number) => {
+    const totalSeconds = Math.round(timeValue * 3600);
+    const hour = Math.floor(totalSeconds / 3600) % 24;
+    const minute = Math.floor((totalSeconds % 3600) / 60);
+    const second = totalSeconds % 60;
+    const didOverflow = totalSeconds >= 86400; // >= 24 hours
+    return { hour, minute, second, didOverflow };
+  };
+
+  const startTimeComponents = decimalHoursToTime(startTime);
+  const endTimeComponents = decimalHoursToTime(endTime);
+
+  // Determine if start time is on the previous day
+  // If endTime < startTime, it's overnight, so start time was yesterday
+  // Also account for values that overflow to the next day (>= 24 hours)
+  let sleepDate =
+    endTime < startTime ? wakeDate.subtract({ days: 1 }) : wakeDate;
+
+  // If start time overflowed (e.g., 23.99999 became 00:00:00),
+  // it's actually on the next day, so we need to add a day
+  if (startTimeComponents.didOverflow) {
+    sleepDate = sleepDate.add({ days: 1 });
+  }
+
+  // Create PlainTime objects from time components
+  const startPlainTime = Temporal.PlainTime.from(startTimeComponents);
+  const endPlainTime = Temporal.PlainTime.from(endTimeComponents);
+
+  // Create PlainDateTime objects by combining dates and times
+  const startDateTime = sleepDate.toPlainDateTime(startPlainTime);
+  const endDateTime = wakeDate.toPlainDateTime(endPlainTime);
+
+  // Convert to ZonedDateTime in the system timezone
+  const timeZone = Temporal.Now.timeZoneId();
+  const startZoned = startDateTime.toZonedDateTime(timeZone);
+  const endZoned = endDateTime.toZonedDateTime(timeZone);
+
+  // Calculate the duration
+  const duration = startZoned.until(endZoned);
+
+  // Convert to decimal hours
+  const totalHours = duration.total("hours");
+  return totalHours;
 }
 
 export type ProcessedSleepData = {
@@ -49,7 +95,11 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
 
     // Calculate total time in bed
     if (timeInBed !== null && timeOutOfBed !== null) {
-      totalTimeInBed = calculateTimeDifference(timeInBed, timeOutOfBed);
+      totalTimeInBed = calculateTimeDifference(
+        timeInBed,
+        timeOutOfBed,
+        record.date,
+      );
     }
 
     // Calculate total time asleep: (wake time - sleep attempt time) - time to fall asleep - time awake during night
@@ -57,6 +107,7 @@ export function processData(sleepData: SleepRecord[]): ProcessedSleepData[] {
       const sleepPeriod = calculateTimeDifference(
         timeTriedToSleep,
         finalAwakeningTime,
+        record.date,
       );
       if (sleepPeriod !== null) {
         const timeToFallAsleepHours = (timeToFallAsleepMinutes || 0) / 60;
@@ -244,7 +295,7 @@ export function calculateCompositeAverage(
 
   // Calculate moving average for each window size
   const allAverages = windowSizes.map((windowSize) =>
-    calculateRollingAverage(data, windowSize)
+    calculateRollingAverage(data, windowSize),
   );
 
   // Average the averages for each point

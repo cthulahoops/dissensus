@@ -162,34 +162,32 @@ export function SleepForm({
               />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="time_to_fall_asleep_mins">
-                  Time to Fall Asleep (minutes)
-                </label>
-                <input
-                  type="number"
-                  id="time_to_fall_asleep_mins"
-                  name="time_to_fall_asleep_mins"
-                  value={formData.time_to_fall_asleep_mins}
-                  onChange={handleInputChange}
-                  min="0"
-                  max="999"
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="time_to_fall_asleep_mins">
+                Time to Fall Asleep (minutes)
+              </label>
+              <input
+                type="number"
+                id="time_to_fall_asleep_mins"
+                name="time_to_fall_asleep_mins"
+                value={formData.time_to_fall_asleep_mins}
+                onChange={handleInputChange}
+                min="0"
+                max="999"
+              />
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="times_woke_up_count">Times Woke Up</label>
-                <input
-                  type="number"
-                  id="times_woke_up_count"
-                  name="times_woke_up_count"
-                  value={formData.times_woke_up_count}
-                  onChange={handleInputChange}
-                  min="0"
-                  max="50"
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="times_woke_up_count">Times Woke Up</label>
+              <input
+                type="number"
+                id="times_woke_up_count"
+                name="times_woke_up_count"
+                value={formData.times_woke_up_count}
+                onChange={handleInputChange}
+                min="0"
+                max="50"
+              />
             </div>
 
             <div className="form-group">

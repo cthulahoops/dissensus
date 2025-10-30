@@ -1,5 +1,3 @@
-/* Sleep Form Styles */
-
 .form-error {
   background: #fee;
   border: 1px solid #fcc;
@@ -8,77 +6,4 @@
   margin-bottom: var(--spacing-md);
   border-radius: var(--radius-md);
   font-size: 14px;
-}
-
-.sleep-form {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.form-group {
-  margin-bottom: var(--spacing-md);
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: calc(var(--spacing-md) * 0.5);
-  font-weight: 500;
-  color: var(--color-text);
-  font-size: 14px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-  box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.2);
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: calc(var(--spacing-lg) * 3);
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-}
-
-fieldset {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-fieldset legend {
-  padding: 0 calc(var(--spacing-md) * 0.5);
-  font-weight: 600;
-  color: var(--color-text);
-  font-size: 16px;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
 }

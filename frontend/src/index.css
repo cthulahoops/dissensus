@@ -159,6 +159,17 @@ label {
   display: block;
   font-weight: 600;
   font-size: 0.875rem; /* 14px */
+  margin-bottom: calc(var(--spacing-sm) * 0.5);
+}
+
+/* Form field spacing within fieldsets and forms */
+fieldset > input:not(:last-child),
+fieldset > select:not(:last-child),
+fieldset > textarea:not(:last-child),
+form > input:not(:last-child),
+form > select:not(:last-child),
+form > textarea:not(:last-child) {
+  margin-bottom: var(--spacing-md);
 }
 
 /* Main content container */

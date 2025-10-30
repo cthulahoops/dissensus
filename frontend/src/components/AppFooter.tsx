@@ -9,7 +9,7 @@ type AppFooterProps = {
 export function AppFooter({ user, onShare, onSignOut }: AppFooterProps) {
   return (
     <footer>
-      <div className="contained-width flex-between">
+      <div className="contained-width toolbar">
         <div>
           {user ? (
             <span>Signed in as: {user.email}</span>

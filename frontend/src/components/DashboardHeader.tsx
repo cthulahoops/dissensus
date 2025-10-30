@@ -48,10 +48,10 @@ export function DashboardHeader({
           </button>
         )}
       </div>
-      <p>
+      <div>
         {isSharedView ? "Viewing" : "Tracking"} {sleepRecords.length} total
         records, showing {selectedData.length} filtered entries
-      </p>
+      </div>
     </header>
   );
 }

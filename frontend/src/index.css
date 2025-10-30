@@ -49,18 +49,21 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.5rem;
   line-height: 1.1;
+  margin-top: 0;
+  margin-bottom: var(--spacing-lg);
+  font-weight: 700;
 }
 
 button {
   border-radius: var(--radius-md);
   border: 2px solid transparent;
-  padding: 12px var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-size: 14px;
   font-weight: 500;
   font-family: var(--font-family);
-  background: var(--color-primary);
+  background: var(--button-bg, var(--color-primary));
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -116,13 +119,12 @@ button:focus-visible {
 input,
 textarea,
 select {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--color-border);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 1px solid black;
   border-radius: var(--radius-md);
   font-size: 0.875rem; /* 14px */
   font-family: var(--font-family);
-  background: var(--color-background);
+  background: var(--control-bg, var(--color-background));
   color: var(--color-text);
   transition:
     border-color 0.2s ease,
@@ -156,9 +158,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 label {
   display: block;
-  margin-bottom: var(--spacing-sm);
   font-weight: 600;
-  color: var(--color-text);
   font-size: 0.875rem; /* 14px */
 }
 
@@ -198,18 +198,23 @@ main > * {
   margin: 0 auto;
 }
 
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .flex-between {
+.toolbar {
+    display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
     text-align: center;
-  }
+}
+
+@media (min-width: 768px) {
+    .toolbar {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toolbar:has(> :first-child:last-child) {
+      justify-content: flex-end;
+    }
 }
 
 .buttons {

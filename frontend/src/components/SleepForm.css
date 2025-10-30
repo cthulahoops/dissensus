@@ -1,9 +1,0 @@
-.form-error {
-  background: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
-  padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-}

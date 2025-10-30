@@ -77,8 +77,8 @@ export function WorkoutDashboard({
     <main>
       <header className="dashboard-header">
         <h1>Workout Tracker</h1>
-        {onScanQR && <button onClick={onScanQR}>Add Workout</button>}
-        <p>Tracking {workouts.length} total workouts</p>
+        <div>{onScanQR && <button onClick={onScanQR}>Add Workout</button>}</div>
+        <div>Tracking {workouts.length} total workouts</div>
       </header>
 
       <div className="workout-dashboard">
@@ -104,7 +104,10 @@ export function WorkoutDashboard({
         {workouts.length === 0 ? (
           <section className="empty-state">
             <h2>No workouts yet</h2>
-            <p>Add your first workout by scanning a QR code, pasting a URL, or entering details manually!</p>
+            <p>
+              Add your first workout by scanning a QR code, pasting a URL, or
+              entering details manually!
+            </p>
             {onScanQR && (
               <button onClick={onScanQR} className="btn-primary">
                 Add Workout

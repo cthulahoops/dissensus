@@ -42,18 +42,16 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     <div className="login-form">
       <h2>Sign In</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email Address</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-            disabled={loading}
-          />
-        </div>
+        <label htmlFor="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+          required
+          disabled={loading}
+        />
 
         <button type="submit" disabled={loading || !email}>
           {loading ? "Sending..." : "Send Magic Link"}

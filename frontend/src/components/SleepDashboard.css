@@ -1,42 +1,8 @@
-/* Sleep dashboard specific styles */
-
 .time-range-selector {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
-}
-
-.time-range-selector label {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.time-range-select {
-  padding: 0.5rem 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.time-range-select:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-}
-
-.time-range-select option {
-  background: #333;
-  color: white;
-  padding: 0.5rem;
 }
 
 .chart-container {

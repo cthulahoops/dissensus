@@ -20,6 +20,7 @@
   /* Border Radius */
   --radius-sm: 0.25rem; /* 4px */
   --radius-md: 0.5rem; /* 8px */
+  --input-border: 1px solid #aaa;
 
   font-family: var(--font-family);
   line-height: 1.5;
@@ -49,18 +50,21 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.5rem;
   line-height: 1.1;
+  margin-top: 0;
+  margin-bottom: var(--spacing-lg);
+  font-weight: 700;
 }
 
 button {
   border-radius: var(--radius-md);
   border: 2px solid transparent;
-  padding: 12px var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-size: 14px;
   font-weight: 500;
   font-family: var(--font-family);
-  background: var(--color-primary);
+  background: var(--button-bg, var(--color-primary));
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -116,14 +120,13 @@ button:focus-visible {
 input,
 textarea,
 select {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--color-border);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: var(--input-border);
   border-radius: var(--radius-md);
   font-size: 0.875rem; /* 14px */
   font-family: var(--font-family);
-  background: var(--color-background);
-  color: var(--color-text);
+  background: var(--input-bg, var(--color-background));
+  color: inherit;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -133,9 +136,7 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 var(--spacing-sm) rgba(79, 195, 247, 0.1);
 }
 
 input:hover,
@@ -156,28 +157,18 @@ input[type="number"]::-webkit-inner-spin-button {
 
 label {
   display: block;
-  margin-bottom: var(--spacing-sm);
   font-weight: 600;
-  color: var(--color-text);
   font-size: 0.875rem; /* 14px */
+  margin-bottom: calc(var(--spacing-sm) * 0.5);
 }
 
-fieldset {
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
-  background: var(--color-background);
-}
-
-legend {
-  padding: 0 var(--spacing-sm);
-  font-weight: 600;
-  color: var(--color-text);
-  font-size: 0.9375rem; /* 15px */
-}
-
-.form-group {
+/* Form field spacing within fieldsets and forms */
+fieldset > input:not(:last-child),
+fieldset > select:not(:last-child),
+fieldset > textarea:not(:last-child),
+form > input:not(:last-child),
+form > select:not(:last-child),
+form > textarea:not(:last-child) {
   margin-bottom: var(--spacing-md);
 }
 
@@ -198,18 +189,23 @@ main > * {
   margin: 0 auto;
 }
 
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .flex-between {
+.toolbar {
+    display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
     text-align: center;
-  }
+}
+
+@media (min-width: 768px) {
+    .toolbar {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toolbar:has(> :first-child:last-child) {
+      justify-content: flex-end;
+    }
 }
 
 .buttons {
@@ -248,4 +244,28 @@ main > * {
 footer {
   border-top: 1px solid var(--color-border);
   margin-top: var(--spacing-lg);
+}
+
+fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+fieldset legend {
+  padding: 0 calc(var(--spacing-md) * 0.5);
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 16px;
+}
+
+.form-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 14px;
 }

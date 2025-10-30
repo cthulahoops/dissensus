@@ -98,21 +98,22 @@ export function ShareManager({ onClose }: ShareManagerProps) {
       <section className="card">
         <h2>Manage Share Links</h2>
 
-        <div className="form-group">
-          <button onClick={() => handleCreateLink(7)} disabled={creating}>
-            {creating ? "Creating..." : "Create New Share Link"}
-          </button>
-          <p
-            style={{
-              marginTop: "var(--spacing-sm)",
-              color: "var(--color-text-light)",
-              fontSize: "0.875rem",
-            }}
-          >
-            Share links allow others to view your sleep dashboard without
-            signing in. Links expire after 7 days.
-          </p>
-        </div>
+        <button
+          onClick={() => handleCreateLink(7)}
+          disabled={creating}
+          style={{ marginBottom: "var(--spacing-sm)" }}
+        >
+          {creating ? "Creating..." : "Create New Share Link"}
+        </button>
+        <p
+          style={{
+            color: "var(--color-text-light)",
+            fontSize: "0.875rem",
+          }}
+        >
+          Share links allow others to view your sleep dashboard without signing
+          in. Links expire after 7 days.
+        </p>
 
         {error && (
           <div className="form-error">

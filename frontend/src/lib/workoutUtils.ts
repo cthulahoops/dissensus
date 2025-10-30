@@ -1,4 +1,3 @@
-import type { User } from "@supabase/supabase-js";
 import type { WorkoutInsert } from "./supabase";
 import type { Json } from "../database.types";
 
@@ -14,6 +13,12 @@ export interface HaloWorkoutData {
   am?: string; // Min heart rate
   aw?: string; // Max heart rate (avg watts in some cases)
 }
+
+// Validation constants
+const HEART_RATE_MIN = 30;
+const HEART_RATE_MAX = 250;
+const DURATION_MAX_SECONDS = 86400; // 24 hours
+const CALORIES_MAX = 10000;
 
 // Decode URL-safe Base64 (handles '-', '_', and missing padding)
 export const decodeUrlSafeBase64 = (str: string): string => {
@@ -70,11 +75,55 @@ export const parseHaloQRCodeURL = (
  * @param data - Decoded Halo workout data
  * @param userId - The user ID to associate with the workout
  * @returns WorkoutInsert object
+ * @throws Error if data is invalid
  */
 export const parseHaloWorkoutData = (
   data: HaloWorkoutData,
   userId: string
 ): WorkoutInsert => {
+  // Validate required fields
+  if (!data.id || typeof data.id !== "string") {
+    throw new Error("Invalid workout data: missing or invalid workout ID");
+  }
+
+  if (!data.dt || typeof data.dt !== "string") {
+    throw new Error("Invalid workout data: missing or invalid date");
+  }
+
+  // Validate date is parseable
+  const date = new Date(data.dt);
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid workout data: date format is invalid");
+  }
+
+  // Validate numeric ranges if present
+  if (data.ahr) {
+    const hr = parseInt(data.ahr, 10);
+    if (isNaN(hr) || hr < HEART_RATE_MIN || hr > HEART_RATE_MAX) {
+      throw new Error(
+        `Invalid workout data: average heart rate out of valid range (${HEART_RATE_MIN}-${HEART_RATE_MAX})`
+      );
+    }
+  }
+
+  if (data.et) {
+    const duration = parseInt(data.et, 10);
+    if (isNaN(duration) || duration < 0 || duration > DURATION_MAX_SECONDS) {
+      throw new Error(
+        "Invalid workout data: duration out of valid range (0-24 hours)"
+      );
+    }
+  }
+
+  if (data.c) {
+    const calories = parseInt(data.c, 10);
+    if (isNaN(calories) || calories < 0 || calories > CALORIES_MAX) {
+      throw new Error(
+        `Invalid workout data: calories out of valid range (0-${CALORIES_MAX})`
+      );
+    }
+  }
+
   return {
     user_id: userId,
     workout_id: data.id,
@@ -113,8 +162,8 @@ export const createManualWorkout = (
   },
   userId: string
 ): WorkoutInsert => {
-  // Generate a unique workout ID for manual entries
-  const workoutId = `manual-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  // Generate a unique workout ID for manual entries using crypto.randomUUID()
+  const workoutId = `manual-${crypto.randomUUID()}`;
 
   return {
     user_id: userId,

@@ -8,6 +8,7 @@ type WorkoutURLPasteProps = {
 export const WorkoutURLPaste = ({ onSubmit }: WorkoutURLPasteProps) => {
   const [url, setUrl] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isReading, setIsReading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,12 +28,17 @@ export const WorkoutURLPaste = ({ onSubmit }: WorkoutURLPasteProps) => {
   };
 
   const handlePaste = async () => {
+    setIsReading(true);
     try {
       const text = await navigator.clipboard.readText();
       setUrl(text);
     } catch (err) {
       console.error("Failed to read clipboard:", err);
-      // Clipboard API might be blocked, user can still paste manually
+      alert(
+        "Could not read clipboard. Please paste manually using Ctrl+V or Cmd+V"
+      );
+    } finally {
+      setIsReading(false);
     }
   };
 
@@ -53,10 +59,10 @@ export const WorkoutURLPaste = ({ onSubmit }: WorkoutURLPasteProps) => {
             <button
               type="button"
               onClick={handlePaste}
-              className="btn-secondary btn-paste"
-              disabled={isProcessing}
+              className="btn-paste"
+              disabled={isProcessing || isReading}
             >
-              Paste from Clipboard
+              {isReading ? "Reading..." : "Paste from Clipboard"}
             </button>
           </div>
           <small className="help-text">
@@ -67,7 +73,6 @@ export const WorkoutURLPaste = ({ onSubmit }: WorkoutURLPasteProps) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="btn-primary"
             disabled={!url.trim() || isProcessing}
           >
             {isProcessing ? "Processing..." : "Add Workout"}

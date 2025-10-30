@@ -7,11 +7,13 @@ import "./ManualWorkoutForm.css";
 type ManualWorkoutFormProps = {
   user: User;
   onSubmit: (workout: WorkoutInsert) => void;
+  onValidationError?: (message: string) => void;
 };
 
 export const ManualWorkoutForm = ({
   user,
   onSubmit,
+  onValidationError,
 }: ManualWorkoutFormProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -40,7 +42,7 @@ export const ManualWorkoutForm = ({
 
     // Validate that at least date and one metric is provided
     if (!formData.date) {
-      alert("Please provide a workout date");
+      onValidationError?.("Please provide a workout date");
       return;
     }
 
@@ -55,14 +57,14 @@ export const ManualWorkoutForm = ({
       formData.avgWatts;
 
     if (!hasAtLeastOneMetric) {
-      alert("Please provide at least one workout metric");
+      onValidationError?.("Please provide at least one workout metric");
       return;
     }
 
     setIsProcessing(true);
     try {
-      // Create workout date-time string (use midnight UTC for the date)
-      const workoutDate = new Date(formData.date).toISOString();
+      // Create workout date-time string (use noon UTC to avoid timezone boundary issues)
+      const workoutDate = new Date(formData.date + "T12:00:00Z").toISOString();
 
       const workout = createManualWorkout(
         {
@@ -260,7 +262,6 @@ export const ManualWorkoutForm = ({
         <div className="form-actions">
           <button
             type="submit"
-            className="btn-primary"
             disabled={isProcessing}
           >
             {isProcessing ? "Adding..." : "Add Workout"}

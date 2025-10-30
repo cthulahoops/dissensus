@@ -1,44 +1,19 @@
+/* Unique layout for URL paste component */
 .workout-url-paste {
   max-width: 600px;
   margin: 0 auto;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--text-primary, #212529);
 }
 
 .url-input-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .url-input-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 0.95rem;
-  border: 2px solid var(--border-color, #ced4da);
-  border-radius: 8px;
   font-family: monospace;
   resize: vertical;
-  transition: border-color 0.2s ease;
-}
-
-.url-input-group textarea:focus {
-  outline: none;
-  border-color: var(--primary-color, #007bff);
-}
-
-.url-input-group textarea:disabled {
-  background-color: var(--disabled-bg, #e9ecef);
-  cursor: not-allowed;
 }
 
 .btn-paste {
@@ -48,65 +23,20 @@
 .help-text {
   display: block;
   margin-top: 0.5rem;
-  color: var(--text-secondary, #6c757d);
+  color: var(--color-text-light, #6c757d);
   font-size: 0.875rem;
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   justify-content: flex-end;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background-color: var(--primary-color, #007bff);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--primary-hover, #0056b3);
-}
-
-.btn-primary:disabled {
-  background-color: var(--disabled-bg, #6c757d);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.btn-secondary {
-  background-color: var(--secondary-color, #6c757d);
-  color: white;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background-color: var(--secondary-hover, #545b62);
-}
-
-.btn-secondary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 /* Responsive design */
 @media (max-width: 600px) {
   .form-actions {
     flex-direction: column;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
   }
 
   .btn-paste {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { User } from "@supabase/supabase-js";
 import { QRScanner } from "../components/QRScanner";
 import { WorkoutURLPaste } from "../components/WorkoutURLPaste";
@@ -22,8 +22,18 @@ export const AddWorkoutPage = ({ user, onBack }: AddWorkoutPageProps) => {
     message?: string;
   }>({ type: "idle" });
   const [lastScannedId, setLastScannedId] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const addWorkout = useAddWorkout(user);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleWorkoutSubmit = async (workout: WorkoutInsert) => {
     // Check for duplicate
@@ -43,8 +53,13 @@ export const AddWorkoutPage = ({ user, onBack }: AddWorkoutPageProps) => {
         message: "Workout logged successfully!",
       });
 
+      // Clear any existing timeout before setting a new one
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
       // Clear success message after 5 seconds
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setStatus({ type: "idle" });
       }, 5000);
     } catch (err) {
@@ -96,6 +111,13 @@ export const AddWorkoutPage = ({ user, onBack }: AddWorkoutPageProps) => {
 
   const handleManualSubmit = async (workout: WorkoutInsert) => {
     await handleWorkoutSubmit(workout);
+  };
+
+  const handleValidationError = (message: string) => {
+    setStatus({
+      type: "error",
+      message: message,
+    });
   };
 
   return (
@@ -166,7 +188,11 @@ export const AddWorkoutPage = ({ user, onBack }: AddWorkoutPageProps) => {
               <p className="instructions">
                 Manually enter your workout details.
               </p>
-              <ManualWorkoutForm user={user} onSubmit={handleManualSubmit} />
+              <ManualWorkoutForm
+                user={user}
+                onSubmit={handleManualSubmit}
+                onValidationError={handleValidationError}
+              />
             </div>
           )}
         </div>

@@ -77,7 +77,7 @@ export function WorkoutDashboard({
     <main>
       <header className="dashboard-header">
         <h1>Workout Tracker</h1>
-        {onScanQR && <button onClick={onScanQR}>Scan QR Code</button>}
+        {onScanQR && <button onClick={onScanQR}>Add Workout</button>}
         <p>Tracking {workouts.length} total workouts</p>
       </header>
 
@@ -104,10 +104,10 @@ export function WorkoutDashboard({
         {workouts.length === 0 ? (
           <section className="empty-state">
             <h2>No workouts yet</h2>
-            <p>Scan a Halo Fitness QR code to log your first workout!</p>
+            <p>Add your first workout by scanning a QR code, pasting a URL, or entering details manually!</p>
             {onScanQR && (
               <button onClick={onScanQR} className="btn-primary">
-                Scan QR Code
+                Add Workout
               </button>
             )}
           </section>

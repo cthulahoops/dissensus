@@ -1,0 +1,45 @@
+/* Unique layout for URL paste component */
+.workout-url-paste {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.url-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.url-input-group textarea {
+  font-family: monospace;
+  resize: vertical;
+}
+
+.btn-paste {
+  align-self: flex-start;
+}
+
+.help-text {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--color-text-light, #6c757d);
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-paste {
+    align-self: stretch;
+  }
+}

@@ -10,6 +10,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { AddRecordPage } from "./pages/AddRecordPage";
 import { ShareManagerPage } from "./pages/ShareManagerPage";
 import { WorkoutDashboardPage } from "./pages/WorkoutDashboardPage";
+import { AddWorkoutPage } from "./pages/AddWorkoutPage";
 import { ScannerPage } from "./pages/ScannerPage";
 import { AppHeader } from "./components/AppHeader";
 import { AppFooter } from "./components/AppFooter";
@@ -112,8 +113,17 @@ export const Router = () => {
             <WorkoutDashboardPage
               user={user}
               onScanQR={() => {
-                window.history.pushState({}, "", "/workouts/scan");
-                setAppView({ view: "scan-qr" });
+                window.history.pushState({}, "", "/workouts/add");
+                setAppView({ view: "add-workout" });
+              }}
+            />
+          )}
+          {appView.view === "add-workout" && (
+            <AddWorkoutPage
+              user={user}
+              onBack={() => {
+                window.history.pushState({}, "", "/workouts");
+                setAppView({ view: "workout-dashboard" });
               }}
             />
           )}

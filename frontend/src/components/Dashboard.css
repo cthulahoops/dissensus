@@ -27,6 +27,11 @@
   margin-bottom: 0;
 }
 
+.dashboard-header .shared-info {
+  margin-bottom: var(--spacing-md);
+  opacity: 0.9;
+}
+
 .dashboard-controls {
   display: flex;
   justify-content: center;
@@ -65,12 +70,12 @@
 }
 
 .dashboard-loading h2 {
-  color: #667eea;
+  color: var(--color-primary);
   margin: 0;
 }
 
 .dashboard-error h2 {
-  color: #e53e3e;
+  color: var(--color-error);
   margin: 0 0 var(--spacing-md) 0;
 }
 

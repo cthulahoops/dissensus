@@ -7,8 +7,8 @@
 .url-input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .url-input-group textarea {
@@ -20,26 +20,9 @@
   align-self: flex-start;
 }
 
-.help-text {
-  display: block;
-  margin-top: 0.5rem;
-  color: var(--color-text-light, #6c757d);
-  font-size: 0.875rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: flex-end;
-}
-
 /* Responsive design */
-@media (max-width: 600px) {
-  .form-actions {
-    flex-direction: column;
-  }
-
+@media (min-width: 600px) {
   .btn-paste {
-    align-self: stretch;
+    max-width: fit-content;
   }
 }

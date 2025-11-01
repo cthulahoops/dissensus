@@ -8,11 +8,30 @@
   --color-background: #ffffff;
   --color-border: #e0e0e0;
 
+  /* Error colors */
+  --color-error: #e53e3e;
+  --color-error-bg: #fee;
+  --color-error-border: #fcc;
+  --color-error-text: #c33;
+
+  /* Success colors */
+  --color-success: #4caf50;
+  --color-success-bg: #e6f7e6;
+  --color-success-border: #4caf50;
+  --color-success-text: #2e7d32;
+
+  /* Info colors */
+  --color-info: #007bff;
+  --color-info-bg: #d1ecf1;
+  --color-info-border: #007bff;
+  --color-info-text: #0c5460;
+
   /* Typography */
   --font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
 
   /* Spacing */
+  --spacing-xs: 0.25rem; /* 4px */
   --spacing-sm: 0.5rem; /* 8px */
   --spacing-md: 1rem; /* 16px */
   --spacing-lg: 1.5rem; /* 24px */
@@ -212,11 +231,17 @@ main > * {
   display: flex;
   gap: var(--spacing-sm);
   align-items: center;
+  flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
+/* Mobile-first responsive styles */
+main {
+  padding: calc(var(--spacing-md) * 0.75);
+}
+
+@media (min-width: 768px) {
   main {
-    padding: calc(var(--spacing-md) * 0.75);
+    padding: var(--spacing-lg);
   }
 }
 
@@ -261,11 +286,97 @@ fieldset legend {
 }
 
 .form-error {
-  background: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error-text);
   padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
   margin-bottom: var(--spacing-md);
   border-radius: var(--radius-md);
   font-size: 14px;
+}
+
+/* Help text for form fields */
+.help-text {
+  display: block;
+  margin-top: var(--spacing-xs);
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+}
+
+/* Form actions (buttons at bottom of forms) */
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}
+
+@media (min-width: 600px) {
+  .form-actions {
+    flex-direction: row;
+  }
+}
+
+/* Status messages (success, error, info) */
+.status-message {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  animation: slideIn 0.3s ease-out;
+}
+
+.status-message.success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+}
+
+.status-message.error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
+}
+
+.status-message.info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info-text);
+  border: 1px solid var(--color-info-border);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page header */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
 }

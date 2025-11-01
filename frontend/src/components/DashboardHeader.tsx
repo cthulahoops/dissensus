@@ -33,7 +33,7 @@ export function DashboardHeader({
         {isSharedView ? "Shared Sleep Dashboard" : "Sleep Tracker Dashboard"}
       </h1>
       {isSharedView && sharedViewInfo && (
-        <p style={{ marginBottom: "var(--spacing-md)", opacity: 0.9 }}>
+        <p className="shared-info">
           {sharedViewInfo}
         </p>
       )}

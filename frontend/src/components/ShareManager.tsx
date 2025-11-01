@@ -101,16 +101,10 @@ export function ShareManager({ onClose }: ShareManagerProps) {
         <button
           onClick={() => handleCreateLink(7)}
           disabled={creating}
-          style={{ marginBottom: "var(--spacing-sm)" }}
         >
           {creating ? "Creating..." : "Create New Share Link"}
         </button>
-        <p
-          style={{
-            color: "var(--color-text-light)",
-            fontSize: "0.875rem",
-          }}
-        >
+        <p className="share-description">
           Share links allow others to view your sleep dashboard without signing
           in. Links expire after 7 days.
         </p>
@@ -124,13 +118,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
         <fieldset>
           <legend>Your Share Links</legend>
           {shareLinks.length === 0 ? (
-            <p
-              style={{
-                textAlign: "center",
-                color: "var(--color-text-light)",
-                fontStyle: "italic",
-              }}
-            >
+            <p className="empty-state-message">
               No share links created yet.
             </p>
           ) : (

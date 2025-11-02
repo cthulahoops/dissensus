@@ -63,7 +63,6 @@
   text-align: center;
   padding: calc(var(--spacing-lg) * 3) var(--spacing-md);
   margin: calc(var(--spacing-lg) * 2) auto;
-  max-width: 600px;
   background: var(--color-background);
   border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

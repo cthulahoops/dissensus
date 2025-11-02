@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./WorkoutURLPaste.css";
 
 type WorkoutURLPasteProps = {
   onSubmit: (url: string) => void;

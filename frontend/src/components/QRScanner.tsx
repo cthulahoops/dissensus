@@ -95,7 +95,7 @@ export const QRScanner = ({ onScan, onError }: QRScannerProps) => {
       <div id={elementId} className="qr-reader-container"></div>
 
       {error && (
-        <div className="error-message">
+        <div className="status-message error">
           <strong>Error:</strong> {error}
           <p>Please make sure you have granted camera permissions.</p>
         </div>

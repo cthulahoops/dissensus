@@ -52,24 +52,3 @@
     opacity: 1;
   }
 }
-
-.instructions {
-  background-color: var(--color-info-bg);
-  color: var(--color-info-text);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--spacing-lg);
-  border-left: 4px solid var(--color-info);
-}
-
-/* Responsive design - mobile first */
-@media (min-width: 600px) {
-  .tabs {
-    gap: var(--spacing-sm);
-  }
-
-  .tab {
-    padding: calc(var(--spacing-md) * 0.75) var(--spacing-lg);
-    font-size: 1rem;
-  }
-}

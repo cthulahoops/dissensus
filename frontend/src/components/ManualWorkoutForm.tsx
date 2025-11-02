@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createManualWorkout } from "../lib/workoutUtils";
 import type { WorkoutInsert } from "../lib/supabase";
-import "./ManualWorkoutForm.css";
 
 type ManualWorkoutFormProps = {
   user: User;

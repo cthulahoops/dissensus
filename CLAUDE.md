@@ -183,3 +183,4 @@ The project uses **auto-generated TypeScript types** from the Supabase schema:
 - **Regenerate types after schema changes**: Run `npm run generate-types` when modifying database schema.
 - **RLS is enforced**: All database operations respect Row Level Security. Use service key only in Python scripts for admin operations.
 - **Mobile-first CSS**: All styling is custom CSS designed for mobile devices first, then enhanced for desktop.
+- **CSS Philosophy**: When writing or reviewing CSS, always consult `frontend/CSS_PHILOSOPHY.md` for our radical simplification approach. Question everything, delete ruthlessly, consolidate aggressively.

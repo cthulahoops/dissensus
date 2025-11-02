@@ -181,6 +181,11 @@ label {
   margin-bottom: calc(var(--spacing-sm) * 0.5);
 }
 
+label.required::after {
+  content: " *";
+  color: var(--color-error);
+}
+
 /* Form field spacing within fieldsets and forms */
 fieldset > input:not(:last-child),
 fieldset > select:not(:last-child),
@@ -195,12 +200,18 @@ form > textarea:not(:last-child) {
 main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: calc(var(--spacing-md) * 0.75);
   container-type: inline-size;
 }
 
 main > * {
     margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  main {
+    padding: var(--spacing-lg);
+  }
 }
 
 .contained-width {
@@ -233,17 +244,6 @@ main > * {
   gap: var(--spacing-sm);
   align-items: center;
   flex-wrap: wrap;
-}
-
-/* Mobile-first responsive styles */
-main {
-  padding: calc(var(--spacing-md) * 0.75);
-}
-
-@media (min-width: 768px) {
-  main {
-    padding: var(--spacing-lg);
-  }
 }
 
 @media (prefers-color-scheme: light) {

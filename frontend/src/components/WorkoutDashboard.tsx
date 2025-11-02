@@ -77,9 +77,11 @@ export function WorkoutDashboard({
     <main>
       <header className="dashboard-header">
         <h1>Workout Tracker</h1>
-        <div className="dashboard-controls">
-          {onScanQR && <button onClick={onScanQR}>Add Workout</button>}
-        </div>
+        {onScanQR && (
+          <div className="dashboard-controls">
+            <button onClick={onScanQR}>Add Workout</button>
+          </div>
+        )}
         <div>Tracking {workouts.length} total workouts</div>
       </header>
 

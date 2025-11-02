@@ -118,7 +118,7 @@ export function ShareManager({ onClose }: ShareManagerProps) {
         <fieldset>
           <legend>Your Share Links</legend>
           {shareLinks.length === 0 ? (
-            <p className="empty-state-message">
+            <p style={{ textAlign: "center", color: "var(--color-text-light)", fontStyle: "italic" }}>
               No share links created yet.
             </p>
           ) : (

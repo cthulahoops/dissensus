@@ -16,8 +16,9 @@
 }
 
 .share-link-item.expired {
-  background: #f9f9f9;
-  border-color: #ccc;
+  background: var(--color-background);
+  border-color: var(--color-border);
+  opacity: 0.6;
 }
 
 .link-info {
@@ -41,12 +42,12 @@
 }
 
 .expires.expired {
-  color: #e53e3e;
+  color: var(--color-error);
   font-weight: bold;
 }
 
 .link-url {
-  background: #f5f5f5;
+  background: var(--color-background);
   padding: var(--spacing-sm);
   border-radius: var(--radius-sm);
   font-family: monospace;
@@ -62,12 +63,13 @@
 }
 
 .btn-danger {
-  background: #e53e3e;
+  background: var(--color-error);
   color: white;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #c53030;
+  background: var(--color-error);
+  opacity: 0.8;
 }
 
 .loading {
@@ -76,4 +78,11 @@
   align-items: center;
   min-height: 100vh;
   color: var(--color-text);
+}
+
+/* Share Manager specific styles */
+.share-description {
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-md);
 }

@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createManualWorkout } from "../lib/workoutUtils";
 import type { WorkoutInsert } from "../lib/supabase";
-import "./ManualWorkoutForm.css";
 
 type ManualWorkoutFormProps = {
   user: User;
@@ -117,147 +116,123 @@ export const ManualWorkoutForm = ({
   return (
     <div className="manual-workout-form">
       <form onSubmit={handleSubmit}>
-        <div className="form-group required">
-          <label htmlFor="date">Workout Date</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            max={today}
-            required
-            disabled={isProcessing}
-          />
-        </div>
+        <label htmlFor="date" className="required">Workout Date</label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          max={today}
+          required
+          disabled={isProcessing}
+        />
 
-        <div className="form-section">
-          <h3>Workout Metrics</h3>
+        <fieldset className="form-section">
+          <legend>Workout Metrics</legend>
           <p className="section-note">Fill in any metrics you have available</p>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="durationMinutes">Duration (minutes)</label>
-              <input
-                type="number"
-                id="durationMinutes"
-                name="durationMinutes"
-                value={formData.durationMinutes}
-                onChange={handleChange}
-                min="0"
-                step="0.1"
-                placeholder="e.g., 45"
-                disabled={isProcessing}
-              />
-            </div>
+          <label htmlFor="durationMinutes">Duration (minutes)</label>
+          <input
+            type="number"
+            id="durationMinutes"
+            name="durationMinutes"
+            value={formData.durationMinutes}
+            onChange={handleChange}
+            min="0"
+            step="0.1"
+            placeholder="e.g., 45"
+            disabled={isProcessing}
+          />
 
-            <div className="form-group">
-              <label htmlFor="calories">Calories</label>
-              <input
-                type="number"
-                id="calories"
-                name="calories"
-                value={formData.calories}
-                onChange={handleChange}
-                min="0"
-                placeholder="e.g., 350"
-                disabled={isProcessing}
-              />
-            </div>
-          </div>
+          <label htmlFor="calories">Calories</label>
+          <input
+            type="number"
+            id="calories"
+            name="calories"
+            value={formData.calories}
+            onChange={handleChange}
+            min="0"
+            placeholder="e.g., 350"
+            disabled={isProcessing}
+          />
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="distanceKm">Distance (km)</label>
-              <input
-                type="number"
-                id="distanceKm"
-                name="distanceKm"
-                value={formData.distanceKm}
-                onChange={handleChange}
-                min="0"
-                step="0.01"
-                placeholder="e.g., 5.5"
-                disabled={isProcessing}
-              />
-            </div>
+          <label htmlFor="distanceKm">Distance (km)</label>
+          <input
+            type="number"
+            id="distanceKm"
+            name="distanceKm"
+            value={formData.distanceKm}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            placeholder="e.g., 5.5"
+            disabled={isProcessing}
+          />
 
-            <div className="form-group">
-              <label htmlFor="avgSpeedKmh">Avg Speed (km/h)</label>
-              <input
-                type="number"
-                id="avgSpeedKmh"
-                name="avgSpeedKmh"
-                value={formData.avgSpeedKmh}
-                onChange={handleChange}
-                min="0"
-                step="0.1"
-                placeholder="e.g., 12.5"
-                disabled={isProcessing}
-              />
-            </div>
-          </div>
+          <label htmlFor="avgSpeedKmh">Avg Speed (km/h)</label>
+          <input
+            type="number"
+            id="avgSpeedKmh"
+            name="avgSpeedKmh"
+            value={formData.avgSpeedKmh}
+            onChange={handleChange}
+            min="0"
+            step="0.1"
+            placeholder="e.g., 12.5"
+            disabled={isProcessing}
+          />
 
-          <div className="form-group">
-            <label htmlFor="avgPace">Average Pace</label>
-            <input
-              type="text"
-              id="avgPace"
-              name="avgPace"
-              value={formData.avgPace}
-              onChange={handleChange}
-              placeholder="e.g., 5:30/km"
-              disabled={isProcessing}
-            />
-            <small className="help-text">Format: MM:SS/km</small>
-          </div>
+          <label htmlFor="avgPace">Average Pace</label>
+          <input
+            type="text"
+            id="avgPace"
+            name="avgPace"
+            value={formData.avgPace}
+            onChange={handleChange}
+            placeholder="e.g., 5:30/km"
+            disabled={isProcessing}
+          />
+          <small className="help-text">Format: MM:SS/km</small>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="avgHeartRate">Avg Heart Rate (bpm)</label>
-              <input
-                type="number"
-                id="avgHeartRate"
-                name="avgHeartRate"
-                value={formData.avgHeartRate}
-                onChange={handleChange}
-                min="0"
-                max="250"
-                placeholder="e.g., 145"
-                disabled={isProcessing}
-              />
-            </div>
+          <label htmlFor="avgHeartRate">Avg Heart Rate (bpm)</label>
+          <input
+            type="number"
+            id="avgHeartRate"
+            name="avgHeartRate"
+            value={formData.avgHeartRate}
+            onChange={handleChange}
+            min="0"
+            max="250"
+            placeholder="e.g., 145"
+            disabled={isProcessing}
+          />
 
-            <div className="form-group">
-              <label htmlFor="maxHeartRate">Max Heart Rate (bpm)</label>
-              <input
-                type="number"
-                id="maxHeartRate"
-                name="maxHeartRate"
-                value={formData.maxHeartRate}
-                onChange={handleChange}
-                min="0"
-                max="250"
-                placeholder="e.g., 180"
-                disabled={isProcessing}
-              />
-            </div>
-          </div>
+          <label htmlFor="maxHeartRate">Max Heart Rate (bpm)</label>
+          <input
+            type="number"
+            id="maxHeartRate"
+            name="maxHeartRate"
+            value={formData.maxHeartRate}
+            onChange={handleChange}
+            min="0"
+            max="250"
+            placeholder="e.g., 180"
+            disabled={isProcessing}
+          />
 
-          <div className="form-group">
-            <label htmlFor="avgWatts">Average Power (watts)</label>
-            <input
-              type="number"
-              id="avgWatts"
-              name="avgWatts"
-              value={formData.avgWatts}
-              onChange={handleChange}
-              min="0"
-              placeholder="e.g., 200"
-              disabled={isProcessing}
-            />
-          </div>
-        </div>
+          <label htmlFor="avgWatts">Average Power (watts)</label>
+          <input
+            type="number"
+            id="avgWatts"
+            name="avgWatts"
+            value={formData.avgWatts}
+            onChange={handleChange}
+            min="0"
+            placeholder="e.g., 200"
+            disabled={isProcessing}
+          />
+        </fieldset>
 
         <div className="form-actions">
           <button

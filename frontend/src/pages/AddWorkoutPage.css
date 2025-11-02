@@ -1,82 +1,37 @@
 .add-workout-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 1.75rem;
-}
-
-.status-message {
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  animation: slideIn 0.3s ease-out;
-}
-
-.status-message.success {
-  background-color: var(--success-bg, #d4edda);
-  color: var(--success-text, #155724);
-  border: 1px solid var(--success-border, #c3e6cb);
-}
-
-.status-message.error {
-  background-color: var(--error-bg, #f8d7da);
-  color: var(--error-text, #721c24);
-  border: 1px solid var(--error-border, #f5c6cb);
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  padding: var(--spacing-md);
 }
 
 .tabs {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--border-color, #dee2e6);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--color-border);
   overflow-x: auto;
 }
 
 .tab {
-  padding: 0.75rem 1.5rem;
+  padding: calc(var(--spacing-md) * 0.75) var(--spacing-lg);
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--text-secondary, #6c757d);
+  color: var(--color-text-light);
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .tab:hover {
-  color: var(--primary-color, #007bff);
-  background-color: var(--hover-bg, #f8f9fa);
+  color: var(--color-info);
+  background-color: var(--color-background);
+  opacity: 0.8;
 }
 
 .tab.active {
-  color: var(--primary-color, #007bff);
-  border-bottom-color: var(--primary-color, #007bff);
+  color: var(--color-info);
+  border-bottom-color: var(--color-info);
 }
 
 .tab-content {
@@ -93,35 +48,5 @@
   }
   to {
     opacity: 1;
-  }
-}
-
-.instructions {
-  background-color: var(--info-bg, #d1ecf1);
-  color: var(--info-text, #0c5460);
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  border-left: 4px solid var(--primary-color, #007bff);
-}
-
-/* Responsive design */
-@media (max-width: 600px) {
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .page-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .tabs {
-    gap: 0.25rem;
-  }
-
-  .tab {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
   }
 }

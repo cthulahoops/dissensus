@@ -45,7 +45,7 @@ export function SleepDashboard({
 
   if (loading) {
     return (
-      <div className="dashboard-loading">
+      <div className="status-message info">
         <h2>Loading sleep data...</h2>
       </div>
     );
@@ -53,7 +53,7 @@ export function SleepDashboard({
 
   if (error) {
     return (
-      <div className="dashboard-error">
+      <div className="status-message error">
         <h2>Error</h2>
         <p>{error}</p>
       </div>

@@ -58,7 +58,7 @@ export function WorkoutDashboard({
 
   if (loading) {
     return (
-      <div className="dashboard-loading">
+      <div className="status-message info">
         <h2>Loading workout data...</h2>
       </div>
     );
@@ -66,7 +66,7 @@ export function WorkoutDashboard({
 
   if (error) {
     return (
-      <div className="dashboard-error">
+      <div className="status-message error">
         <h2>Error</h2>
         <p>{error}</p>
       </div>
@@ -77,7 +77,11 @@ export function WorkoutDashboard({
     <main>
       <header className="dashboard-header">
         <h1>Workout Tracker</h1>
-        <div>{onScanQR && <button onClick={onScanQR}>Add Workout</button>}</div>
+        {onScanQR && (
+          <div className="dashboard-controls">
+            <button onClick={onScanQR}>Add Workout</button>
+          </div>
+        )}
         <div>Tracking {workouts.length} total workouts</div>
       </header>
 
@@ -102,7 +106,7 @@ export function WorkoutDashboard({
         </BalancedGrid>
 
         {workouts.length === 0 ? (
-          <section className="empty-state">
+          <section className="status-message info">
             <h2>No workouts yet</h2>
             <p>
               Add your first workout by scanning a QR code, pasting a URL, or

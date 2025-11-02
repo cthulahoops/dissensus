@@ -1,36 +1,31 @@
 .time-range-selector {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   font-weight: 500;
+  text-align: center;
 }
 
 .chart-container {
   position: relative;
   margin-bottom: var(--spacing-md);
-  height: 400px;
+  height: 300px;
   width: 100%;
-}
-
-@media (max-width: 768px) {
-  .chart-container {
-    height: 300px;
-  }
 }
 
 .averages-summary {
   container-type: inline-size;
 }
 
-/* Mobile responsive */
-@media (max-width: 768px) {
-  section {
-    padding: var(--spacing-md);
+/* Desktop responsive - mobile first */
+@media (min-width: 768px) {
+  .chart-container {
+    height: 400px;
   }
 
   .time-range-selector {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
+    flex-direction: row;
+    text-align: left;
   }
 }

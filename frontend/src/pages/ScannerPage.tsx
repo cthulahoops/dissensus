@@ -4,7 +4,6 @@ import { QRScanner } from "../components/QRScanner";
 import { useAddWorkout } from "../hooks/useAddWorkout";
 import type { WorkoutInsert } from "../lib/supabase";
 import type { Json } from "../database.types";
-import "./ScannerPage.css";
 
 type ScannerPageProps = {
   user: User;

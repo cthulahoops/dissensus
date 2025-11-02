@@ -1,200 +1,194 @@
-# CSS Philosophy: Consolidation & Context-Aware Defaults
+# CSS Philosophy: Radical Simplification
 
-This document describes the CSS architecture philosophy expressed in the `css_clean` refactoring.
+This document describes our CSS architecture philosophy: aggressive consolidation to maintain a small, consistent core.
 
-## Overview
+## Core Principle
 
-This refactoring demonstrates a **"global defaults with contextual overrides"** approach to CSS architecture. The key insight: write styles once at the global level, then use CSS variables to enable context-specific theming without selector specificity wars.
+**Question everything. Delete ruthlessly. Consolidate aggressively.**
 
-## Core Principles
+Most CSS complexity comes from cargo-culted patterns that aren't actually needed. When in doubt, try deleting it first.
 
-### 1. Push Common Styles to Global Scope
+## Guidelines
 
-Instead of repeating styles in component-specific CSS files, move shared patterns to `index.css`:
+### 1. Delete Entire CSS Files When Possible
 
-**Before (component-specific):**
+Before creating a component-specific CSS file, ask: "Is there anything here that can't be handled by global styles?"
+
+**Delete the file if:**
+- All styles are just wrappers around existing patterns
+- Everything could be achieved with 1-2 CSS variables
+- The "unique" layout is just a max-width or padding adjustment
+
+**Component CSS files should be rare.** Most components need zero custom CSS.
+
+### 2. Consolidate Duplicate Patterns Aggressively
+
+If you see similar classes differing only in color/spacing/one property, merge them with variants:
+
 ```css
-/* SleepForm.css */
-.form-group label {
-  display: block;
-  margin-bottom: calc(var(--spacing-md) * 0.5);
-  font-weight: 500;
+/* Bad: Three separate classes for similar purposes */
+.dashboard-loading { /* card with blue heading */ }
+.dashboard-error { /* card with red heading */ }
+.empty-state { /* card with gray heading */ }
+
+/* Good: One pattern with variants */
+.status-message { /* base card */ }
+.status-message.info { /* blue */ }
+.status-message.error { /* red */ }
+```
+
+**Look for:** Classes with identical structure but different colors, sizes, or minor variations. Merge them.
+
+### 3. Question Arbitrary Constraints
+
+**Max-widths, specific pixel values, and breakpoints should have clear justification.**
+
+Ask: "Why is this 600px instead of using the global max-width? Why does this need to be different?"
+
+Often the answer is "no good reason" → delete the constraint.
+
+```css
+/* Bad: Arbitrary limitation */
+.form-container {
+  max-width: 800px; /* Why 800px? Why not global 1200px? */
 }
 
-.form-group input {
-  width: 100%;
-  padding: calc(var(--spacing-md) * 0.75) var(--spacing-md);
-  border: 1px solid var(--color-border);
+/* Good: Use global constraint or no constraint */
+.form-container {
+  /* Let it use the global max-width from <main> */
 }
 ```
 
-**After (global):**
+### 4. Don't Create Size-Based Utilities
+
+Avoid: `.container-sm`, `.container-md`, `.container-lg`
+
+These obscure **why** different sizes exist. Think semantically:
+- What is this content?
+- Why does it need different width than other content?
+- Could it just use the default width?
+
+Most of the time, content doesn't need special sizing.
+
+### 5. Use CSS Variables for Contextual Theming
+
+Instead of specific selectors, use CSS variables with fallbacks for context-aware styling:
+
 ```css
-/* index.css */
-label {
-  display: block;
-  font-weight: 600;
-}
-
-input, textarea, select {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: var(--input-border);
-  background: var(--input-bg, var(--color-background));
-}
-```
-
-### 2. CSS Variables for Contextual Theming
-
-Use CSS variables with fallbacks to allow local contexts to override global defaults:
-
-**Pattern:**
-```css
-/* index.css - global default */
+/* Global default */
 button {
   background: var(--button-bg, var(--color-primary));
 }
 
-input {
-  background: var(--input-bg, var(--color-background));
-  border: var(--input-border);
-}
-```
-
-**Context override:**
-```css
-/* Dashboard.css - gradient header context */
+/* Context override - no new selectors needed */
 .dashboard-header {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-
-  /* Override button/input appearance for white-on-gradient theme */
   --button-bg: rgba(255, 255, 255, 0.2);
-  --input-bg: rgba(255, 255, 255, 0.1);
-  --input-border: 1px solid rgba(255, 255, 255, 0.1);
 }
 ```
 
-This means buttons and inputs inside `.dashboard-header` automatically get the translucent white styling without needing `.dashboard-header button` selectors!
+Buttons inside `.dashboard-header` automatically get the transparent styling. No specificity wars.
 
-### 3. Semantic Utility Classes Over Layout-Specific Ones
+### 6. Mobile-First Always
 
-Replace narrowly-defined utilities with more flexible, semantic alternatives:
+Write base styles for mobile, enhance for desktop:
 
-**Before:**
 ```css
-/* Old: Describes the layout implementation */
-.flex-between {
+/* Bad: Desktop-first */
+.toolbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 @media (max-width: 768px) {
-  .flex-between {
+  .toolbar {
     flex-direction: column;
-    gap: var(--spacing-md);
   }
 }
-```
 
-**After:**
-```css
-/* New: Describes the purpose - a toolbar that adapts */
+/* Good: Mobile-first */
 .toolbar {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  text-align: center;
 }
 
 @media (min-width: 768px) {
   .toolbar {
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Smart: single child aligns to end */
-  .toolbar:has(> :first-child:last-child) {
-    justify-content: flex-end;
   }
 }
 ```
 
-This is **mobile-first** (column by default) and intelligently handles edge cases.
+### 7. Eliminate Redundant Responsive Queries
 
-### 4. Margin Collapse Management
-
-Use first/last child selectors to prevent awkward spacing in containers:
+If a media query sets the exact same values as the base styles, **delete it entirely**:
 
 ```css
-.dashboard-header > *:first-child {
-  margin-top: 0;
+/* Bad: Useless media query */
+.tab {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
 }
 
-.dashboard-header > *:last-child {
-  margin-bottom: 0;
+@media (min-width: 600px) {
+  .tab {
+    padding: 0.75rem 1.5rem;  /* Same as base! */
+    font-size: 1rem;          /* Delete this query */
+  }
 }
 ```
 
-This allows child elements (h1, p, div, buttons) to have their own margin rules while preventing double-spacing at container edges.
+### 8. Push Common Patterns to Global Scope
 
-### 5. Eliminate Component-Specific Files When Possible
+If you're writing the same pattern twice, it belongs in `index.css`:
 
-**Deleted entirely:** `SleepForm.css` (75 lines)
+```css
+/* If you find yourself repeating this pattern... */
+.status-message { /* in index.css */ }
+.instructions { /* in index.css */ }
+.page-header { /* in index.css */ }
 
-**Trimmed down:** `SleepDashboard.css` from 71 lines to 37 lines
-
-The philosophy: If styles aren't specific to a component's unique layout, they belong in the global stylesheet. Component CSS files should only exist for truly unique layouts/patterns.
-
-### 6. Remove HTML Structure Dependencies
-
-**Before:** Two-column form layout required wrapping div:
-```tsx
-<div className="form-row">  {/* Grid container */}
-  <div className="form-group">...</div>
-  <div className="form-group">...</div>
-</div>
+/* ...not scattered across component files */
 ```
 
-**After:** Flat structure, let forms flow naturally:
-```tsx
-<div className="form-group">...</div>
-<div className="form-group">...</div>
+Global patterns make the whole app consistent by default.
+
+### 9. Merge State Patterns
+
+Loading, error, empty, success states are usually the same container with different colors. Use one pattern:
+
+```css
+.status-message { /* base */ }
+.status-message.success { /* green */ }
+.status-message.error { /* red */ }
+.status-message.info { /* blue */ }
 ```
 
-This simplifies the HTML and relies on global form spacing rather than layout wrappers.
+Don't create `.loading-spinner`, `.error-card`, `.empty-state` if they're all just colored boxes.
 
-### 7. Semantic HTML Over Styling Hacks
+## Red Flags
 
-**Changed:**
-```tsx
-// Before: Paragraph used for non-paragraph content
-<p>Tracking {sleepRecords.length} total records</p>
+Watch for these signs of cargo-cult CSS:
 
-// After: Generic container is more semantically correct
-<div>Tracking {sleepRecords.length} total records</div>
-```
+- 🚩 Component CSS file with < 20 lines (probably deletable)
+- 🚩 Multiple classes that look nearly identical
+- 🚩 Arbitrary max-widths (600px, 800px, etc.) without clear purpose
+- 🚩 Media queries that don't change anything
+- 🚩 `.container-sm`, `.size-md`, `.width-lg` naming
+- 🚩 Wrapper divs just to add a class (`.form-group`, `.card-wrapper`)
+- 🚩 Repeating the same pattern across files
 
-This prevents inheriting unwanted paragraph styling and is more semantically appropriate for UI text.
-
-## Benefits
-
-1. **Reduced Duplication**: Net -115 lines of CSS code
-2. **Easier Theming**: Change CSS variables in one place, affect all children
-3. **Lower Specificity**: No need for `.parent .child` selectors
-4. **Better Maintainability**: New components automatically inherit design system
-5. **Mobile-First**: Responsive design baked into utilities
-6. **Composability**: Mix and match classes naturally
+When you see these: stop, question, consolidate or delete.
 
 ## Summary
 
-**"Write once, theme anywhere, compose naturally"**
+**The goal is a tiny, consistent CSS core.**
 
-- Global element styles handle 80% of cases
-- CSS variables enable contextual theming without selector specificity wars
-- Utility classes describe purpose, not implementation
-- Component CSS files are rare and contain only truly unique layouts
-- Mobile-first responsive design baked into utilities
-- Semantic HTML + minimal classes = maintainable code
+- Most components need **zero custom CSS**
+- Common patterns live in `index.css`
+- Component files are rare and truly unique
+- Consolidate similar patterns aggressively
+- Delete arbitrary constraints
+- Question everything, especially if it feels like boilerplate
 
-This approach makes it trivial to add new components that automatically inherit the design system while still allowing contextual customization where needed.
+When you finish styling something, try to delete half of it. You probably can.

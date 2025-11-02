@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./WorkoutURLPaste.css";
 
 type WorkoutURLPasteProps = {
   onSubmit: (url: string) => void;
@@ -45,30 +44,28 @@ export const WorkoutURLPaste = ({ onSubmit }: WorkoutURLPasteProps) => {
   return (
     <div className="workout-url-paste">
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="workout-url">Workout QR Code URL</label>
-          <div className="url-input-group">
-            <textarea
-              id="workout-url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Paste the URL from the QR code here..."
-              rows={4}
-              disabled={isProcessing}
-            />
-            <button
-              type="button"
-              onClick={handlePaste}
-              className="btn-paste"
-              disabled={isProcessing || isReading}
-            >
-              {isReading ? "Reading..." : "Paste from Clipboard"}
-            </button>
-          </div>
-          <small className="help-text">
-            The URL should look like: https://example.com?r=...
-          </small>
+        <label htmlFor="workout-url">Workout QR Code URL</label>
+        <div className="url-input-group">
+          <textarea
+            id="workout-url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="Paste the URL from the QR code here..."
+            rows={4}
+            disabled={isProcessing}
+          />
+          <button
+            type="button"
+            onClick={handlePaste}
+            className="btn-paste"
+            disabled={isProcessing || isReading}
+          >
+            {isReading ? "Reading..." : "Paste from Clipboard"}
+          </button>
         </div>
+        <small className="help-text">
+          The URL should look like: https://example.com?r=...
+        </small>
 
         <div className="form-actions">
           <button

@@ -151,6 +151,7 @@ export const parseHaloWorkoutData = (
 export const createManualWorkout = (
   params: {
     date: string; // ISO date string
+    workoutType: string; // Type of workout (run, swim, bike, etc.)
     durationMinutes?: number;
     calories?: number;
     distanceKm?: number;
@@ -169,6 +170,7 @@ export const createManualWorkout = (
     user_id: userId,
     workout_id: workoutId,
     workout_date: params.date,
+    workout_type: params.workoutType,
     duration_seconds: params.durationMinutes
       ? params.durationMinutes * 60
       : null,

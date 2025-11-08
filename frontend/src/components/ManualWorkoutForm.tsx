@@ -165,12 +165,6 @@ export const ManualWorkoutForm = ({
         >
           <option value="run">Run</option>
           <option value="swim">Swim</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Walk</option>
-          <option value="hike">Hike</option>
-          <option value="strength">Strength Training</option>
-          <option value="yoga">Yoga</option>
-          <option value="other">Other</option>
         </select>
 
         <fieldset className="form-section">

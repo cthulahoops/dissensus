@@ -65,18 +65,9 @@ export const ManualWorkoutForm = ({
     setIsProcessing(true);
     try {
       // Create workout date-time string
-      // If time is provided, use it; otherwise use current time
-      let workoutDate: string;
-      if (formData.time) {
-        // Combine date and time in local timezone, then convert to ISO
-        workoutDate = new Date(formData.date + "T" + formData.time).toISOString();
-      } else {
-        // Use current time
-        const now = new Date();
-        const dateParts = formData.date.split("-");
-        now.setFullYear(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
-        workoutDate = now.toISOString();
-      }
+      // If time is provided, use it; otherwise default to noon local time
+      const timeToUse = formData.time || "12:00";
+      const workoutDate = new Date(`${formData.date}T${timeToUse}`).toISOString();
 
       const workout = createManualWorkout(
         {

@@ -128,6 +128,7 @@ export const parseHaloWorkoutData = (
     user_id: userId,
     workout_id: data.id,
     workout_date: data.dt,
+    workout_type: 'run', // Halo imports are running workouts
     duration_seconds: data.et ? parseInt(data.et, 10) : null,
     calories: data.c ? parseInt(data.c, 10) : null,
     distance_km: data.d ? toKm(parseFloat(data.d.v), data.d.u) : null,

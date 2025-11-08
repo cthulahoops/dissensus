@@ -21,6 +21,8 @@ export const ManualWorkoutForm = ({
 
   const [formData, setFormData] = useState({
     date: today,
+    time: "", // Optional time in HH:MM format
+    workoutType: "run", // Default workout type
     durationMinutes: "",
     calories: "",
     distanceKm: "",
@@ -31,7 +33,7 @@ export const ManualWorkoutForm = ({
     avgWatts: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -62,12 +64,15 @@ export const ManualWorkoutForm = ({
 
     setIsProcessing(true);
     try {
-      // Create workout date-time string (use noon UTC to avoid timezone boundary issues)
-      const workoutDate = new Date(formData.date + "T12:00:00Z").toISOString();
+      // Create workout date-time string
+      // If time is provided, use it; otherwise default to noon local time
+      const timeToUse = formData.time || "12:00";
+      const workoutDate = new Date(`${formData.date}T${timeToUse}`).toISOString();
 
       const workout = createManualWorkout(
         {
           date: workoutDate,
+          workoutType: formData.workoutType,
           durationMinutes: formData.durationMinutes
             ? parseFloat(formData.durationMinutes)
             : undefined,
@@ -99,6 +104,8 @@ export const ManualWorkoutForm = ({
       // Reset form on success
       setFormData({
         date: today,
+        time: "",
+        workoutType: "run",
         durationMinutes: "",
         calories: "",
         distanceKm: "",
@@ -127,6 +134,29 @@ export const ManualWorkoutForm = ({
           required
           disabled={isProcessing}
         />
+
+        <label htmlFor="time">Workout Time</label>
+        <input
+          type="time"
+          id="time"
+          name="time"
+          value={formData.time}
+          onChange={handleChange}
+          disabled={isProcessing}
+        />
+        <small className="help-text">Optional - defaults to current time if not specified</small>
+
+        <label htmlFor="workoutType">Workout Type</label>
+        <select
+          id="workoutType"
+          name="workoutType"
+          value={formData.workoutType}
+          onChange={handleChange}
+          disabled={isProcessing}
+        >
+          <option value="run">Run</option>
+          <option value="swim">Swim</option>
+        </select>
 
         <fieldset className="form-section">
           <legend>Workout Metrics</legend>

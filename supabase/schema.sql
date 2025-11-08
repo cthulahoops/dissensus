@@ -125,6 +125,7 @@ CREATE TABLE IF NOT EXISTS workouts (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   workout_id TEXT NOT NULL,
   workout_date TIMESTAMPTZ NOT NULL,
+  workout_type TEXT NOT NULL CHECK (workout_type IN ('run', 'swim')),
   duration_seconds INTEGER,
   calories INTEGER,
   distance_km NUMERIC(10, 3),

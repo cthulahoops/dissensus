@@ -128,6 +128,7 @@ export const parseHaloWorkoutData = (
     user_id: userId,
     workout_id: data.id,
     workout_date: data.dt,
+    workout_type: 'run', // Hardcoded: Halo QR payload format doesn't include explicit workout type; assumes running
     duration_seconds: data.et ? parseInt(data.et, 10) : null,
     calories: data.c ? parseInt(data.c, 10) : null,
     distance_km: data.d ? toKm(parseFloat(data.d.v), data.d.u) : null,
@@ -151,6 +152,7 @@ export const parseHaloWorkoutData = (
 export const createManualWorkout = (
   params: {
     date: string; // ISO date string
+    workoutType: string; // Type of workout (run, swim, bike, etc.)
     durationMinutes?: number;
     calories?: number;
     distanceKm?: number;
@@ -169,6 +171,7 @@ export const createManualWorkout = (
     user_id: userId,
     workout_id: workoutId,
     workout_date: params.date,
+    workout_type: params.workoutType,
     duration_seconds: params.durationMinutes
       ? params.durationMinutes * 60
       : null,

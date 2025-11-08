@@ -107,6 +107,7 @@ export type Database = {
           user_id: string | null
           workout_id: string
           workout_date: string
+          workout_type: string | null
           duration_seconds: number | null
           calories: number | null
           distance_km: number | null
@@ -124,6 +125,7 @@ export type Database = {
           user_id?: string | null
           workout_id: string
           workout_date: string
+          workout_type?: string | null
           duration_seconds?: number | null
           calories?: number | null
           distance_km?: number | null
@@ -139,6 +141,7 @@ export type Database = {
         Update: {
           // Omit immutable fields: id, user_id, workout_id, created_at, updated_at
           workout_date?: string
+          workout_type?: string | null
           duration_seconds?: number | null
           calories?: number | null
           distance_km?: number | null
